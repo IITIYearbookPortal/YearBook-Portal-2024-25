@@ -1,0 +1,397 @@
+body {
+  display: block;
+}
+
+#cmtm {
+  padding: 1%;
+  margin-top: 1%;
+  margin-left: 1%;
+  font-weight: bolder;
+  font-size: 40px;
+}
+
+.containerls {
+  /* background-image: url(./so-white.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: 'KG Take On The World', sans-serif; */
+  font-size: 1.01rem;
+}
+
+.header {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  padding: 2%;
+}
+
+ul {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: auto;
+  gap: 2rem;
+
+}
+
+li {
+  flex: auto;
+}
+
+.container2ls {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 150%;
+  margin-left: 1%;
+  margin-bottom: 5%;
+  padding-bottom: 30px;
+}
+
+.comm1 {
+  padding: 2%;
+  border-radius: 20px;
+  width: 80vh;
+  height: 90vh;
+  margin-left: 3%;
+  text-align: left;
+  margin-bottom: 1%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.comm2 {
+  padding: 2%;
+  border-radius: 20px;
+  width: 80vh;
+  height: 90vh;
+  margin-left: 3%;
+  text-align: left;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+}
+
+.comm3 {
+  padding: 2%;
+
+  border-radius: 20px;
+  width: 80vh;
+  height: 90vh;
+  text-align: left;
+  /* margin-left: 10%;
+    margin-right: 1%; */
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* background-color:green; */
+  /* background-color:green; */
+
+}
+
+.dotsl {
+  width: 50vh;
+  height: 50vh;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 50%;
+  display: flex;
+
+  position: relative;
+}
+
+.ipp {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+}
+
+#memo {
+  width: 30vh;
+  background-color: white;
+  border: 2px solid black;
+  margin: 0 0 0 0;
+  padding: 1vh;
+  padding-top: 3vh;
+  color: #726f64;
+}
+
+#upd2 {
+  width: 24vh;
+  margin-left: 2vh;
+  color: black;
+}
+
+.profle {
+  align-items: center;
+  padding-right: 2%;
+  display: flex;
+  flex-flow: column;
+  margin-left: 10%;
+  width: 80vh;
+}
+
+#about {
+  padding: 20px;
+  position: relative;
+  margin: auto;
+}
+
+.about1 {
+  border-radius: 10px;
+  border-width: 1px;
+  overflow-y: auto;
+  display: flex;
+  flex-flow: column;
+  margin-bottom: 2%;
+  padding: 4%;
+  height: 180px;
+  width: 100%;
+}
+
+.edit {
+  color: black;
+  padding-bottom: 2%;
+  padding-top: 1%;
+}
+
+#edti {
+  overflow: hidden;
+  width: fit-content !important;
+  display: inline-flex;
+  height: fit-content;
+}
+
+#edit :hover {
+  border: 1px solid white;
+  color: white;
+}
+
+#links {
+  display: block;
+}
+
+.fa {
+  padding: 10%;
+  width: 50%;
+  font-size: 150%;
+  text-align: center;
+  text-decoration: none;
+  color: grey;
+}
+
+#check {
+  display: inline;
+  padding: 0.5% !important;
+  margin: 1% !important;
+  width: 10% !important;
+  border: 2px solid transparent;
+  border: 2px solid transparent;
+}
+
+#comment {
+  border-radius: 5px;
+  border-width: 1px;
+  padding: 2%;
+  display: flex;
+  flex-direction: column;
+  margin: 2%;
+  overflow-wrap: break-word;
+}
+
+#ogout2 {
+  width: fit-content;
+  margin-left: 0;
+  width: 150px;
+  padding: 3px !important;
+}
+
+#commentp {
+  padding-bottom: 0%;
+  background-color: transparent;
+}
+
+#commentby {
+  padding-bottom: 0%;
+  position: inherit;
+  align-self: self-end;
+  display: inline;
+  background-color: transparent;
+}
+
+
+::-webkit-scrollbar-thumb {
+  border-radius: 50px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: grey;
+}
+
+::-webkit-scrollbar {
+  border-radius: 5px;
+  width: 10px;
+  background-color: transparent;
+  visibility: collapse;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 50px;
+  background-color: grey;
+  background-clip: content-box;
+  border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+  z-index: -1;
+  border-radius: 50px;
+  background-color: transparent;
+  border: 2px solid transparent;
+  visibility: collapse;
+}
+
+
+.comm1::-webkit-scrollbar,
+.comm2::-webkit-scrollbar,
+.comm3::-webkit-scrollbar {
+  border-radius: 5px;
+  width: 10px;
+  background-color: transparent;
+  visibility: collapse;
+}
+
+.comm1::-webkit-scrollbar-thumb,
+.comm2::-webkit-scrollbar-thumb,
+.comm3::-webkit-scrollbar-thumb {
+  border-radius: 50px;
+  background-color: gray;
+  background-clip: content-box;
+  border: 2px solid transparent;
+}
+
+.comm1::-webkit-scrollbar-track,
+.comm2::-webkit-scrollbar-track,
+.comm3::-webkit-scrollbar-track {
+  z-index: -1;
+  border-radius: 50px;
+  background-color: transparent;
+  border: 2px solid transparent;
+  visibility: collapse;
+}
+
+.newComment {
+  font-size: medium;
+  padding-bottom: 2%;
+}
+
+.newCommentUserName {
+  text-align: right;
+}
+
+#comment5 {
+  border-width: 1px;
+  border-radius: 7px;
+  padding: 1.5%;
+  margin: 3.5%;
+  overflow-wrap: break-word;
+}
+
+@media screen and (max-width: 930px) {
+  .container2ls {
+    flex-flow: column;
+    width: 100%;
+    padding: 1%;
+    margin-left: 0%;
+    align-items: center;
+  }
+
+  .profle {
+    order: -1;
+    display: flex;
+    flex-flow: column;
+    flex: auto;
+    width: 80%;
+    margin-left: 0%;
+  }
+
+  .comm3 {
+    margin-top: 3%;
+    margin-left: 3%;
+  }
+
+  .comm1 {
+    margin-top: 3%;
+    margin-left: 3%;
+  }
+
+  .comm1,
+  .comm2,
+  .comm3 {
+    width: 90%;
+    padding-top: 2%;
+    padding-left: 4%;
+    padding-right: 4%;
+    margin-left: 0%;
+    height: 70vh;
+  }
+
+  .edit {
+    display: flex;
+    margin-left: 0%;
+  }
+
+  .dotsl {
+    flex-flow: column;
+    height: 40vh;
+    width: 40vh;
+    margin-left: 0%;
+  }
+}
+
+
+#ebtn {
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-left: 0;
+  width: 150px;
+  padding: 3px !important;
+  position: relative;
+  top: 25px;
+}
+
+
+.fadeInLeft {
+  animation: fadeInLeft 2s ease backwards;
+}
+
+@keyframes fadeInLeft {
+  0% {
+    transform: translate(-200px, 0px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translate(0px, 0px);
+    opacity: 1;
+  }
+}
+
+.fadeInRight {
+  animation: fadeInRight 2s ease backwards;
+}
+
+@keyframes fadeInRight {
+  0% {
+    transform: translate(200px, 0px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translate(0px, 0px);
+    opacity: 1;
+  }
+}
+
+.abdd {
+  color: white;
+}

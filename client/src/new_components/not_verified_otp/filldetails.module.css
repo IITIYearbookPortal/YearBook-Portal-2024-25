@@ -1,0 +1,170 @@
+.move-right {
+
+  transition-delay: 0.5s;
+  transform: translateX(100vw);
+  opacity: 0;
+}
+
+
+.btnh {
+  transition-property: all;
+  transition-duration: 300ms;
+}
+
+.btnh:hover {
+  transform: translateX(-4px) translateY(-4px);
+  border-radius: 0.375rem;
+  box-shadow: 4px 4px 0px black;
+}
+
+.btnh:active {
+  transform: translateX(0) translateY(0);
+  border-radius: 1rem;
+  box-shadow: none;
+}
+
+
+.btnh2 {
+  transition-property: all;
+  transition-duration: 300ms;
+ 
+}
+
+.btnh2:hover {
+  transform: translateX(-4px) translateY(-4px);
+  border-radius: 0.375rem;
+
+  box-shadow: 2px 2px 2px black;
+}
+
+/* for annimations */
+
+.afu{animation:fadeInUp 1s ease backwards;}
+
+@keyframes fadeInUp{
+  0%{transform:translate(0px, 200px); opacity: 0;}
+  100%{transform:translate(0px, 0px); opacity: 1;}
+}
+
+
+.afr{animation: fadeInRight 1s ease backwards;}
+@keyframes fadeInRight {
+  0% {
+     opacity: 0;
+     transform: translateX(20px);
+  }
+  100% {
+     opacity: 1;
+     transform: translateX(0);
+  }
+} 
+
+.afl{animation: fadeInLeft 1s ease backwards;}
+@keyframes fadeInLeft {
+  0% {
+     opacity: 0;
+     transform: translateX(-20px);
+  }
+  100% {
+     opacity: 1;
+     transform: translateX(0);
+  }
+}
+
+.afd{animation: fadeInDown 1s ease backwards;}
+@keyframes fadeInDown {
+  0% {
+     opacity: 0;
+     transform: translateY(-20px);
+  }
+  100% {
+     opacity: 1;
+     transform: translateY(0);
+  }
+} 
+
+.af{animation: fadeIn 2s ease backwards;}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+/* slidng animations */
+
+.asr{animation: moveToRight 1s ease backwards;}
+@keyframes moveToRight {
+  0% {
+      opacity: 0;
+      transform: translateX(200px);
+  }
+  100% {
+    opacity: 1;
+      transform: translateX(0px);
+  }
+}
+
+.abl{animation: moveToRight 1s ease backwards;}
+@keyframes bounceInLeft {
+  0% {
+     opacity: 0;
+     transform: translateX(-2000px);
+  }
+  60% {
+     opacity: 1;
+     transform: translateX(30px);
+  }
+  80% {
+     transform: translateX(-10px);
+  }
+  100% {
+     transform: translateX(0);
+  }
+} 
+
+
+.atd{animation:tada 1s ease backwards;}
+@keyframes tada {
+  0% {transform: scale(1);} 
+  10%, 20% {transform: scale(0.9) rotate(-3deg);} 
+  30%, 50%, 70%, 90% {transform: scale(1.1) rotate(3deg);} 
+  40%, 60%, 80% {transform: scale(1.1) rotate(-3deg);} 
+  100% {transform: scale(1) rotate(0);} 
+} 
+
+Select {
+  
+  background-color: white;
+  color: black;
+  padding: 0px;
+  margin-bottom: 0;
+
+}
+
+
+/* button {
+  margin-left: 0px;
+  width: 45px;
+  margin-top: 5px;
+padding: 0px ;
+
+} */
+
+.selct{
+  @media (max-width:700px) {
+    font-size: 9px;
+  }
+  
+  }
+  
+  .btnForBig {
+  
+    @media (min-height:915px) {
+    
+    bottom: 28rem;
+    }
+  }
+
+  input{
+    background-color: white;
+   }

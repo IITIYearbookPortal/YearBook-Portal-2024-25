@@ -1,0 +1,39 @@
+{
+  "name": "yearbook_portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@admin-bro/express": "^3.1.0",
+    "@admin-bro/mongoose": "^1.1.0",
+    "admin-bro": "^4.0.1",
+    "body-parser": "^1.20.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "express-basic-auth": "^1.2.1",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.17.3",
+    "fast-two-sms": "^3.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^4.13.0",
+    "mongoose": "^6.8.4",
+    "nodemailer": "^6.9.1",
+    "tslib": "^2.6.2",
+    "twilio": "^4.8.0"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.22"
+  }
+}

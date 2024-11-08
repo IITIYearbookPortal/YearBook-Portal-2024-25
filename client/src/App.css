@@ -1,0 +1,52 @@
+body {
+    font-family: "Light";
+  }
+  .spinner{
+    width:100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .loader {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    border-top: 4px solid #FFF;
+    border-right: 4px solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+  .loader::after {
+    content: '';  
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border-left: 4px solid #fec80a;
+    border-bottom: 4px solid transparent;
+    animation: rotation 0.5s linear infinite reverse;
+  }
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  } 
+
+.dark-mode {
+  background-color: rgba(0, 0, 0, 0.9); /* Adjust opacity as needed */
+}
+
+
+.dark-mode .exclude-dark-mode {
+  filter: invert(1) hue-rotate(180deg);
+}
