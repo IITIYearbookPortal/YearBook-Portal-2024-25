@@ -13,6 +13,11 @@ module.exports = {
       boxShadow: {
         "3xl": "60px 60px 60px 60px rgba(0, 0, 0, 0.3)",
       },
+      colors: {
+        darkbg: "#222831",
+        lightgreen: "#76ABAE",
+        lightgrey: "#31363F",
+      },
     },
   },
   plugins: [],
