@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Element } from "react-scroll";
 import "./homepage.module.css";
 import Footer from "./footer";
-import { motion } from "framer-motion";
+import { motion,useScroll,useTransform } from "framer-motion";
 
 import { LoginContext } from "../../helpers/Context";
 import { useContext } from "react";
@@ -328,97 +328,192 @@ const Home = () => {
     );
   };
 
+  // const FifthPage = () => {
+  //   return (
+  //     <Element
+  //       name="fifth"
+  //       className="snap-start min-h-screen flex flex-col items-center justify-center   bg-cover relative p-4"
+  //     >
+  //       <motion.h1
+  //         viewport={{ once: true }}
+  //         initial={{ opacity: 0, y: 20 }}
+  //         whileInView={{ opacity: 1, y: 0 }}
+  //         transition={{ duration: 1 }}
+  //         className="text-2xl md:text-3xl   text-center"
+  //       >
+  //         In{" "}
+  //         <span className="text-4xl md:text-5xl">
+  //           20<span className="text-[#d94d3c]">23</span>
+  //         </span>
+  //         , we learnt the importance of
+  //       </motion.h1>
+  //       <br />
+  //       <motion.h1
+  //         viewport={{ once: true }}
+  //         initial={{ opacity: 0, y: 20 }}
+  //         whileInView={{ opacity: 1, y: 0 }}
+  //         transition={{ duration: 1, delay: 1 }}
+  //         className="text-4xl md:text-5xl   text-center "
+  //       >
+  //         CONNECTIONS
+  //       </motion.h1>
+  //       <motion.div
+  //         className="flex flex-col gap-2 absolute -left-10 md:left-32 bottom-0"
+  //         viewport={{ once: true }}
+  //         initial={{ opacity: 0, x: -20, rotate: "135deg" }}
+  //         whileInView={{ opacity: 1, x: 0 }}
+  //         transition={{ duration: 1, delay: 2 }}
+  //       >
+  //         <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
+  //           <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-135deg]">
+  //             <img
+  //               src="/images/homepage/connections/7.jpg"
+  //               className="w-full h-full object-cover rounded-none exclude-dark-mode"
+  //             ></img>
+  //           </div>
+  //         </div>
+  //         <div className="flex flex-row gap-2">
+  //           <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
+  //             <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-135deg]">
+  //               <img
+  //                 src="/images/homepage/connections/1.jpg"
+  //                 className="w-full h-full object-cover rounded-none exclude-dark-mode"
+  //               ></img>
+  //             </div>
+  //           </div>
+  //           <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
+  //             <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-135deg]">
+  //               <img
+  //                 src="/images/homepage/connections/3.jpg"
+  //                 className="w-full h-full object-cover rounded-none exclude-dark-mode"
+  //               ></img>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </motion.div>
+  //       <motion.div
+  //         viewport={{ once: true }}
+  //         initial={{ opacity: 0, x: 20, rotate: "45deg" }}
+  //         whileInView={{ opacity: 1, x: 0 }}
+  //         transition={{ duration: 1, delay: 2 }}
+  //         className="flex gap-2 absolute right-4 md:-right-32 top-32"
+  //       >
+  //         <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
+  //           <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-45deg]">
+  //             <img
+  //               src="/images/homepage/connections/2.jpg"
+  //               className="w-full h-full object-cover rounded-none exclude-dark-mode"
+  //             ></img>
+  //           </div>
+  //         </div>
+  //         <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
+  //           <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-45deg]">
+  //             <img
+  //               src="/images/homepage/connections/5.jpg"
+  //               className="w-full h-full object-cover scale-x-[-1] rounded-none exclude-dark-mode"
+  //             ></img>
+  //           </div>
+  //         </div>
+  //       </motion.div>
+  //     </Element>
+  //   );
+  // };
   const FifthPage = () => {
+    const containerref = useRef(null);
+    const textcontainer = useRef(null);
+    const { scrollYProgress: photoscroll } = useScroll({
+      target: containerref,
+      offset: ["start 0.8", " start 0.1"]
+    });
+    const { scrollYProgress:textscroll } = useScroll({
+      target: textcontainer,
+      offset: ["start 0.6", " start 0.1"]
+    });
+  
+    useEffect(() => {
+      document.documentElement.style.scrollBehavior = 'smooth';
+      return () => {
+        document.documentElement.style.scrollBehavior = 'auto';
+      };
+    }, []);
+  
+    const scale = useTransform(
+      photoscroll,
+      [0, 1],
+      [8, 1]
+    );
+  
+    const opacity = useTransform(
+      textscroll,
+      [0, 1],
+      [0, 1]
+    );
+  
+    const textY = useTransform(
+      textscroll,
+      [0.5, 1],
+      ['80vh', '30vh']
+    );
+  
     return (
       <Element
-        name="fifth"
-        className="snap-start min-h-screen flex flex-col items-center justify-center   bg-cover relative p-4"
-      >
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-2xl md:text-3xl   text-center"
-        >
-          In{" "}
-          <span className="text-4xl md:text-5xl">
-            20<span className="text-[#d94d3c]">23</span>
-          </span>
-          , we learnt the importance of
-        </motion.h1>
-        <br />
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="text-4xl md:text-5xl   text-center "
-        >
-          CONNECTIONS
-        </motion.h1>
+       
+      className=" snap-none  h-[100vh]   w-full flex  items-center justify-center"  >
         <motion.div
-          className="flex flex-col gap-2 absolute -left-10 md:left-32 bottom-0"
-          viewport={{ once: true }}
-          initial={{ opacity: 0, x: -20, rotate: "135deg" }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, delay: 2 }}
-        >
-          <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
-            <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-135deg]">
-              <img
-                src="/images/homepage/connections/7.jpg"
-                className="w-full h-full object-cover rounded-none exclude-dark-mode"
-              ></img>
-            </div>
-          </div>
-          <div className="flex flex-row gap-2">
-            <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
-              <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-135deg]">
-                <img
-                  src="/images/homepage/connections/1.jpg"
-                  className="w-full h-full object-cover rounded-none exclude-dark-mode"
-                ></img>
-              </div>
-            </div>
-            <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
-              <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-135deg]">
-                <img
-                  src="/images/homepage/connections/3.jpg"
-                  className="w-full h-full object-cover rounded-none exclude-dark-mode"
-                ></img>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-        <motion.div
-          viewport={{ once: true }}
-          initial={{ opacity: 0, x: 20, rotate: "45deg" }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, delay: 2 }}
-          className="flex gap-2 absolute right-4 md:-right-32 top-32"
-        >
-          <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
-            <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-45deg]">
-              <img
+        ref={containerref}  className="sticky rounded-xl inset-0 w-4/5 h-4/5 overflow-hidden">
+          <motion.div 
+          
+            className="bg-black absolute flex flex-wrap h-full inset-0 w-full "
+            style={{ scale }}
+          >
+            <img  
+                src="/images/homepage/connections/1.jpg"
+              alt="Background"
+              className="w-1/3 p-2 h-1/2 object-cover"
+            />
+            <img  
                 src="/images/homepage/connections/2.jpg"
-                className="w-full h-full object-cover rounded-none exclude-dark-mode"
-              ></img>
-            </div>
-          </div>
-          <div className="w-32 md:w-48 h-32 md:h-48 border-2 border-black overflow-clip">
-            <div className="w-48 md:w-72 h-48 md:h-72 -ml-8 md:-ml-12 -mt-8 md:-mt-12 rotate-[-45deg]">
-              <img
+              alt="Background"
+              className="w-1/3 p-2 h-1/2 object-cover"
+            />
+            <img  
+                src="/images/homepage/connections/3.jpg"
+              alt="Background"
+              className="w-1/3 p-2 h-1/2 object-cover"
+            />
+            <img  
+                src="/images/homepage/connections/4.jpg"
+              alt="Background"
+              className="w-1/3 p-2 h-1/2 object-cover"
+            />
+            <img    
                 src="/images/homepage/connections/5.jpg"
-                className="w-full h-full object-cover scale-x-[-1] rounded-none exclude-dark-mode"
-              ></img>
-            </div>
-          </div>
+              alt="Background"
+              className="w-1/3 p-2 h-1/2 object-cover"
+            />
+            <img  
+                src="/images/homepage/connections/6.jpg"
+              alt="Background"
+              className="w-1/3 p-2 h-1/2 object-cover"
+            />
+
+            <div className="absolute inset-0 bg-black/50" />
+          </motion.div>
+          
+          <motion.div 
+            className="absolute left-0 right-0"
+            style={{ opacity, y: textY }}
+            
+          >
+            <motion.h1 ref={textcontainer} className="text-white w-full text-6xl md:text-8xl font-bold text-center px-4">
+              Explore The World
+              
+            </motion.h1>
+          </motion.div>
         </motion.div>
       </Element>
     );
   };
-
   const SixthPage = () => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
       const storedThemeMode = localStorage.getItem("themeMode");
@@ -929,7 +1024,9 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
 
   return (
     <>
-      <div className="lg:snap-y snap-none lg:snap-mandatory h-screen w-screen overflow-y-scroll overflow-x-hidden">
+    {/* this div properties causing problem in fifth page animation */}
+      {/* <div className="lg:snap-y snap-none lg:snap-mandatory h-screen w-screen overflow-y-scroll overflow-x-hidden"> */}
+      <div>
         {/* <SoundPlayer/> */}
         <FirstPage />
         <SecondPage />
