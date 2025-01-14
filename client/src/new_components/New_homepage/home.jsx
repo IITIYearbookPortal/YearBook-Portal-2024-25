@@ -14,6 +14,9 @@ import axios from "axios";
 import alumniData from "../Navbar/akumniData.json";
 import jwt_decode from "jwt-decode";
 
+//images
+import bg from "./bg-1.jpg"
+
 const Home = () => {
   // const token = jwt_decode(window.localStorage.getItem("token"))
 
@@ -132,66 +135,115 @@ const Home = () => {
 
   const FirstPage = () => {
     return (
-      <Element
-        name="first"
-        id="hero"
-        className="snap-start relative h-screen w-screen flex flex-col items-center justify-center   bg-cover px-4 md:px-0"
-      >
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="snap-scroll text-3xl md:text-5xl   text-center"
-        >
-          "Change can be scary, but so is staying in the same place" <br />
-        </motion.h1>
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="snap-scroll text-xl md:text-3xl   text-center mt-4 md:mt-8"
-        >
-          - Anonymous
-        </motion.h1>
+      // <Element
+      //   name="first"
+      //   id="hero"
+      //   className="snap-start relative h-screen w-screen flex flex-col items-center justify-center   bg-cover px-4 md:px-0"
+      // >
+      //   <motion.h1
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1 }}
+      //     className="snap-scroll text-3xl md:text-5xl   text-center"
+      //   >
+      //     "Change can be scary, but so is staying in the same place" <br />
+      //   </motion.h1>
+      //   <motion.h1
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 1 }}
+      //     className="snap-scroll text-xl md:text-3xl   text-center mt-4 md:mt-8"
+      //   >
+      //     - Anonymous
+      //   </motion.h1>
 
-        <motion.div
-          className="flex flex-row absolute bottom-6 md:bottom-12"
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 2 }}
-        >
-          <h1 className="text-sm md:text-xl text-center md:text-left">
-            Scroll Down to Continue
-          </h1>
-          <img
-            src="/images/homepage/down_arrow.png"
-            className="w-4 md:w-6 mt-1 h-4 md:h-6 mx-auto md:ml-1 exclude-dark-mode"
-          ></img>
-        </motion.div>
-        <motion.div
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 2 }}
-          className="absolute right-6 md:right-12 bottom-6 md:bottom-12"
-        >
-          {!loggedin && (
-            <a href="#signin">
-              <h1 className="text-sm md:text-xl hover:underline">Skip Intro</h1>
-            </a>
-          )}
-        </motion.div>
-      </Element>
+      //   <motion.div
+      //     className="flex flex-row absolute bottom-6 md:bottom-12"
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 2 }}
+      //   >
+      //     <h1 className="text-sm md:text-xl text-center md:text-left">
+      //       Scroll Down to Continue
+      //     </h1>
+      //     <img
+      //       src="/images/homepage/down_arrow.png"
+      //       className="w-4 md:w-6 mt-1 h-4 md:h-6 mx-auto md:ml-1 exclude-dark-mode"
+      //     ></img>
+      //   </motion.div>
+      //   <motion.div
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 2 }}
+      //     className="absolute right-6 md:right-12 bottom-6 md:bottom-12"
+      //   >
+      //     {!loggedin && (
+      //       <a href="#signin">
+      //         <h1 className="text-sm md:text-xl hover:underline">Skip Intro</h1>
+      //       </a>
+      //     )}
+      //   </motion.div>
+      // </Element>
+
+
+      
+      // new code
+
+      <Element
+      name="first"
+      id="hero"
+      className="snap-start relative h-screen w-screen flex flex-col items-center justify-end bg-cover bg-center bg-no-repeat px-4 md:px-0"
+      style={{
+        backgroundImage: `url(${bg})`, //  background image
+      }}
+    >
+   
+      <div className="absolute inset-0 bg-black bg-opacity-30 z-0" />
+      <motion.div
+        viewport={{ once: true }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        className="absolute bottom-24 left-6 md:bottom-24 md:left-12 text-left z-10"
+      >
+        <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
+          "Change can be scary, but so is staying in the same place"
+        </h1>
+        <h2 className="text-lg md:text-2xl text-white mt-4">- Anonymous</h2>
+      </motion.div>
+    
+      <motion.div
+        viewport={{ once: true }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 1 }}
+        className="absolute right-6 md:right-12 top-6 md:top-12 z-10"
+      >
+        {!loggedin && (
+          <a href="#signin">
+            <h1 className="text-sm md:text-xl text-white hover:underline">
+              Skip Intro
+            </h1>
+          </a>
+        )}
+      </motion.div>
+    </Element>
+    
+
+
+  
+
     );
   };
   const SecondPage = () => {
     return (
       <Element
         name="second"
-        className="snap-start min-h-screen flex flex-col items-center justify-center   bg-cover p-4"
+        className="relative snap-start min-h-screen flex flex-col items-center justify-center   bg-cover p-4"
       >
         <motion.h1
           viewport={{ once: true }}
@@ -927,9 +979,9 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
     );
   };
 
-  return (
+  return ( //lg:snap-y snap-none lg:snap-mandatory
     <>
-      <div className="lg:snap-y snap-none lg:snap-mandatory h-screen w-screen overflow-y-scroll overflow-x-hidden">
+      <div className=" h-screen w-screen overflow-y-scroll overflow-x-hidden">
         {/* <SoundPlayer/> */}
         <FirstPage />
         <SecondPage />
