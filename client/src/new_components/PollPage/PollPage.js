@@ -392,28 +392,19 @@ import styles from "./PollPage.module.css"; // Import CSS Module
 
 const PollPage = () => {
   const [polls, setPolls] = useState([]); // Set to an empty array initially
-  const [loading, setLoading] = useState(true);
-  const { loggedin, profile } = useContext(LoginContext);
+  const { loggedin, profile,loading } = useContext(LoginContext);
   const [selectedPollOption, setSelectedPollOption] = useState(null);
   const [newPoll, setNewPoll] = useState({ question: "", options: ["", ""] });
   const [message, setMessage] = useState("");
   const [failedPollId, setFailedPollId] = useState(null);
   const navigate = useNavigate();
-  console.log("loggedin",loggedin);
-  
 
-  useEffect(() => {
-    // Simulate fetching logged-in state
-    setTimeout(() => {
-      setLoading(false); // Set this to false after checking
-    }, 1000);
-  }, []); 
 
    useEffect(() => {
-  if (!loading && !loggedin) {
-    navigate("/login");
-  }
-}, [loggedin]);
+      if (!loading && !loggedin) {
+        window.location.href = "/login";
+      }
+    });
 
   useEffect(() => {
     // Fetch polls from backend
@@ -425,13 +416,15 @@ const PollPage = () => {
         
         // Assuming the data is in res.data.polls, adjust accordingly
         setPolls(res.data.polls || []); // Ensure polls is always an array
-        setLoading(false);
+       
       })
       .catch((err) => {
         console.error("Error fetching polls:", err);
-        setLoading(false);
+       
       });
   }, []);
+
+ 
 
   if (loading) {
     return <div>Loading polls...</div>;
