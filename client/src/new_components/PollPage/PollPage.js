@@ -399,12 +399,21 @@ const PollPage = () => {
   const [message, setMessage] = useState("");
   const [failedPollId, setFailedPollId] = useState(null);
   const navigate = useNavigate();
+  console.log("loggedin",loggedin);
+  
 
-  //   useEffect(() => {
-  //   if (!loading && !loggedin) {
-  //     navigate("/login");
-  //   }
-  // }, [loggedin, loading, navigate]);
+  useEffect(() => {
+    // Simulate fetching logged-in state
+    setTimeout(() => {
+      setLoading(false); // Set this to false after checking
+    }, 1000);
+  }, []); 
+
+   useEffect(() => {
+  if (!loading && !loggedin) {
+    navigate("/login");
+  }
+}, [loggedin, loading]);
 
   useEffect(() => {
     // Fetch polls from backend
