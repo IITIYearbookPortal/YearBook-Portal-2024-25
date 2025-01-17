@@ -1,0 +1,393 @@
+.pollPage {
+    font-family: Arial, sans-serif;
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 800px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .createPoll,
+  .pollsList {
+    margin-bottom: 40px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+    background-color:rgb(202, 199, 199)
+  }
+  .button:hover {
+    background-color: #0056b3;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 10px;
+    font-size: 16px;
+  }
+  
+  .pollCard {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .pollQuestion {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .buttonWrapper {
+    display: flex;
+    gap: 15px; /* Adjust the space between the buttons */
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .voteButton {
+    padding: 8px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .voteButton:hover {
+    background-color: #218838;
+  }
+  /* PollPage.module.css */
+
+.deleteButton {
+  background-color: #e74c3c; /* Red background color */
+  color: white; /* White text */
+  border: none; /* Remove default border */
+  padding: 8px 16px; /* Padding for better spacing */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Cursor pointer to indicate clickability */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
+ 
+}
+
+.deleteButton:hover {
+  background-color: #c0392b; /* Darker red on hover */
+  transform: scale(1.05); /* Slightly enlarge button on hover */
+}
+
+.deleteButton:focus {
+  outline: none; /* Remove the default focus outline */
+  box-shadow: 0 0 5px 2px rgba(231, 76, 60, 0.6); /* Custom focus box shadow */
+}
+
+.deleteButton:active {
+  background-color: #9b2d2b; /* Darker red when the button is clicked */
+}
+
+.pollOptions {
+  display: flex;
+  flex-wrap: wrap; /* Allows the options to wrap if they don't fit in one row */
+  gap: 20px; /* Adds space between the options */
+  justify-content: space-between; /* Distributes space evenly */
+}
+
+.pollOptions label {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adds space between the radio button and text */
+  flex: 1 1 30%; /* Allows each label to take up 30% of the width, and wrap when necessary */
+}
+
+.pollOptions input {
+  margin-right: 5px; /* Adds a little space between the radio button and the label text */
+}
+
+  
+.pollOption {
+  margin: 5px 0;
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+}
+
+.viewResultsBtn {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  text-decoration: none;
+  color: white;
+  background-color: #4caf50;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.viewResultsBtn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+.viewResultsBtn:active {
+  transform: scale(1);
+}
+
+
+.poll-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.poll-option:hover {
+  background-color: #f1f1f1;
+}
+
+.poll-option-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.poll-option-input {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  transition: background-color 0.3s ease;
+}
+
+.poll-option-input:checked {
+  background-color: #007bff;
+  border-color: #0056b3;
+}
+
+.poll-option-text {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+
+.poll-option-input:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.pollContainer {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.pollBox {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  background: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pollQuestion {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+
+.pollOptions {
+  margin-bottom: 20px;
+  text-align: left; /* Align options to the left */
+}
+.pollOption {
+  margin: 10px 0;
+  display: block;
+}
+
+.pollOptionLabel {
+  font-size: 1em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.pollOptionInput {
+  margin-right: 10px;
+}
+
+.submitButton,
+.toggleButton,
+.backButton {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submitButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.toggleButton {
+  background-color: #6c757d;
+  color: white;
+}
+
+.backButton {
+  background-color: #4caf50;
+  color: white;
+}
+
+.errorMessage {
+  color: red;
+  margin-top: 10px;
+}
+
+.resultsBox {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pollResults {
+  margin-bottom: 20px;
+}
+
+.chartContainer {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.createPoll {
+  margin-bottom: 40px;
+  background-color: #f4f4f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.button {
+  padding: 10px 20px;
+  margin: 10px 5px 0 0;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.pollsContainer {
+  margin-top: 20px;
+}
+.fontsize{
+  font-size: 25px;
+}
+
+.pollCard {
+  padding: 20px;
+  margin-bottom: 20px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pollQuestion {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.primaryButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.primaryButton:hover {
+  background-color: #0056b3;
+}
+
+.dangerButton {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dangerButton:hover {
+  background-color: #cc0000;
+}
