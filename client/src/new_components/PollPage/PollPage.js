@@ -413,7 +413,7 @@ const PollPage = () => {
   if (!loading && !loggedin) {
     navigate("/login");
   }
-}, [loggedin, loading]);
+}, [loggedin]);
 
   useEffect(() => {
     // Fetch polls from backend
