@@ -15,7 +15,7 @@ import alumniData from "../Navbar/akumniData.json";
 import jwt_decode from "jwt-decode";
 
 //images
-import bg from "./bg-1.jpg"
+import bg from "./bg-1.jpg";
 
 const Home = () => {
   // const token = jwt_decode(window.localStorage.getItem("token"))
@@ -244,6 +244,11 @@ const Home = () => {
       <Element
         name="second"
         className="relative snap-start min-h-screen flex flex-col items-center justify-center   bg-cover p-4"
+        style={{
+          backgroundImage: `url(/images/global/bgl.jpg)`, //  background image
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
       >
         <motion.h1
           viewport={{ once: true }}
@@ -281,7 +286,12 @@ const Home = () => {
       <Element
         name="third"
         className="snap-start min-h-screen flex flex-col items-center justify-center relative   bg-cover p-4"
-      >
+        style={{
+          backgroundImage: `url(/images/global/bgd.jpg)`, //  background image
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+     >
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
@@ -342,7 +352,12 @@ const Home = () => {
       <Element
         name="fourth"
         className="snap-start h-screen flex flex-col items-center justify-center   bg-cover relative"
-      >
+        style={{
+          backgroundImage: `url(/images/global/bgl.jpg)`, //  background image
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+     >
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
@@ -509,8 +524,13 @@ const Home = () => {
   
     return (
       <Element
-       
-      className=" snap-none  h-[100vh]   w-full flex  items-center justify-center"  >
+      className=" snap-none  h-[100vh]   w-full flex  items-center justify-center"  
+      style={{
+        backgroundImage: `url(/images/global/bgd.jpg)`, //  background image
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+      }}
+      >
         <motion.div
         ref={containerref}  className="sticky rounded-xl inset-0 w-4/5 h-4/5 overflow-hidden">
           <motion.div 
@@ -576,6 +596,11 @@ const Home = () => {
       <Element
         name="sixth"
         className="snap-start relative h-screen flex flex-col items-center justify-center bg-cover"
+        style={{
+          backgroundImage: `url(/images/global/bgl.jpg)`, //  background image
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
       >
         <div className="-mt-32 md:mt-0 text-center">
           <motion.h1
@@ -1026,6 +1051,11 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
         name="seventh"
         id="signin"
         className="snap-start relative h-screen flex flex-col items-center justify-center   bg-cover"
+        style={{
+          backgroundImage: `url(/images/global/bgd.jpg)`, //  background image
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
       >
         <motion.h1
           viewport={{ once: true }}
