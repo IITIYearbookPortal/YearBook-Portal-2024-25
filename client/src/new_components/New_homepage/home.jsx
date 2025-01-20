@@ -423,11 +423,11 @@ const Home = () => {
     const textcontainer = useRef(null);
     const { scrollYProgress: photoscroll } = useScroll({
       target: containerref,
-      offset: ["start 0.8", " start 0.1"]
+      offset: ["start 0.9", " start -0.3"]
     });
     const { scrollYProgress:textscroll } = useScroll({
       target: textcontainer,
-      offset: ["start 0.6", " start 0.1"]
+      offset: ["start 1", "0 0"]
     });
   
     useEffect(() => {
@@ -440,7 +440,7 @@ const Home = () => {
     const scale = useTransform(
       photoscroll,
       [0, 1],
-      [8, 1]
+      [1.8, 1]
     );
   
     const opacity = useTransform(
@@ -451,58 +451,93 @@ const Home = () => {
   
     const textY = useTransform(
       textscroll,
-      [0.5, 1],
-      ['80vh', '30vh']
+      [0, 1],
+      ['-20vh', '20vh']
     );
   
     return (
       <Element
        
-      className=" snap-none  h-[100vh]   w-full flex  items-center justify-center"  >
+      className=" snap-none h-[150vh] w-full flex  items-center justify-center"  >
         <motion.div
-        ref={containerref}  className="sticky rounded-xl inset-0 w-4/5 h-4/5 overflow-hidden">
+        ref={containerref}  className="sticky rounded-xl  inset-0 w-full h-full overflow-hidden ">
           <motion.div 
           
-            className="bg-black absolute flex flex-wrap h-full inset-0 w-full "
-            style={{ scale }}
+            className="bg-black rounded-xl absolute flex flex-wrap h-full inset-0  "
+            style={{scale}}
           >
             <img  
                 src="/images/homepage/connections/1.jpg"
               alt="Background"
-              className="w-1/3 p-2 h-1/2 object-cover"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img  
                 src="/images/homepage/connections/2.jpg"
               alt="Background"
-              className="w-1/3 p-2 h-1/2 object-cover"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img  
                 src="/images/homepage/connections/3.jpg"
               alt="Background"
-              className="w-1/3 p-2 h-1/2 object-cover"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img  
+                src="/images/homepage/connections/1.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img  
                 src="/images/homepage/connections/4.jpg"
               alt="Background"
-              className="w-1/3 p-2 h-1/2 object-cover"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img    
+            <img  
+                src="/images/homepage/connections/1.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img  
                 src="/images/homepage/connections/5.jpg"
               alt="Background"
-              className="w-1/3 p-2 h-1/2 object-cover"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img  
+                src="/images/homepage/connections/1.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img  
                 src="/images/homepage/connections/6.jpg"
               alt="Background"
-              className="w-1/3 p-2 h-1/2 object-cover"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
             />
+            <img  
+                src="/images/homepage/connections/1.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img  
+                src="/images/homepage/connections/2.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img  
+                src="/images/homepage/connections/1.jpg"
+              alt="Background"
+              className="w-1/4 p-1 h-1/3 object-cover"
+            />
+          
+            
+            
+           
+
 
             <div className="absolute inset-0 bg-black/50" />
           </motion.div>
           
           <motion.div 
-            className="absolute left-0 right-0"
-            style={{ opacity, y: textY }}
+            className="absolute left-0 top-1/2 right-0"
+            style={{ opacity,y:textY}}
             
           >
             <motion.h1 ref={textcontainer} className="text-white w-full text-6xl md:text-8xl font-bold text-center px-4">
@@ -514,6 +549,7 @@ const Home = () => {
       </Element>
     );
   };
+  
   const SixthPage = () => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
       const storedThemeMode = localStorage.getItem("themeMode");
