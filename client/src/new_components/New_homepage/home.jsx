@@ -1066,9 +1066,9 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
         {/* <SoundPlayer/> */}
         <FirstPage />
         <SecondPage />
-        <ThirdPage />
-        <FourthPage />
         <FifthPage />
+        <FourthPage />
+        <ThirdPage />
         <SixthPage />
         <div ref={loginComponentRef}>
           {isStudent && !loggedin && <SeventhPage />}

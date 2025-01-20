@@ -9,14 +9,19 @@ module.exports = {
         "nav-light": "url('../public/images/global/bg-nav-light.png')",
         "nav-dark": "url('../public/images/global/bg-nav-dark.png')",
         "bg-dark": "url('../public/images/global/bg-dark.webp')",
+        "bannerImg": "url('../public/images/global/bg-1.jpg')",
+        "blackOverlay": "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%)",
+        "greenOverlay": "linear-gradient(to right, #EEEEEE 0%, #76ABAE 100%)",
       },
       boxShadow: {
         "3xl": "60px 60px 60px 60px rgba(0, 0, 0, 0.3)",
       },
       colors: {
         darkbg: "#222831",
+        
         lightgreen: "#76ABAE",
-        lightgrey: "#31363F",
+        light: "#EEEEEE",
+        
       },
     },
   },
