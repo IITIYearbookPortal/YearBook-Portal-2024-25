@@ -7,6 +7,7 @@ import { LoginContext } from "../../helpers/Context";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./PollPage.module.css"; // Import CSS Module
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import { Plus} from 'lucide-react';
 
@@ -156,14 +157,17 @@ const PollPage = () => {
               <h2 className={styles.pollQuestion}>{poll.question}</h2>
               <div className={styles.buttonGroup}>
                 <Link to={`/polls/results/${poll._id}`}>
-                  <button className={styles.primaryButton}>Do Polling</button>
+                  <button className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 animate-pulse">Do Polling</button>
                 </Link>
-                <button
-                  onClick={() => handleDeletePoll(poll._id)}
-                  className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
-                >
-                  Delete Poll
-                </button>
+
+                <button class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 hover:opacity-80 hover:scale-95 transform transition-all duration-300 ease-in-out"
+                onClick={() => handleDeletePoll(poll._id)}>
+  Delete
+</button>
+
+
+                
+
               </div>
             </div>
           ))}
