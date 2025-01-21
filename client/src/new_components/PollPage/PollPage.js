@@ -7,8 +7,8 @@ import { LoginContext } from "../../helpers/Context";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./PollPage.module.css"; // Import CSS Module
-import {Poll_Page1} from "./Poll_Page1" ;
-import { Plus, Trash2, Share2 } from 'lucide-react';
+
+import { Plus} from 'lucide-react';
 
 const PollPage = () => {
   const [polls, setPolls] = useState([]); // Set to an empty array initially
