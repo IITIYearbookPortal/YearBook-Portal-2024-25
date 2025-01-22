@@ -14,6 +14,9 @@ import axios from "axios";
 import alumniData from "../Navbar/akumniData.json";
 import jwt_decode from "jwt-decode";
 
+//images
+import bg from "./bg-1.jpg";
+
 const Home = () => {
   // const token = jwt_decode(window.localStorage.getItem("token"))
 
@@ -132,38 +135,149 @@ const Home = () => {
 
   const FirstPage = () => {
     return (
-      <Element
-        name="first"
-        id="hero"
-        className="snap-start relative h-screen w-screen flex flex-col items-center justify-center   bg-cover px-4 md:px-0"
-      >
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="snap-scroll text-3xl md:text-5xl   text-center"
-        >
-          "Change can be scary, but so is staying in the same place" <br />
+      // <Element
+      //   name="first"
+      //   id="hero"
+      //   className="snap-start relative h-screen w-screen flex flex-col items-center justify-center   bg-cover px-4 md:px-0"
+      // >
+      //   <motion.h1
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1 }}
+      //     className="snap-scroll text-3xl md:text-5xl   text-center"
+      //   >
+      //     "Change can be scary, but so is staying in the same place" <br />
+      //   </motion.h1>
+      //   <motion.h1
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 1 }}
+      //     className="snap-scroll text-xl md:text-3xl   text-center mt-4 md:mt-8"
+      //   >
+      //     - Anonymous
+      //   </motion.h1>
+
+      //   <motion.div
+      //     className="flex flex-row absolute bottom-6 md:bottom-12"
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 2 }}
+      //   >
+      //     <h1 className="text-sm md:text-xl text-center md:text-left">
+      //       Scroll Down to Continue
+      //     </h1>
+      //     <img
+      //       src="/images/homepage/down_arrow.png"
+      //       className="w-4 md:w-6 mt-1 h-4 md:h-6 mx-auto md:ml-1 exclude-dark-mode"
+      //     ></img>
+      //   </motion.div>
+      //   <motion.div
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 2 }}
+      //     className="absolute right-6 md:right-12 bottom-6 md:bottom-12"
+      //   >
+      //     {!loggedin && (
+      //       <a href="#signin">
+      //         <h1 className="text-sm md:text-xl hover:underline">Skip Intro</h1>
+      //       </a>
+      //     )}
+      //   </motion.div>
+      // </Element>
+
+
+      
+      // new code
+
+    //   <Element
+    //   name="first"
+    //   id="hero"
+    //   className="snap-start relative h-screen w-screen flex flex-col items-center justify-end bg-cover bg-center bg-no-repeat px-4 md:px-0"
+    //   style={{
+    //     backgroundImage: `url(${bg})`, //  background image
+    //   }}
+    // >
+   
+    //   <div className="absolute inset-0 bg-black bg-opacity-30 z-0" />
+    //   <motion.div
+    //     viewport={{ once: true }}
+    //     initial={{ opacity: 0, y: 20 }}
+    //     whileInView={{ opacity: 1, y: 0 }}
+    //     transition={{ duration: 1 }}
+    //     className="absolute bottom-24 left-6 md:bottom-24 md:left-12 text-left z-10"
+    //   >
+    //     <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
+    //       "Change can be scary, but so is staying in the same place"
+    //     </h1>
+    //     <h2 className="text-lg md:text-2xl text-white mt-4">- Anonymous</h2>
+    //   </motion.div>
+    
+    //   <motion.div
+    //     viewport={{ once: true }}
+    //     initial={{ opacity: 0, y: 20 }}
+    //     whileInView={{ opacity: 1, y: 0 }}
+    //     transition={{ duration: 1, delay: 1 }}
+    //     className="absolute right-6 md:right-12 top-6 md:top-12 z-10"
+    //   >
+    //     {!loggedin && (
+    //       <a href="#signin">
+    //         <h1 className="text-sm md:text-xl text-white hover:underline">
+    //           Skip Intro
+    //         </h1>
+    //       </a>
+    //     )}
+    //   </motion.div>
+    // </Element>
+
+///newww
+       
+<Element
+      name="first"
+      id="hero"
+      className="bg-bannerImg bg-no-repeat bg-cover bg-bottom">
+        <div 
+          className="w-full h-screen flex items-end bg-blackOverlay">
+            <div className="container mx-auto mb-60 px-16">
+            <motion.h1
+              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="snap-scroll text-3xl md:text-5xl text-white"
+            >
+          "Change can be scary, " <br />
+          </motion.h1>
+          <motion.h1
+              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className=" snap-scroll text-3xl md:text-5xl mt-4 text-white"
+            >
+          "but so is staying in the same place" <br />
         </motion.h1>
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1 }}
-          className="snap-scroll text-xl md:text-3xl   text-center mt-4 md:mt-8"
+          className="snap-scroll text-xl md:text-3xl text-white mt-4 md:mt-8"
         >
           - Anonymous
         </motion.h1>
 
         <motion.div
-          className="flex flex-row absolute bottom-6 md:bottom-12"
+          className="flex flex-row items-center justify-center  absolute bottom-12  md:bottom-12"
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 2 }}
         >
-          <h1 className="text-sm md:text-xl text-center md:text-left">
+          <h1 className="text-sm md:text-xl text-white text-center md:text-left">
             Scroll Down to Continue
           </h1>
           <img
@@ -180,10 +294,12 @@ const Home = () => {
         >
           {!loggedin && (
             <a href="#signin">
-              <h1 className="text-sm md:text-xl hover:underline">Skip Intro</h1>
+              <h1 className="text-sm md:text-xl text-white hover:underline">Skip Intro</h1>
             </a>
           )}
         </motion.div>
+        </div>
+        </div>
       </Element>
     );
   };
@@ -191,35 +307,75 @@ const Home = () => {
     return (
       <Element
         name="second"
-        className="snap-start min-h-screen flex flex-col items-center justify-center   bg-cover p-4"
+        className="relative bg-greenOverlay snap-start min-h-screen justify-center bg-cover p-4"
+        // style={{
+        //   backgroundImage: `url(/images/global/dark1.png)`, //  background image
+        //   backgroundSize: "cover",
+        //   backgroundRepeat: "no-repeat",
+        // }}
       >
+      <div 
+          className="w-full h-screen flex items-end ">
+           <div className="container mx-auto mb-60 px-4 ml-20">
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-xl md:text-3xl   text-center"
+          className=" text-6xl text-left ml-12 "
         >
-          "We are sad to see you go. <br />
+        
+          "Relive the good times, 
+          
+           <br />
         </motion.h1>
+        
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-xl md:text-3xl   text-center"
+          className="text-6xl text-left mt-4 px-20 ml-12"
         >
-          but the best thing to do is remember the past <br />
+          one cherished comment at a time" <br />
         </motion.h1>
+        <div 
+          className="container mx-auto max-w-3xl ml-10  ">
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1 }}
-          className="text-xl md:text-3xl   text-center"
+          className="text-2xl text-centre mt-10 px-10 "
         >
-          and <span className="text-3xl md:text-5xl">MOVE</span> on, right?"
+          This is your space to capture and celebrate the memories that made your college journey special. From heartfelt farewells to funny moments, every comment holds a piece of your story. Relive the laughter, friendships, and milestones that shaped these unforgettable years.
         </motion.h1>
+        <motion.img
+          viewport={{ once: false }}
+          initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
+          transition={{ duration: 1, delay: 1 }}
+          src="/images/homepage/24-yearbook.png"
+          alt=""
+          className="absolute right-80 top-40 w-48 h-48 exclude-dark-mode"
+        />
+        <motion.img
+          viewport={{ once: false }}
+          initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
+          transition={{ duration: 1, delay: 1 }}
+          src="/images/homepage/24-yearbook.png"
+          alt=""
+          className="absolute right-20 bottom-36 w-48 h-48 exclude-dark-mode"
+        />
+        </div>
+        
+        
+        </div>
+        
+        </div>
+        
+    
       </Element>
     );
   };
@@ -228,8 +384,13 @@ const Home = () => {
     return (
       <Element
         name="third"
-        className="snap-start min-h-screen flex flex-col items-center justify-center relative   bg-cover p-4"
-      >
+        className="snap-start bg-darkbg min-h-screen flex flex-col items-center justify-center relative   bg-cover p-4"
+        // style={{
+        //   backgroundImage: `url(/images/global/dark3.png)`, //  background image
+        //   backgroundSize: "cover",
+        //   backgroundRepeat: "no-repeat",
+        // }}
+     >
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
@@ -289,8 +450,13 @@ const Home = () => {
     return (
       <Element
         name="fourth"
-        className="snap-start h-screen flex flex-col items-center justify-center   bg-cover relative"
-      >
+        className="snap-start bg-lightgreen h-screen flex flex-col items-center justify-center   bg-cover relative"
+        // style={{
+        //   backgroundImage: `url(/images/global/dark2.png)`, //  background image
+        //   backgroundSize: "cover",
+        //   backgroundRepeat: "no-repeat",
+        // }}
+     >
         <motion.h1
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
@@ -560,6 +726,11 @@ const Home = () => {
       <Element
         name="sixth"
         className="snap-start relative h-screen flex flex-col items-center justify-center bg-cover"
+        style={{
+          backgroundImage: `url(/images/global/bgl.jpg)`, //  background image
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
       >
         <div className="-mt-32 md:mt-0 text-center">
           <motion.h1
@@ -1010,6 +1181,11 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
         name="seventh"
         id="signin"
         className="snap-start relative h-screen flex flex-col items-center justify-center   bg-cover"
+        style={{
+          backgroundImage: `url(/images/global/bgd.jpg)`, //  background image
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
       >
         <motion.h1
           viewport={{ once: true }}
@@ -1058,7 +1234,7 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
     );
   };
 
-  return (
+  return ( //lg:snap-y snap-none lg:snap-mandatory
     <>
     {/* this div properties causing problem in fifth page animation */}
       {/* <div className="lg:snap-y snap-none lg:snap-mandatory h-screen w-screen overflow-y-scroll overflow-x-hidden"> */}
@@ -1066,9 +1242,9 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
         {/* <SoundPlayer/> */}
         <FirstPage />
         <SecondPage />
-        <FifthPage />
-        <FourthPage />
         <ThirdPage />
+        <FourthPage />
+        <FifthPage />
         <SixthPage />
         <div ref={loginComponentRef}>
           {isStudent && !loggedin && <SeventhPage />}
