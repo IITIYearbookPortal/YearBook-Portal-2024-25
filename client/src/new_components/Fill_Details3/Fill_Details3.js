@@ -812,7 +812,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 5
-              ? " h-screen w-screen   flex justify-center items-center text-1xl relative  border-b-2 "
+              ? " h-screen w-screen  flex justify-center items-center text-1xl relative  border-b-2 bg-[#222831] text-white "
               : "hidden"
           }
         >
@@ -835,7 +835,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
           <img
             src={arrow}
-            class="w-[95px] h-[62px] top-[372px] right-[115px] md:w-48 md:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl "
+            class="w-[95px] h-[62px] top-[372px] right-[115px] md:w-48 md:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl text-white  filter invert"
           ></img>
 
           <input
@@ -873,7 +873,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
           <div class="mt-52 md:mt-36 lg:mt-80 lg:mr-[450px] xl:mt-80 xl:mr-[350px]">
             {upload && (
-              <h3 style={{ color: `${isDarkMode ? "white" : "black"}` }}>
+              <h3 style={{ color: `${isDarkMode ? "white" : "white"}` }}>
                 {wait && "Wait... while image is uploading"}
                 {imageUploaded && "Image Uploaded"}
               </h3>
@@ -906,8 +906,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             {" "}
             <img
               src={Abtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : "bg-white"
+              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 filter invert afr ${
+                isDarkMode ? "bg-gray-400" : ""
               }`}
             />{" "}
           </button>
@@ -918,7 +918,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 6
-              ? " h-[218vh]  md:h-[105vh]  w-screen   flex flex-row md:justify-center md:items-center text-1xl relative  border-b-2  "
+              ? " h-[218vh]  md:h-[105vh]  w-screen   flex flex-row md:justify-center md:items-center text-1xl relative  border-b-2 bg-[#222831] text-white  "
               : "hidden"
           }
         >
@@ -1073,8 +1073,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             {" "}
             <img
               src={Abtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : "bg-white"
+              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert ${
+                isDarkMode ? "bg-gray-400" : ""
               }`}
             />{" "}
           </button>
@@ -1084,7 +1084,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 7
-              ? " h-screen w-screen   flex justify-center items-center  relative  border-b-2  "
+              ? " h-screen w-screen bg-[#222831] text-white flex justify-center items-center  relative  border-b-2  "
               : "hidden"
           }
         >
@@ -1118,7 +1118,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               color:
                 seconds > 0 || minutes > 0
                   ? `${isDarkMode ? "gray" : "#DFE3E8"}`
-                  : `${isDarkMode ? "white" : "#000000"}`,
+                  : `${isDarkMode ? "#222831" : "white"}`,
             }}
             onClick={() => {
               resendOTP();
@@ -1174,7 +1174,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 8
-              ? " h-screen w-screen   flex justify-center items-center text-1xl relative  border-b-2 "
+              ? " h-screen w-screen bg-[#222831] text-white flex justify-center items-center text-1xl relative  border-b-2 "
               : "hidden"
           }
         >
@@ -1203,7 +1203,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               onClick={() => {
                 resendMail();
               }}
-              class="border-2 px-6 py-1  border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
+              class="border-2 px-6 py-1 border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
             >
               Resend Mail
             </button>

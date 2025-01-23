@@ -81,12 +81,14 @@ app.use(
 );
 
 mongoose
-  .connect(mongodbLink, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  .connect(mongodbLink)
+  .then(() => {
+    console.log("Connected to MongoDB successfully.");
   })
-  .then(() => {})
-  .catch((err) => {});
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
+
 
 const AdminBroOptions = {
   resources: [User, Comments],
