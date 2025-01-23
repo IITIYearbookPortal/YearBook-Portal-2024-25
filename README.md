@@ -1,7 +1,7 @@
 # Alumni-Cell-Yearbook-Portal 
 
 ---
-
+updated
 Welcome to the Yearbook Portal, a full-stack application specifically designed and developed for graduating students at IIT Indore. This portal allows the IITI community to create profiles, authenticate users through a two-step verification process, and enable interactions through comments on graduating students' profiles.
 
 ---
