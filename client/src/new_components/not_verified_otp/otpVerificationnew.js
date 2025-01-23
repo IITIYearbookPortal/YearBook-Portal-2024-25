@@ -289,7 +289,7 @@ function Fill1(props) {
             <img
               src={phoneimg}
               alt="phone"
-              class=" h-[90px] w-[90px] lg:h-40 lg:w-40"
+              class=" h-[90px] w-[90px] lg:h-40 lg:w-40 filter invert"
             />
           </div>
 

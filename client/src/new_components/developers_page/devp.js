@@ -29,7 +29,10 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
 
             <div
               class="absolute inset-0 flex flex-col items-center gap-6 text-white"
-              style={{ top: "10%", animation: "3s ease-out 0s 1 normal forwards running slideUp" }}
+              style={{
+                top: "10%",
+                animation: "3s ease-out 0s 1 normal forwards running slideUp",
+              }}
             >
               <img
                 src={img2}
@@ -42,13 +45,14 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
                 }}
               />
 
-              <p
-                className={`inline max-w-lg text-3xl font-bold  sm:text-5xl md:mx-auto`}
-              >
+              <p className="inline max-w-lg text-base font-bold sm:text-3xl md:text-5xl md:mx-auto text-center">
                 Meet The Team
               </p>
-              <p class="inline max-w-lg text-2xl font-bold sm:text-xl md:mx-auto text-center">Our Team has put in a lot of effort into making this website a tribute worthy of the legacy that our seniors leave for us. Here are the members who made it happen:</p>
-
+              <p className="inline max-w-lg text-xs font-medium sm:text-lg md:text-xl md:mx-auto text-center mt-4">
+                Our Team has put in a lot of effort into making this website a
+                tribute worthy of the legacy that our seniors leave for us. Here
+                are the members who made it happen:
+              </p>
 
               <style>
                 {`
@@ -79,7 +83,7 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
                     {/* <img class="object-cover w-full h-72 xl:h-80" src={val.image}  alt="Team Member Name"/> */}
 
                     <img
-                      class="object-cover transition-transform duration-500 ease-in-out transform group-hover:scale-110  w-full h-72 xl:h-80 transition-transform duration-500 ease-in-out transform hover:scale-130"
+                      class="object-cover transition-transform duration-500 ease-in-out transform group-hover:scale-110  w-full h-60 sm:h-56 md:h-64 lg:h-72 xl:h-80 transition-transform duration-500 ease-in-out transform hover:scale-130"
                       src={val.image}
                       alt="Team Member"
                     />
@@ -156,9 +160,9 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
             <div class="flex flex-row flex-wrap justify-center items-center w-full  px-1">
               {Coredata.map((val) => {
                 return (
-                  <div class="scale-110 border-[10px] border-[#76ABAE] rounded-full relative w-[330px] overflow-hidden rounded-3xl shadow-lg group bg-white m-8">
+                  <div class="scale-110 border-[10px] border-[#76ABAE] rounded-full relative w-[330px] sm:w-[300px] md:w-[330px] lg:w-[350px] overflow-hidden rounded-3xl shadow-lg group bg-white m-8">
                     <img
-                      class="object-cover transition-transform duration-500 ease-in-out transform group-hover:scale-110 w-full h-72 xl:h-80"
+                      class="object-cover transition-transform duration-500 ease-in-out transform group-hover:scale-110 w-full h-60 sm:h-56 md:h-64 lg:h-72 xl:h-80"
                       src={val.image}
                       alt="Team Member Name"
                     />
@@ -233,9 +237,9 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
             <div class="flex flex-row flex-wrap justify-center items-center w-full  px-1">
               {Voldata.map((val) => {
                 return (
-                  <div class="scale-95 border-[10px] border-[#76ABAE] rounded-full relative w-[330px] overflow-hidden shadow-lg group bg-white m-8">
+                  <div class="scale-95 border-[10px] border-[#76ABAE] rounded-full relative w-[250px] sm:w-[250px] md:w-[330px] lg:w-[350px] overflow-hidden shadow-lg group bg-white m-8">
                     <img
-                      class="object-cover transition-transform duration-500 ease-in-out transform group-hover:scale-110 w-full h-72 xl:h-80"
+                      class="object-cover transition-transform duration-500 ease-in-out transform group-hover:scale-110 w-full h-60 sm:h-56 md:h-64 lg:h-72 xl:h-80"
                       src={val.image}
                       alt="Team Member Name"
                     />
