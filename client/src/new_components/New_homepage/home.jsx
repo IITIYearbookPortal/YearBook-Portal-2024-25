@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Element } from "react-scroll";
 import "./homepage.module.css";
 import Footer from "./footer";
-import { motion,useScroll,useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 import { LoginContext } from "../../helpers/Context";
 import { useContext } from "react";
@@ -157,20 +157,21 @@ const Home = () => {
         </motion.h1>
 
         <motion.div
-          className="flex flex-row absolute bottom-6 md:bottom-12"
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 2 }}
-        >
-          <h1 className="text-sm md:text-xl text-center md:text-left">
-            Scroll Down to Continue
-          </h1>
-          <img
-            src="/images/homepage/down_arrow.png"
-            className="w-4 md:w-6 mt-1 h-4 md:h-6 mx-auto md:ml-1 exclude-dark-mode"
-          ></img>
-        </motion.div>
+  className="flex flex-row absolute bottom-6 md:bottom-12 left-4 md:left-auto items-center justify-start"
+  viewport={{ once: true }}
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: 1, delay: 2 }}
+>
+  <h1 className="text-sm md:text-xl text-left">
+    Scroll Down to Continue
+  </h1>
+  <img
+    src="/images/homepage/down_arrow.png"
+    className="w-4 md:w-6 mt-1 h-4 md:h-6 ml-1 exclude-dark-mode"
+  />
+</motion.div>
+
         <motion.div
           viewport={{ once: true }}
           initial={{ opacity: 0, y: 20 }}
@@ -425,131 +426,131 @@ const Home = () => {
       target: containerref,
       offset: ["start 0.9", " start -0.3"]
     });
-    const { scrollYProgress:textscroll } = useScroll({
+    const { scrollYProgress: textscroll } = useScroll({
       target: textcontainer,
       offset: ["start 1", "0 0"]
     });
-  
+
     useEffect(() => {
       document.documentElement.style.scrollBehavior = 'smooth';
       return () => {
         document.documentElement.style.scrollBehavior = 'auto';
       };
     }, []);
-  
+
     const scale = useTransform(
       photoscroll,
       [0, 1],
       [1.8, 1]
     );
-  
+
     const opacity = useTransform(
       textscroll,
       [0, 1],
       [0, 1]
     );
-  
+
     const textY = useTransform(
       textscroll,
       [0, 1],
       ['-20vh', '20vh']
     );
-  
+
     return (
       <Element
-       
-      className=" snap-none h-[150vh] w-full flex  items-center justify-center"  >
+
+        className=" snap-none h-[150vh] w-full flex  items-center justify-center"  >
         <motion.div
-        ref={containerref}  className="sticky rounded-xl  inset-0 w-full h-full overflow-hidden ">
-          <motion.div 
-          
+          ref={containerref} className="sticky rounded-xl  inset-0 w-full h-full overflow-hidden ">
+          <motion.div
+
             className="bg-black rounded-xl absolute flex flex-wrap h-full inset-0  "
-            style={{scale}}
+            style={{ scale }}
           >
-            <img  
-                src="/images/homepage/connections/1.jpg"
+            <img
+              src="/images/homepage/connections/1.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/2.jpg"
+            <img
+              src="/images/homepage/connections/2.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/3.jpg"
+            <img
+              src="/images/homepage/connections/3.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/1.jpg"
+            <img
+              src="/images/homepage/connections/1.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/4.jpg"
+            <img
+              src="/images/homepage/connections/4.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/1.jpg"
+            <img
+              src="/images/homepage/connections/1.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/5.jpg"
+            <img
+              src="/images/homepage/connections/5.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/1.jpg"
+            <img
+              src="/images/homepage/connections/1.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/6.jpg"
+            <img
+              src="/images/homepage/connections/6.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/1.jpg"
+            <img
+              src="/images/homepage/connections/1.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/2.jpg"
+            <img
+              src="/images/homepage/connections/2.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
-            <img  
-                src="/images/homepage/connections/1.jpg"
+            <img
+              src="/images/homepage/connections/1.jpg"
               alt="Background"
               className="w-1/4 p-1 h-1/3 object-cover"
             />
-          
-            
-            
-           
+
+
+
+
 
 
             <div className="absolute inset-0 bg-black/50" />
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className="absolute left-0 top-1/2 right-0"
-            style={{ opacity,y:textY}}
-            
+            style={{ opacity, y: textY }}
+
           >
             <motion.h1 ref={textcontainer} className="text-white w-full text-6xl md:text-8xl font-bold text-center px-4">
               Explore The World
-              
+
             </motion.h1>
           </motion.div>
         </motion.div>
       </Element>
     );
   };
-  
+
   const SixthPage = () => {
     const [isDarkMode, setIsDarkMode] = useState(() => {
       const storedThemeMode = localStorage.getItem("themeMode");
@@ -1006,61 +1007,133 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
 
   const SeventhPage = (props) => {
     return (
-      <Element
-        name="seventh"
-        id="signin"
-        className="snap-start relative h-screen flex flex-col items-center justify-center   bg-cover"
-      >
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-3xl   text-center relative"
-        >
-          One of us? Let us know by{" "}
-          <span className="text-[#d94d3c]"> Signing in </span>
-        </motion.h1>
-        <motion.div
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="mt-8 w-48 h-48"
-        >
-          <div id="google-login"></div>
-        </motion.div>
-        <motion.div
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 2 }}
-          className="absolute bottom-8 flex flex-row items-center justify-center text-center"
-        >
-          <h1 className="mb-2">Or scroll down to explore different paths</h1>
-          <img
-            src="/images/homepage/down_arrow.png"
-            className="w-6 h-6 -mt-2 exclude-dark-mode"
-          ></img>
-        </motion.div>
+      // <Element
+      //   name="seventh"
+      //   id="signin"
+      //   className="snap-start relative h-screen flex flex-col items-center justify-center   bg-cover"
+      // >
+      //   <motion.h1
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1 }}
+      //     className="text-3xl   text-center relative"
+      //   >
+      //     One of us? Let us know by{" "}
+      //     <span className="text-[#d94d3c]"> Signing in </span>
+      //   </motion.h1>
+      //   <motion.div
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 1 }}
+      //     className="mt-8 w-48 h-48"
+      //   >
+      //     <div id="google-login"></div>
+      //   </motion.div>
+      //   <motion.div
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 2 }}
+      //     className="absolute bottom-8 flex flex-row items-center justify-center text-center"
+      //   >
+      //     <h1 className="mb-2">Or scroll down to explore different paths</h1>
+      //     <img
+      //       src="/images/homepage/down_arrow.png"
+      //       className="w-6 h-6 -mt-2 exclude-dark-mode"
+      //     ></img>
+      //   </motion.div>
 
-        <motion.a
-          href="#hero"
-          className="absolute md:bottom-8 md:right-8 right-4 top-8"
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 2 }}
-        >
-          <h1 className="hover:underline">View the intro again</h1>
-        </motion.a>
-      </Element>
+      //   <motion.a
+      //     href="#hero"
+      //     className="absolute md:bottom-8 md:right-8 right-4 top-8"
+      //     viewport={{ once: true }}
+      //     initial={{ opacity: 0, y: 20 }}
+      //     whileInView={{ opacity: 1, y: 0 }}
+      //     transition={{ duration: 1, delay: 2 }}
+      //   >
+      //     <h1 className="hover:underline">View the intro again</h1>
+      //   </motion.a>
+      // </Element>
+      <Element id="signin" className="snap-start relative h-screen flex items-center justify-center bg-greenOverlay">
+  <div className="container mx-auto px-4 md:px-8 lg:px-16 flex flex-col md:flex-row items-center justify-between">
+    <motion.div
+      className="w-full md:w-5/12 mb-8 md:mb-0"
+      initial={{ opacity: 0, x: -50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <div className="relative w-full h-[500px] md:h-[500px] rounded-2xl overflow-hidden shadow-xl">
+        <img 
+          src="/images/homepage/sunset.jpg" 
+          alt="Sign In Illustration" 
+          className="absolute inset-0 w-full h-full object-cover" 
+        />
+      </div>
+    </motion.div>
+
+    <motion.div
+      className="w-full md:w-6/12 flex flex-col items-center"
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <motion.h1
+        className="text-3xl md:text-4xl font-bold text-center mb-8 flex flex-col items-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+      >
+        One of us? Let us know by
+        <span className="text-[#d94d3c] mt-2">Signing in</span>
+      </motion.h1>
+
+      <motion.div
+        className="w-48 h-48 mb-8 flex justify-center items-center mt-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
+        <div id="google-login"></div>
+      </motion.div>
+
+      <motion.div
+        className="text-center md:text-left flex flex-col items-center mb-8 gap-2"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 1 }}
+      >
+        <h2 className="text-lg">Or scroll down to explore different paths</h2>
+        <img
+          src="/images/homepage/down_arrow.png"
+          alt="Scroll down"
+          width={24}
+          height={24}
+          className="exclude-dark-mode"
+        />
+      </motion.div>
+
+      <motion.a
+        href="#hero"
+        className="text-blue-600 hover:underline text-lg mt-16"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 1.5 }}
+      >
+        View the intro again
+      </motion.a>
+    </motion.div>
+  </div>
+</Element>
+
+    
     );
   };
 
   return (
     <>
-    {/* this div properties causing problem in fifth page animation */}
+      {/* this div properties causing problem in fifth page animation */}
       {/* <div className="lg:snap-y snap-none lg:snap-mandatory h-screen w-screen overflow-y-scroll overflow-x-hidden"> */}
       <div>
         {/* <SoundPlayer/> */}
