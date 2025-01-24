@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "bg-white": "url('../public/images/global/bg-white.png')",
+        "bg-white": "url('../public/images/global/bg-dark1.png')",
         "nav-light": "url('../public/images/global/bg-nav-light.png')",
         "nav-dark": "url('../public/images/global/bg-nav-dark.png')",
         "bg-dark": "url('../public/images/global/bg-dark.webp')",
