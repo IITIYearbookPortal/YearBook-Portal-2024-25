@@ -1,4 +1,5 @@
-import React from "react";
+import React, { use } from "react";
+import {Events} from './Events' ;
 
 const PollOptionCard = ({ option, selectedOption, onSelectOption, user }) => {
   return (
@@ -22,18 +23,13 @@ const PollOptionCard = ({ option, selectedOption, onSelectOption, user }) => {
 
       {/* Display user data inside the card */}
       {user ? (
-        <div className="mt-2 p-2 bg-gray-200 rounded-lg">
-          <p><strong>Name:</strong> {user.name}</p>
-          <p><strong>Roll No:</strong> {user.roll_no}</p>
-          <p><strong>Department:</strong> {user.department}</p>
-          <p><strong>Program:</strong> {user.academic_program}</p>
-          {user.profile_img && (
-            <div>
-              <strong>Profile Image:</strong>
-              <img src={user.profile_img} alt="User Profile" className="mt-2 w-20 h-20 object-cover rounded-full" />
-            </div>
-          )}
-        </div>
+        <Events event={{
+          image: user.profile_img ,// Replace with the actual image path
+          rollNo: user.roll_no,
+          name: user.name,
+          branch: user.department,
+          department: user.academic_program,
+        }} />
       ) : (
         <div className="mt-2 p-2 bg-gray-200 rounded-lg">
           <p><strong>Name:</strong> {option.option}</p>
