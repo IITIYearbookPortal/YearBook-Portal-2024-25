@@ -96,7 +96,7 @@ const UserList = () => {
     "MS-DSM",
   ];
 
-  return (
+  return (<>
     <div className="p-16  min-h-screen ">
       <div className="flex flex-col lg:flex-row mb-4 lg:mb-8 font-custom">
         <div className="mb-4 lg:mb-0 lg:mr-4 lg:w-full">
@@ -105,15 +105,15 @@ const UserList = () => {
             placeholder="Search by name"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
-            className="p-2 border w-full rounded-md search-input hover:bg-gray-200"
+            className="p-2 border w-full rounded-md search-input hover:bg-[#222831] bg-[#31363F] placeholder-[#EEEEEE] text-white "
           />
         </div>
         <div className="mb-4 lg:mb-0 lg:mr-4 lg:w-full">
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="p-2 border w-full rounded-md text-white"
-            style={{ backgroundColor: "rgb(30 41 59)" }}
+            className="p-2 border w-full rounded-md bg-[#EEEEEE] hover:bg-[#222831] hover:text-white"
+            style={{ backgroundColor: "EEEEEE" }}
           >
             <option value="">Select Department</option>
             {departments.map((department) => (
@@ -130,21 +130,21 @@ const UserList = () => {
             placeholder="Search by roll number"
             value={searchRollNo}
             onChange={(e) => setSearchRollNo(e.target.value)}
-            className="p-2 border w-full rounded-md appearance-none search-input hover:bg-gray-200"
+            className="p-2 border w-full rounded-md appearance-none search-input hover:bg-[#222831] bg-[#31363F] text-white placeholder-[#EEEEEE]"
           />
         </div>
       </div>
 
-      <table className="w-full lg:w-full table-auto  border-collapse font-custom">
+      <table className="w-full lg:w-full table-auto  border-collapse font-custom bg-[#212121]">
         <thead>
           <tr>
-            <th className="w-1/3 border-4 p-2 text-center font-bold text-purple-900">
+            <th className="w-1/3 border-4 p-2 text-center font-bold text-[#76ABAE]">
               Name
             </th>
-            <th className="w-1/3 border-4 p-2 text-center font-bold text-purple-900">
+            <th className="w-1/3 border-4 p-2 text-center font-bold text-[#76ABAE]">
               Department
             </th>
-            <th className="w-1/3 border-4 p-2 text-center font-bold text-purple-900">
+            <th className="w-1/3 border-4 p-2 text-center font-bold text-[#76ABAE]">
               Roll No
             </th>
           </tr>
@@ -153,7 +153,7 @@ const UserList = () => {
           {currentUsers.map((user, index) => (
             <tr
               key={user.id}
-              className="bg-slate-950 hover:bg-slate-800 transition-all cursor-pointer"
+              className="bg-slate-950 hover:bg-[#222831] transition-all cursor-pointer text-[#EEEEEE]"
               onClick={(e) => {
                 e.preventDefault();
                 window.localStorage.removeItem("searchedAlumni");
@@ -183,13 +183,13 @@ const UserList = () => {
                 }
               }}
             >
-              <td className="w-1/3 border-4 p-4 bg-white subpixel-antialiased text-teal-500 ">
+              <td className="w-1/3 border-4 p-4 bg-[#222831] subpixel-antialiased text-[#EEEEEE] ">
                 {user.name}
               </td>
-              <td className="w-1/3 border-4 p-4 bg-white text-center text-cyan-500">
+              <td className="w-1/3 border-4 p-4 bg-[#222831] text-center text-[#EEEEEE]">
                 {user.department}
               </td>
-              <td className="w-1/3 border-4 p-4 bg-white text-center text-purple-600">
+              <td className="w-1/3 border-4 p-4 bg-[#222831] text-center text-[#EEEEEE]">
                 {user.roll_no}
               </td>
             </tr>
@@ -221,7 +221,7 @@ const UserList = () => {
           &gt;
         </button>
       </div>
-    </div>
+    </div></>
   );
 };
 
