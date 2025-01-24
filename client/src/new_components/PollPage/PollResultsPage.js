@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../helpers/Context";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PollOptionCard from "./PollOptionCard";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PollResultsPage = () => {
@@ -18,17 +19,31 @@ const PollResultsPage = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [showPieChart, setShowPieChart] = useState(false);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     getPollData();
   }, [pollId]);
+  useEffect(() => {
+    console.log("filteredUsers",filteredUsers); 
+  }, [filteredUsers]);
+
+ useEffect(() => {
+  if (poll && poll.options && poll.options.length > 0) {
+    fetchUserData(poll.options); // Only fetch user data if poll options are populated
+  }
+}, [poll]); // Dependency on the poll object
+
 
   const getPollData = () => {
     axios
       .get(process.env.REACT_APP_API_URL + `/polls/results/${pollId}`)
       .then((res) => {
         setPoll(res.data.poll);
+        
+        
+        
         setLoading(false);
       })
       .catch((err) => {
@@ -36,6 +51,29 @@ const PollResultsPage = () => {
         setLoading(false);
       });
   };
+  const fetchUserData = (options) => {
+    console.log("options",poll.options);
+    if (Array.isArray(poll.options)) {
+    const rollNumbers = options.map(option => option.option); 
+    axios.get(`${process.env.REACT_APP_API_URL}/getUsersData`)
+    .then(response => {
+      const filteredUsers1 = response.data.filter(user =>(
+        
+        rollNumbers.includes(user.email) ) // Match roll number with the options
+      );
+      setFilteredUsers(filteredUsers1);
+      
+      // setUserData(filteredUsers);  // Store the filtered users in state
+    })
+    .catch(err => {
+      console.error("Error fetching user data:", err);
+    });
+    }
+    else
+    console.log("rollNumbers");
+    
+   
+    };
 
   const handleVoteSubmit = () => {
     if (!selectedOption) {
@@ -148,6 +186,22 @@ const PollResultsPage = () => {
           {poll.question}
         </h1>
         <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6 md:mb-8">
+                {poll.options.map((option) => (
+                  console.log("option",option),
+                  console.log("option",filteredUsers.find((user) => user.email === option.option)),
+                  
+                  <PollOptionCard
+                    key={option._id}
+                    option={option}
+                    selectedOption={selectedOption}
+                    onSelectOption={(value)=>{
+                      setSelectedOption(value);
+                    }}
+                    user={filteredUsers.find((user) => user.email === option.option)} // Pass user data based on roll_no (or email)
+                  />
+                ))}
+              </div>
+        {/* <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6 md:mb-8">
           {poll.options.map((option) => (
             <div
               key={option._id}
@@ -168,7 +222,7 @@ const PollResultsPage = () => {
               </label>
             </div>
           ))}
-        </div>
+        </div> */}
         <button
           onClick={handleVoteSubmit}
           className="w-full py-3 sm:py-4 bg-green-600 text-sm sm:text-base text-white font-semibold rounded-md sm:rounded-lg shadow-md hover:bg-green-600 transform transition-all duration-300 hover:-translate-y-1 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 mb-3 sm:mb-4 disabled:opacity-50 disabled:cursor-not-allowed"
