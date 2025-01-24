@@ -102,4 +102,4 @@ userSchema.methods.generateVerificationToken = function () {
   return verificationToken
 }
 
-module.exports = mongoose.model('Users', userSchema)
+module.exports = mongoose.models.Users || mongoose.model('Users', userSchema)

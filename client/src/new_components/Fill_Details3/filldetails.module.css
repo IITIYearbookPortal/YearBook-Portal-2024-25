@@ -14,7 +14,7 @@
 .btnh:hover {
   transform: translateX(-4px) translateY(-4px);
   border-radius: 0.375rem;
-  box-shadow: 4px 4px 0px black;
+  box-shadow: 4px 4px 0px white;
 }
 
 .btnh:active {
@@ -167,5 +167,5 @@ padding: 0px ;
 
   input{
     background-color: white;
-    color: black;
+    color: white;
    }

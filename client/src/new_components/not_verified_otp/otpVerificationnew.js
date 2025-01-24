@@ -320,7 +320,7 @@ function Fill1(props) {
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-black rounded-2xl text-center"
+              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 text-black border-black rounded-2xl text-center"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });

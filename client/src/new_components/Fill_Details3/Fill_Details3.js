@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import profilepic from "./profile.jpeg";
 import arrow from "./arrow.png";
 import "./filldetails.module.css";
-import phoneimg from "./th.png";
-import Abtn from "./arrowBtn.png";
+import phoneimg from "./telephone-call.png";
+// import Abtn from "./arrowBtn.png";
+import Abtn from "./image.png";
+import Bbtn from "./back-arrow.png";
+import emailimg from "./email.png";
+import grad from "./graduated.png";
 
 //for notification
 import { ToastContainer, toast } from "react-toastify";
@@ -348,11 +352,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 1
-              ? `h-screen w-screen flex justify-center text-2xl relative border-b-2`
+              ? `h-screen w-screen flex justify-center text-2xl relative border-b-2 bg-[#222831]`
               : "hidden"
           }
         >
-          <div class=" h-12 top-44 absolute text-[30px] md:text-5xl lg:text-6xl lg:top-60  flex justify-center afu">
+          <div class=" h-12 top-44 absolute text-[30px] md:text-5xl lg:text-6xl lg:top-60  flex justify-center afu text-[#EEEEEE]">
             {" "}
             Just To Verify Your Name Is ?
           </div>
@@ -363,7 +367,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               placeholder="name"
               name="name"
               value={userData.name}
-              class="text-center   p-0 m-0 border-2 rounded-[11px] bg-white border-black "
+              class="text-center   p-0 m-0 border-2 rounded-[11px] border-white bg-transparent text-[#EEEEEE]"
               onChange={(e) => {
                 setUserData({ ...userData, [e.target.name]: e.target.value });
                 setName(e.target.value);
@@ -381,7 +385,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               }         
               // console.log(userData.name);
             }}
-            class={`border-2 border-black bg-white text-black flex justify-center items-center h-[35px] w-[130px] lg:h-10 lg:w-32 top-[26rem] absolute p-0 mb-1 text-base leading-none text-center afu  rounded-3xl md:top-96 md:mt-14   md:w-32 md:h-10  lg:mt-36 btnh border-dashed `}
+            class={`border-2 border-white bg-transparent text-white flex justify-center items-center h-[35px] w-[130px] lg:h-10 lg:w-32 top-[26rem] absolute p-0 mb-1 text-base leading-none text-center afu  rounded-3xl md:top-96 md:mt-14   md:w-32 md:h-10  lg:mt-36 btnh border-dashed `}
           >
             {" "}
             Continue{" "}
@@ -393,33 +397,33 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 2
-              ? "h-screen w-screen   flex justify-center text-1xl relative  border-b-2  "
+              ? "h-screen w-screen   flex justify-center text-1xl relative  border-b-2  bg-[#222831]"
               : "hidden"
           }
         >
-          <div class="h-12 top-36 left-4 absolute text-2xl  md:text-3xl md:top-40 md:ml-20  lg:text-4xl lg:top-36 lg:left-44 afr ">
+          <div class="h-12 top-36 left-4 absolute text-2xl  md:text-3xl md:top-40 md:ml-20  lg:text-4xl lg:top-36 lg:left-44 afr text-[#EEEEEE] ">
             {" "}
             Right, of course we knew that 🙄
           </div>
 
-          <div class=" h-10 top-48 left-12 absolute text-2xl md:text-3xl md:top-56 md:w-100 md:ml-40 lg:mt-0 lg:text-4xl lg:left-64 afr">
+          <div class=" h-10 top-48 left-12 absolute text-2xl md:text-3xl md:top-56 md:w-100 md:ml-40 lg:mt-0 lg:text-4xl lg:left-64 afr text-[#EEEEEE]">
             {" "}
             Verify your academic details to continue{" "}
           </div>
 
           <div class="h-52 w-full  absolute top-64 flex justify-center items-center flex-col md:flex-row md:mt-4 lg:mt-10 lg:text-xl afr">
             <div class="h-12 w-64 flex flex-col  md:w-56 lg:w-80 mt-1 mb-4 items-center afr">
-              <h1 class=" text-base text-center lg:text-2xl">
+              <h1 class=" text-base text-center lg:text-2xl text-[#EEEEEE]">
                 Enrollment number
               </h1>
 
               <input
                 type="text"
                 maxLength={10}
-                placeholder="Enrollment number*"
+                placeholder="Enter"
                 name="roll_no"
                 value={userData.roll_no}
-                class="text-center   rounded-[9px] h-6 w-[210px] border-2 border-black mt-1 p-2 md:w-40 md:mt-4 lg:w-52 lg:mt-4 xl:h-7"
+                class="text-center   rounded-[9px] h-6 w-[210px] border-2 border-white bg-transparent mt-1 p-2 md:w-40 md:mt-4 lg:w-52 lg:mt-4 xl:h-7"
                 onChange={(e) => {
                   setUserData({ ...userData, [e.target.name]: e.target.value });
                   setRollNo(e.target.value);
@@ -429,7 +433,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             </div>
 
             <div class="h-12 w-64 flex flex-col md:w-56 md:mt-0 lg:w-80 mt-3 lg:mt-0 mb-4 items-center ">
-              <h1 class=" text-base text-center   lg:text-2xl">
+              <h1 class=" text-base text-center   lg:text-2xl text-[#EEEEEE]">
                 Academic Program
               </h1>
 
@@ -438,7 +442,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               <select
                 name="academic_program"
                 defaultValue={userData.academic_program}
-                class="text-center   rounded-[9px] text-[13.5px] h-7 lg:h-8 w-[210px] border-2 border-black mt-1 p-1 md:w-40 lg:w-60 lg:mt-4 lg:text-[15px] xl:h-9 xl:text-[16px] md:mt-4 "
+                class="text-center   rounded-[9px] text-[13.5px] h-7 lg:h-8 w-[210px] border-2 border-white bg-transparent text-[#EEEEEE] mt-1 p-1 md:w-40 lg:w-60 lg:mt-4 lg:text-[15px] xl:h-9 xl:text-[16px] md:mt-4 "
                 onChange={(e) => {
                   setAcadP(e.target.value);
                   setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -449,53 +453,53 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                   name="Academic Program"
                   disabled=""
                   selected=""
-                  class="selct"
+                  class="selct bg-[#222831] "
                 >
                   Academic Program
                 </option>
                 <option
                   value="Bachelor of Technology (BTech)"
                   name="academic_program"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Bachelor of Technology (BTech)
                 </option>
                 <option
                   value="Master of Technology (MTech)"
                   name="academic_program"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Master of Technology (MTech)
                 </option>
                 <option
                   value="Master of Science (MSc)"
                   name="academic_program"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Master of Science (MSc)
                 </option>
                 <option
                   value="Five Year BTech + MTech"
                   name="academic_program"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Five Year BTech + MTech
                 </option>
                 <option
                   value="MS (Research)"
                   name="academic_program"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   MS (Research)
                 </option>
                 <option
                   value="Doctor of Philosophy"
                   name="academic_program"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Doctor of Philosophy
                 </option>
-                <option value="MS-DSM" name="academic_program" class="selct">
+                <option value="MS-DSM" name="academic_program" class="selct bg-[#222831]">
                   MS-DSM
                 </option>
                 onChange=
@@ -506,12 +510,12 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             </div>
 
             <div class="h-12 w-64 flex flex-col mt-4 md:w-56 md:mb-5 md:mt-0 lg:w-80 lg:mt-0 lg:mb-4 items-center">
-              <h1 class=" text-base text-center   lg:text-2xl">Department</h1>
+              <h1 class=" text-base text-center   lg:text-2xl text-[#EEEEEE]">Department</h1>
 
               <select
                 name="department"
                 defaultValue={userData.department}
-                class="text-center   rounded-[9px] text-[13.5px] h-7 lg:h-8 w-[210px] border-2 border-black mt-1 p-1 md:w-40 lg:w-60 lg:mt-4 lg:text-[15px] xl:h-9 xl:text-[16px] md:mt-4"
+                class="text-center   rounded-[9px] text-[13.5px] h-7 lg:h-8 w-[210px] border-2 border-white bg-transparent text-[#EEEEEE] mt-1 p-1 md:w-40 lg:w-60 lg:mt-4 lg:text-[15px] xl:h-9 xl:text-[16px] md:mt-4"
                 onChange={(e) => {
                   setDeprt(e.target.value);
                   setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -519,7 +523,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               >
                 <option
                   value=""
-                  class="selct"
+                  class="selct bg-[#222831]"
                   name="Department"
                   disabled=""
                   selected=""
@@ -529,76 +533,76 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 <option
                   value="Computer Science and Engineering"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Computer Science and Engineering
                 </option>
                 <option
                   value="Electrical Engineering"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Electrical Engineering
                 </option>
                 <option
                   value="Mechanical Engineering"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Mechanical Engineering
                 </option>
                 <option
                   value="Civil Engineering"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Civil Engineering
                 </option>
                 <option
                   value="Metallurgy Engineering and Materials Science"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Metallurgy Engineering and Materials Science
                 </option>
                 <option
                   value="Astronomy, Astrophysics and Space Engineering"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Astronomy, Astrophysics and Space Engineering
                 </option>
                 <option
                   value="Biosciences and Biomedical Engineering"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Biosciences and Biomedical Engineering
                 </option>
-                <option value="Physics" name="department" class="selct">
+                <option value="Physics" name="department" class="selct bg-[#222831]">
                   Physics
                 </option>
-                <option value="Chemistry" name="department" class="selct">
+                <option value="Chemistry" name="department" class="selct bg-[#222831]">
                   Chemistry
                 </option>
-                <option value="Mathematics" name="department" class="selct">
+                <option value="Mathematics" name="department" class="selct bg-[#222831]">
                   Mathematics
                 </option>
                 <option
                   value="Humanities and Social Sciences"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Humanities and Social Sciences
                 </option>
                 <option
                   value="Electric Vehicle Technology"
                   name="department"
-                  class="selct"
+                  class="selct bg-[#222831]"
                 >
                   Electric Vehicle Technology
                 </option>
-                <option value="MS-DSM" name="academic_program" class="selct">
+                <option value="MS-DSM" name="academic_program" class="selct bg-[#222831]">
                   MS-DSM
                 </option>
               </select>
@@ -624,7 +628,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 }
               }
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 bottom-[6rem] flex justify-center items-center lg:bottom-20 absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-36 btnh border-dashed afu "
+            class="border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] h-8 w-32 bottom-[6rem] flex justify-center items-center lg:bottom-20 absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-36 btnh border-dashed afu "
           >
             {" "}
             Continue{" "}
@@ -637,12 +641,20 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           >
             {" "}
             <img
-              src={Abtn}
+              src={Bbtn}
               class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : "bg-white"
+                isDarkMode ? "bg-gray-400" : "bg-[#222831]"
               }`}
             />{" "}
           </button>
+
+          <div class=" afu w-full">
+            <img
+              src={grad}
+              alt="phone"
+              class="lg:h-32 lg:w-32 ml-[80rem] mt-[35rem]"
+            />
+          </div>
         </div>
 
         {/* third page */}
@@ -650,23 +662,23 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 3
-              ? " h-screen w-screen flex flex-col justify-center items-center text-1xl  border-b-2  fadeInRight "
+              ? " h-screen w-screen flex flex-col justify-center items-center text-1xl  border-b-2  fadeInRight bg-[#222831]"
               : "hidden"
           }
         >
-          <div class="h-12 text-[25px]  md:text-3xl  lg:text-4xl md:mt-32 flex justify-center items-center afu ">
+          <div class="h-12 text-[25px]  md:text-3xl  lg:text-4xl md:mt-32 flex justify-center items-center afu text-[#EEEEEE]">
             {" "}
             We want to remember you forever 🤞{" "}
           </div>
 
-          <div class=" h-10 text-[25px]  md:text-3xl md:top-64 lg:mt-2 lg:text-4xl flex justify-center items-center afu">
+          <div class=" h-10 text-[25px]  md:text-3xl md:top-64 lg:mt-2 lg:text-4xl flex justify-center items-center afu text-[#EEEEEE]">
             {" "}
             Do tell us your <span class="text-red-600 ml-4">
               phone number
             </span>{" "}
           </div>
 
-          <div class="flex w-full justify-center items-center h-10 mt-4 md:mt-14  text-[15px]  lg:text-[20px] lg:mt-16  afu">
+          <div class="flex w-full justify-center items-center h-10 mt-4 md:mt-14  text-[15px]  lg:text-[20px] lg:mt-16  afu text-[#EEEEEE]">
             {" "}
             Your Phone number will NOT be made public{" "}
           </div>
@@ -685,24 +697,26 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 setPhone(phone);
                 setUserData({ ...userData, ["contact_details"]: phone });
               }}
-              className="border-2 rounded-xl border-black p-2 w-full flex justify-center items-center pb-10
+              className="border-2 rounded-xl border-white p-2 w-full flex justify-center items-center pb-10
                 "
               inputStyle={{
                 width: "200px",
                 height: "40px",
                 fontSize: "23px",
                 borderWidth: "2px",
-                borderColor: "black",
+                borderColor: "white",
                 borderRadius: "13px",
+                backgroundColor: "transparent",
+                color: "white"
               }}
               countrySelectorStyleProps={{
                 style: {
                   borderWidth: "2px",
                   height: "40px",
-                  borderColor: "black",
+                  borderColor: "white",
                   paddingRight: "10px",
                   paddingLeft: "10px",
-                  borderRadius: "10px",
+                  borderRadius: "10px"
                 },
               }}
             />
@@ -719,7 +733,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                   });
                 }
               }}
-              class="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black p-0 text-base leading-none text-center  rounded-3xl md:w-32 md:h-10  btnh border-dashed afu mt-14"
+              class="h-8 w-32 flex items-center justify-center border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] p-0 text-base leading-none text-center  rounded-3xl md:w-32 md:h-10  btnh border-dashed afu mt-14"
             >
               {" "}
               Continue{" "}
@@ -741,9 +755,9 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           >
             {" "}
             <img
-              src={Abtn}
+              src={Bbtn}
               class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : "bg-white"
+                isDarkMode ? "bg-gray-400" : "bg-[#222831]"
               }`}
             />{" "}
           </button>
@@ -754,11 +768,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 4
-              ? " h-screen w-screen   flex justify-center items-center text-1xl relative border-b-2 "
+              ? " h-screen w-screen   flex justify-center items-center text-1xl relative border-b-2 bg-[#222831]"
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-44 left-4 absolute text-3xl  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center afd">
+          <div class="h-12 w-full top-44 left-4 absolute text-3xl  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center afd text-[#EEEEEE]">
             {" "}
             And your{" "}
             <span class="text-red-600 ml-2 mr-2 text-5xl"> Personal </span>{" "}
@@ -771,7 +785,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-black   rounded-2xl text-center"
+              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -786,7 +800,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 EmailId != "" ? setHid(5) : setHid(4);
               }
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 mt-60 flex items-center justify-center lg:bottom-60 absolute lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
+            class="border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] h-8 w-32 mt-60 flex items-center justify-center lg:bottom-60 absolute lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -799,12 +813,20 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           >
             {" "}
             <img
-              src={Abtn}
+              src={Bbtn}
               class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : "bg-white"
+                isDarkMode ? "bg-gray-400" : "bg-[#222831]"
               }`}
             />{" "}
           </button>
+
+          <div class=" afu w-full">
+            <img
+              src={emailimg}
+              alt="phone"
+              class=" h-[90px] w-[90px] lg:h-40 lg:w-40 ml-48"
+            />
+          </div>
         </div>
 
         {/* seventh page */}

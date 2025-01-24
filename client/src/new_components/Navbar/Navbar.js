@@ -69,11 +69,11 @@ const Navbar = () => {
   }, [loggedin, profile, user.email]);
  
 
-// currently navbar is sticky 
+// currently navbar is not sticky 
 
 
   return (
-    <nav className="sticky top-0 z-50 py-3 bg-darkbg backdrop-blur-xl border-b border-neutral-700/80 text-white">
+    <nav className=" top-0 z-50 py-3 bg-darkbg backdrop-blur-xl border-b border-neutral-700/80 text-white">
       <div className="container px-4 mx-auto relative lg:text-sm">
         <div className="flex justify-between items-center">
           {/* Logo */}

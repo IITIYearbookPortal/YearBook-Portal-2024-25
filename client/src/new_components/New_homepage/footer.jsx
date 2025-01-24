@@ -9,7 +9,13 @@ const Footer = () => {
     return storedThemeMode === "dark";
   });
   return (
-    <div className="snap-end  bg-cover w-screen h-screen flex flex-col md:flex-row px-6 md:px-12 py-8 md:pt-12">
+    <div className="snap-end  bg-cover w-screen h-screen flex flex-col md:flex-row px-6 md:px-12 py-8 md:pt-12"
+    style={{
+      backgroundImage: `url(/images/global/bgl.jpg)`, //  background image
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+    }}
+    >
       <div className="w-full md:w-1/2 flex flex-col gap-6 md:gap-12 items-center md:items-start md:ml-8">
         <h1 className="text-3xl md:text-5xl text-center md:text-left">
           The Alumni Magazine? That's here
