@@ -18,7 +18,7 @@ import jwt_decode from "jwt-decode";
 import bg from "./bg-1.jpg";
 
 //timeline 
-import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
 import WorkIcon from '@mui/icons-material/Work';
 import SchoolIcon from '@mui/icons-material/School';
@@ -245,79 +245,79 @@ const Home = () => {
       ///newww
 
       <Element
-      name="first"
-      id="hero"
-      className="bg-bannerImg bg-no-repeat bg-cover bg-center relative min-h-100vh -mt-12"
-    >
-      <div className="w-full h-screen flex items-end bg-blackOverlay">
-        <div className="container mx-auto mb-60 px-16">
-          {/* Heading Lines */}
-          <motion.h1
-            viewport={{ once: true }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="snap-scroll text-3xl md:text-5xl text-white"
-          >
-            "Change can be scary, " <br />
-          </motion.h1>
-          <motion.h1
-            viewport={{ once: true }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="snap-scroll text-3xl md:text-5xl mt-4 text-white"
-          >
-            "but so is staying in the same place" <br />
-          </motion.h1>
-          <motion.h1
-            viewport={{ once: true }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 1 }}
-            className="snap-scroll text-xl md:text-3xl text-white mt-4 md:mt-8"
-          >
-            - Anonymous
-          </motion.h1>
-    
-          {/* Scroll Down Indicator */}
-          <motion.div
-            className="flex flex-row absolute bottom-6 md:bottom-12 left-4 md:left-auto items-center justify-start"
-            viewport={{ once: true }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 2 }}
-          >
-            <h1 className="text-sm md:text-xl text-left text-white">
-              Scroll Down to Continue
-            </h1>
-            <img
-              src="/images/homepage/down_arrow.png"
-              className="w-4 md:w-6 mt-1 h-4 md:h-6 ml-1 exclude-dark-mode"
-              alt="Down Arrow"
-            />
-          </motion.div>
-    
-          {/* Skip Intro Button */}
-          <motion.div
-            viewport={{ once: true }}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 2 }}
-            className="absolute right-6 md:right-12 bottom-6 md:bottom-12"
-          >
-            {!loggedin && (
-              <a href="#signin">
-                <h1 className="text-sm md:text-xl text-white hover:underline">
-                  Skip Intro
-                </h1>
-              </a>
-            )}
-          </motion.div>
+        name="first"
+        id="hero"
+        className="bg-bannerImg bg-no-repeat bg-cover bg-center relative h-[100vh] -mt-12 -pt-2"
+      >
+        <div className="w-full h-screen flex items-end bg-blackOverlay">
+          <div className="container mx-auto mb-60 px-16">
+            {/* Heading Lines */}
+            <motion.h1
+              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="snap-scroll text-3xl md:text-5xl text-white"
+            >
+              "Change can be scary, " <br />
+            </motion.h1>
+            <motion.h1
+              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="snap-scroll text-3xl md:text-5xl mt-4 text-white"
+            >
+              "but so is staying in the same place" <br />
+            </motion.h1>
+            <motion.h1
+              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1 }}
+              className="snap-scroll text-xl md:text-3xl text-white mt-4 md:mt-8"
+            >
+              - Anonymous
+            </motion.h1>
+
+            {/* Scroll Down Indicator */}
+            <motion.div
+              className="flex flex-row absolute bottom-6 md:bottom-12 left-4 md:left-auto items-center justify-start"
+              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 2 }}
+            >
+              <h1 className="text-sm md:text-xl text-left text-white">
+                Scroll Down to Continue
+              </h1>
+              <img
+                src="/images/homepage/down_arrow.png"
+                className="w-4 md:w-6 mt-1 h-4 md:h-6 ml-1 exclude-dark-mode"
+                alt="Down Arrow"
+              />
+            </motion.div>
+
+            {/* Skip Intro Button */}
+            <motion.div
+              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 2 }}
+              className="absolute right-6 md:right-12 bottom-6 md:bottom-12"
+            >
+              {!loggedin && (
+                <a href="#signin">
+                  <h1 className="text-sm md:text-xl text-white hover:underline">
+                    Skip Intro
+                  </h1>
+                </a>
+              )}
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </Element>
-    
+      </Element>
+
     );
   };
   const SecondPage = () => {
@@ -326,15 +326,15 @@ const Home = () => {
         name="second"
         className="relative bg-greenOverlay snap-start min-h-screen flex justify-center bg-cover p-4"
       >
-        <div className="w-full h-screen flex items-end">
-          <div className="container mx-auto mb-20 px-4 md:mb-40 md:px-10 lg:mb-60 lg:ml-20">
+        <div className="w-full h-screen flex items-start md:mt-20">
+          <div className="container mx-auto mb-20 px-4 md:mb-40 md:px-10 lg:mb-60 lg:ml-20 mt-8">
             {/* First Heading */}
             <motion.h1
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              className="text-4xl md:text-5xl lg:text-6xl text-left ml-4 md:ml-8 lg:ml-12"
+              className="text-5xl md:text-5xl lg:text-6xl text-left ml-5 md:ml-8 lg:ml-12 px-4 md:px-10 lg:px-20"
             >
               "Relive the good times,
               <br />
@@ -346,24 +346,27 @@ const Home = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              className="text-4xl md:text-5xl lg:text-6xl text-left mt-2 md:mt-4 px-4 md:px-10 lg:px-20 ml-4 md:ml-8 lg:ml-12"
+              className="text-5xl md:text-5xl lg:text-6xl text-left mt-2 md:mt-4 px-4 md:px-10 lg:px-20 ml-4 md:ml-8 lg:ml-12"
             >
               one cherished comment at a time"
               <br />
             </motion.h1>
 
             {/* Description */}
-            <div className="container mx-auto max-w-2xl md:max-w-3xl ml-2 md:ml-6 lg:ml-10">
-              <motion.h1
-                viewport={{ once: true }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 1 }}
-                className="text-sm md:text-lg lg:text-2xl text-center mt-6 md:mt-10 px-4 md:px-8 lg:px-10"
-              >
-                This is your space to capture and celebrate the memories that made your college journey special. From heartfelt farewells to funny moments, every comment holds a piece of your story. Relive the laughter, friendships, and milestones that shaped these unforgettable years.
-              </motion.h1>
+            <div className="flex items-start justify-center min-h-screen">
+              <div className="container mx-auto max-w-2xl md:max-w-3xl">
+                <motion.h1
+                  viewport={{ once: true }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1, delay: 1 }}
+                  className="text-md md:text-lg lg:text-2xl text-center mt-6 px-4"
+                >
+                  This is your space to capture and celebrate the memories that made your college journey special. From heartfelt farewells to funny moments, every comment holds a piece of your story. Relive the laughter, friendships, and milestones that shaped these unforgettable years.
+                </motion.h1>
+              </div>
             </div>
+
 
             {/* Images */}
             <motion.img
@@ -373,7 +376,7 @@ const Home = () => {
               transition={{ duration: 1, delay: 1 }}
               src="/images/homepage/24-yearbook.png"
               alt=""
-              className="absolute right-8 sm:right-20 md:right-40 lg:right-80 top-10 sm:top-20 md:top-40 w-24 h-24 sm:w-32 sm:h-32 lg:w-48 lg:h-48 exclude-dark-mode"
+              className="absolute left-22 sm:left-15 md:left-15 lg:right-20 bottom-20 sm:bottom-20 md:bottom-40 lg:top-40 w-32 h-32 sm:w-32 sm:h-32 lg:w-48 lg:h-48 exclude-dark-mode"
             />
             <motion.img
               viewport={{ once: false }}
@@ -382,7 +385,7 @@ const Home = () => {
               transition={{ duration: 1, delay: 1 }}
               src="/images/homepage/24-yearbook.png"
               alt=""
-              className="absolute right-4 sm:right-10 md:right-20 lg:right-40 bottom-20 sm:bottom-28 md:bottom-36 w-24 h-24 sm:w-32 sm:h-32 lg:w-48 lg:h-48 exclude-dark-mode"
+              className="absolute right-4 sm:right-10 md:right-20 lg:right-40 bottom-20 sm:bottom-28 md:bottom-36 w-32 h-32 sm:w-32 sm:h-32 lg:w-48 lg:h-48 exclude-dark-mode"
             />
           </div>
         </div>
@@ -462,64 +465,59 @@ const Home = () => {
 
     // timeline page 
     return (
-      <Element
-        name="fourth"
-        className="snap-start bg-lightgreen h-screen "
-      >
-        <VerticalTimeline>
-  <VerticalTimelineElement
-    className="vertical-timeline-element--work"
-    contentStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
-    contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
-    date="2011 - present"
-    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
-    icon={<WorkIcon />}
-  >
-    <h3 className="vertical-timeline-element-title">Creative Director</h3>
-    <h4 className="vertical-timeline-element-subtitle">Miami, FL</h4>
-    <p>
-      Creative Direction, User Experience, Visual Design, Project Management, Team Leading
-    </p>
-  </VerticalTimelineElement>
-  <VerticalTimelineElement
-    className="vertical-timeline-element--work"
-    date="2010 - 2011"
-    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
-    icon={<WorkIcon />}
-  >
-    <h3 className="vertical-timeline-element-title">Art Director</h3>
-    <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
-    <p>
-      Creative Direction, User Experience, Visual Design, SEO, Online Marketing
-    </p>
-  </VerticalTimelineElement>
-  <VerticalTimelineElement
-    className="vertical-timeline-element--work"
-    date="2008 - 2010"
-    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
-    icon={<WorkIcon />}
-  >
-    <h3 className="vertical-timeline-element-title">Web Designer</h3>
-    <h4 className="vertical-timeline-element-subtitle">Los Angeles, CA</h4>
-    <p>
-      User Experience, Visual Design
-    </p>
-  </VerticalTimelineElement>
-  <VerticalTimelineElement
-    className="vertical-timeline-element--work"
-    date="2006 - 2008"
-    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
-    icon={<WorkIcon />}
-  >
-    <h3 className="vertical-timeline-element-title">Web Designer</h3>
-    <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
-    <p>
-      User Experience, Visual Design
-    </p>
-  </VerticalTimelineElement>
- 
-</VerticalTimeline>
+      <Element name="fourth" className="snap-start bg-lightgreen ">
+        <div className="">
+           time line
+          {/* <VerticalTimeline>
+            <VerticalTimelineElement
+              className="vertical-timeline-element--work"
+              contentStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
+              contentArrowStyle={{ borderRight: "7px solid  rgb(33, 150, 243)" }}
+              date="2011 - present"
+              iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
+              icon={<WorkIcon />}
+            >
+              <h3 className="vertical-timeline-element-title">Creative Director</h3>
+              <h4 className="vertical-timeline-element-subtitle">Miami, FL</h4>
+              <p>
+                Creative Direction, User Experience, Visual Design, Project Management,
+                Team Leading
+              </p>
+            </VerticalTimelineElement>
+            <VerticalTimelineElement
+              className="vertical-timeline-element--work"
+              date="2010 - 2011"
+              iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
+              icon={<WorkIcon />}
+            >
+              <h3 className="vertical-timeline-element-title">Art Director</h3>
+              <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
+              <p>Creative Direction, User Experience, Visual Design, SEO, Online Marketing</p>
+            </VerticalTimelineElement>
+            <VerticalTimelineElement
+              className="vertical-timeline-element--work"
+              date="2008 - 2010"
+              iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
+              icon={<WorkIcon />}
+            >
+              <h3 className="vertical-timeline-element-title">Web Designer</h3>
+              <h4 className="vertical-timeline-element-subtitle">Los Angeles, CA</h4>
+              <p>User Experience, Visual Design</p>
+            </VerticalTimelineElement>
+            <VerticalTimelineElement
+              className="vertical-timeline-element--work"
+              date="2006 - 2008"
+              iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
+              icon={<WorkIcon />}
+            >
+              <h3 className="vertical-timeline-element-title">Web Designer</h3>
+              <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
+              <p>User Experience, Visual Design</p>
+            </VerticalTimelineElement>
+          </VerticalTimeline> */}
+        </div>
       </Element>
+
     );
   };
 
@@ -1204,7 +1202,7 @@ const Home = () => {
       <Element
         name="sixth"
         className="snap-start relative h-screen flex flex-col items-center justify-center bg-cover bg-darkbg text-white overflow-hidden "
-        
+
       >
         <div className="flex flex-col md:flex-row items-center w-full h-full overflow-hidden mt-10">
           <div className="text-center w-full md:w-1/2 px-7 md:ml-20 md:px-0 md:pl-10">
