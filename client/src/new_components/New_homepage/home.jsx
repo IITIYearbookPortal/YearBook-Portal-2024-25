@@ -17,6 +17,14 @@ import jwt_decode from "jwt-decode";
 //images
 import bg from "./bg-1.jpg";
 
+//timeline 
+import { VerticalTimeline, VerticalTimelineElement }  from 'react-vertical-timeline-component';
+import 'react-vertical-timeline-component/style.min.css';
+import WorkIcon from '@mui/icons-material/Work';
+import SchoolIcon from '@mui/icons-material/School';
+import StarIcon from '@mui/icons-material/Star';
+
+
 
 const Home = () => {
   // const token = jwt_decode(window.localStorage.getItem("token"))
@@ -237,72 +245,79 @@ const Home = () => {
       ///newww
 
       <Element
-        name="first"
-        id="hero"
-        className="bg-bannerImg bg-no-repeat bg-cover bg-bottom">
-        <div
-          className="w-full h-screen flex items-end bg-blackOverlay">
-          <div className="container mx-auto mb-60 px-16">
-            <motion.h1
-              viewport={{ once: true }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="snap-scroll text-3xl md:text-5xl text-white"
-            >
-              "Change can be scary, " <br />
-            </motion.h1>
-            <motion.h1
-              viewport={{ once: true }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className=" snap-scroll text-3xl md:text-5xl mt-4 text-white"
-            >
-              "but so is staying in the same place" <br />
-            </motion.h1>
-            <motion.h1
-              viewport={{ once: true }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1 }}
-              className="snap-scroll text-xl md:text-3xl text-white mt-4 md:mt-8"
-            >
-              - Anonymous
-            </motion.h1>
-
-            <motion.div
-              className="flex flex-row absolute bottom-6 md:bottom-12 left-4 md:left-auto items-center justify-start"
-              viewport={{ once: true }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 2 }}
-            >
-              <h1 className="text-sm md:text-xl text-left">
-                Scroll Down to Continue
-              </h1>
-              <img
-                src="/images/homepage/down_arrow.png"
-                className="w-4 md:w-6 mt-1 h-4 md:h-6 ml-1 exclude-dark-mode"
-              />
-            </motion.div>
-
-            <motion.div
-              viewport={{ once: true }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 2 }}
-              className="absolute right-6 md:right-12 bottom-6 md:bottom-12"
-            >
-              {!loggedin && (
-                <a href="#signin">
-                  <h1 className="text-sm md:text-xl text-white hover:underline">Skip Intro</h1>
-                </a>
-              )}
-            </motion.div>
-          </div>
+      name="first"
+      id="hero"
+      className="bg-bannerImg bg-no-repeat bg-cover bg-center relative min-h-100vh -mt-12"
+    >
+      <div className="w-full h-screen flex items-end bg-blackOverlay">
+        <div className="container mx-auto mb-60 px-16">
+          {/* Heading Lines */}
+          <motion.h1
+            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="snap-scroll text-3xl md:text-5xl text-white"
+          >
+            "Change can be scary, " <br />
+          </motion.h1>
+          <motion.h1
+            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="snap-scroll text-3xl md:text-5xl mt-4 text-white"
+          >
+            "but so is staying in the same place" <br />
+          </motion.h1>
+          <motion.h1
+            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+            className="snap-scroll text-xl md:text-3xl text-white mt-4 md:mt-8"
+          >
+            - Anonymous
+          </motion.h1>
+    
+          {/* Scroll Down Indicator */}
+          <motion.div
+            className="flex flex-row absolute bottom-6 md:bottom-12 left-4 md:left-auto items-center justify-start"
+            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 2 }}
+          >
+            <h1 className="text-sm md:text-xl text-left text-white">
+              Scroll Down to Continue
+            </h1>
+            <img
+              src="/images/homepage/down_arrow.png"
+              className="w-4 md:w-6 mt-1 h-4 md:h-6 ml-1 exclude-dark-mode"
+              alt="Down Arrow"
+            />
+          </motion.div>
+    
+          {/* Skip Intro Button */}
+          <motion.div
+            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 2 }}
+            className="absolute right-6 md:right-12 bottom-6 md:bottom-12"
+          >
+            {!loggedin && (
+              <a href="#signin">
+                <h1 className="text-sm md:text-xl text-white hover:underline">
+                  Skip Intro
+                </h1>
+              </a>
+            )}
+          </motion.div>
         </div>
-      </Element>
+      </div>
+    </Element>
+    
     );
   };
   const SecondPage = () => {
@@ -444,49 +459,66 @@ const Home = () => {
   };
 
   const FourthPage = () => {
+
+    // timeline page 
     return (
       <Element
         name="fourth"
-        className="snap-start bg-lightgreen h-screen flex flex-col items-center justify-center   bg-cover relative"
-      // style={{
-      //   backgroundImage: `url(/images/global/dark2.png)`, //  background image
-      //   backgroundSize: "cover",
-      //   backgroundRepeat: "no-repeat",
-      // }}
+        className="snap-start bg-lightgreen h-screen "
       >
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-xl lg:text-3xl   text-center"
-        >
-          In{" "}
-          <span className="text-3xl lg:text-5xl">
-            20<span className="text-[#d94d3c]">22</span>
-          </span>
-          , we learnt to accept
-        </motion.h1>
-        <br />
-
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="text-3xl md:text-5xl   text-center md:text-right md:ml-48"
-        >
-          THE NEW NORMAL
-        </motion.h1>
-        <motion.img
-          viewport={{ once: true }}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-          src="/images/homepage/mask.png"
-          alt=""
-          className="absolute md:left-12 bottom-20 top-30 w-3/4 ml-8 md:ml-0 md:w-1/3 exclude-dark-mode"
-        />
+        <VerticalTimeline>
+  <VerticalTimelineElement
+    className="vertical-timeline-element--work"
+    contentStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+    contentArrowStyle={{ borderRight: '7px solid  rgb(33, 150, 243)' }}
+    date="2011 - present"
+    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+    icon={<WorkIcon />}
+  >
+    <h3 className="vertical-timeline-element-title">Creative Director</h3>
+    <h4 className="vertical-timeline-element-subtitle">Miami, FL</h4>
+    <p>
+      Creative Direction, User Experience, Visual Design, Project Management, Team Leading
+    </p>
+  </VerticalTimelineElement>
+  <VerticalTimelineElement
+    className="vertical-timeline-element--work"
+    date="2010 - 2011"
+    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+    icon={<WorkIcon />}
+  >
+    <h3 className="vertical-timeline-element-title">Art Director</h3>
+    <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
+    <p>
+      Creative Direction, User Experience, Visual Design, SEO, Online Marketing
+    </p>
+  </VerticalTimelineElement>
+  <VerticalTimelineElement
+    className="vertical-timeline-element--work"
+    date="2008 - 2010"
+    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+    icon={<WorkIcon />}
+  >
+    <h3 className="vertical-timeline-element-title">Web Designer</h3>
+    <h4 className="vertical-timeline-element-subtitle">Los Angeles, CA</h4>
+    <p>
+      User Experience, Visual Design
+    </p>
+  </VerticalTimelineElement>
+  <VerticalTimelineElement
+    className="vertical-timeline-element--work"
+    date="2006 - 2008"
+    iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+    icon={<WorkIcon />}
+  >
+    <h3 className="vertical-timeline-element-title">Web Designer</h3>
+    <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
+    <p>
+      User Experience, Visual Design
+    </p>
+  </VerticalTimelineElement>
+ 
+</VerticalTimeline>
       </Element>
     );
   };
