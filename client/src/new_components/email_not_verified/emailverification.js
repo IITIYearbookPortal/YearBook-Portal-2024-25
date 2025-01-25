@@ -232,7 +232,7 @@ function Fill1(props) {
             {" "}
             <img
               src={Abtn}
-              class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert"
+              class="h-[50px] w-[50px] sm:h-[60px] sm:w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert"
             />{" "}
           </button>
         </div>
