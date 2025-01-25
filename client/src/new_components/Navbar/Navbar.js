@@ -73,92 +73,105 @@ const Navbar = () => {
 
 
   return (
-    <nav className=" top-0 z-50 py-3 bg-darkbg backdrop-blur-xl border-b border-neutral-700/80 text-white">
-      <div className="container px-4 mx-auto relative lg:text-sm">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center flex-shrink-0">
-          <img src={logo} alt="logo" className="h-10 w-10 mr-2"/>
-
-            <span className="text-xl tracking-tight">YearBook' 2025</span>
-          </div>
-
-          {/* Centered Links (Desktop View) */}
-          <ul className="absolute left-1/2 transform -translate-x-1/2 hidden lg:flex space-x-12 text-xl">
-            {links.map((link, index) => (
-              <li key={index}>
-                <a href={link.path} className="hover:text-lightgreen">
-                  {link.name}
-                </a>
-              </li>
-            ))}
-            <li>
-              <button
-                onClick={toggleTheme}
-                className="hover:text-lightgreen cursor-pointer"
-              >
-                Change Theme
-              </button>
-            </li>
-          </ul>
-
-          {/* Sign In Button */}
-          <div className="hidden lg:flex justify-end space-x-12 items-center etxt-xl">
-            <a
-              href={loggedin ? "/logout" : "/login"}
-              className="bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded"
-            >
-              {loggedin ? "Logout" : "Sign In"}
-            </a>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="lg:hidden">
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-              {isMobileMenuOpen ? <X /> : <Menu />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="fixed right-0 z-20 bg-neutral-900 w-full p-8 flex flex-col justify-center items-center lg:hidden">
-            <ul className="flex flex-col space-y-6 items-center">
-              {links.map((link, index) => (
-                <li key={index}>
-                  <a
-                    href={link.path}
-                    className="hover:text-lightgreen text-center"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              ))}
-              <li>
-                <button
-                  onClick={() => {
-                    toggleTheme();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="hover:text-lightgreen text-center"
-                >
-                  Change Theme
-                </button>
-              </li>
-            </ul>
-            <div className="mt-6">
-              <a
-                href={loggedin ? "/logout" : "/login"}
-                className="bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded"
-              >
-                {loggedin ? "Logout" : "Sign In"}
-              </a>
-            </div>
-          </div>
-        )}
+    <nav className="sticky top-0 z-50 py-3 backdrop-blur-xl border-b border-neutral-700/80 text-white">
+  <div className="container px-4 mx-auto relative lg:text-sm">
+    <div className="flex justify-between items-center">
+      {/* Logo */}
+      <div className="flex items-center flex-shrink-0">
+        <img src={logo} alt="logo" className="h-10 w-10 mr-2" />
+        <span className="text-xl tracking-tight">YearBook' 2025</span>
       </div>
-    </nav>
+
+      {/* Centered Links (Desktop View) */}
+      <ul className="absolute left-1/2 transform -translate-x-1/2 hidden lg:flex space-x-12 text-base">
+        {links.map((link, index) => (
+          <li key={index}>
+            <a
+              href={link.path}
+              className={`hover:text-lightgreen ${loggedin ? "text-sm" : "text-base"}`}
+            >
+              {link.name}
+            </a>
+          </li>
+        ))}
+        <li>
+          <button
+            onClick={toggleTheme}
+            className={`hover:text-lightgreen cursor-pointer ${
+              loggedin ? "text-sm" : "text-base"
+            }`}
+          >
+            Change Theme
+          </button>
+        </li>
+      </ul>
+
+      {/* Sign In Button */}
+      <div className="hidden lg:flex justify-end space-x-12 items-center bg-[#76ABAE] rounded-md ">
+        <a
+          href={loggedin ? "/logout" : "/login"}
+          className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${
+            loggedin ? "text-sm" : "text-base"
+          }`}
+        >
+          {loggedin ? "Logout" : "Sign In"}
+        </a>
+      </div>
+
+      {/* Mobile Menu Toggle */}
+      <div className="lg:hidden">
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          {isMobileMenuOpen ? <X /> : <Menu />}
+        </button>
+      </div>
+    </div>
+
+    {/* Mobile Menu */}
+    {isMobileMenuOpen && (
+      <div className="fixed right-0 z-20 bg-neutral-900 w-full p-8 flex flex-col justify-center items-center lg:hidden backdrop-blur-md">
+        <ul className="flex flex-col space-y-6 items-center">
+          {links.map((link, index) => (
+            <li key={index}>
+              <a
+                href={link.path}
+                className={`hover:text-lightgreen text-center ${
+                  loggedin ? "text-sm" : "text-base"
+                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.name}
+              </a>
+            </li>
+          ))}
+          <li>
+            <button
+              onClick={() => {
+                toggleTheme();
+                setIsMobileMenuOpen(false);
+              }}
+              className={`hover:text-lightgreen text-center ${
+                loggedin ? "text-sm" : "text-base"
+              }`}
+            >
+              Change Theme
+            </button>
+          </li>
+        </ul>
+        <div className="mt-6">
+          <a
+            href={loggedin ? "/logout" : "/login"}
+            className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${
+              loggedin ? "text-sm" : "text-base"
+            }`}
+          >
+            {loggedin ? "Logout" : "Sign In"}
+          </a>
+        </div>
+      </div>
+    )}
+  </div>
+</nav>
+
   );
 };
 
