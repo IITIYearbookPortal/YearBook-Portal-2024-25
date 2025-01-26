@@ -1,90 +1,52 @@
-
-import { Link } from "react-router-dom"; // Used for navigation
+import React, { useState, useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { LoginContext } from "../../helpers/Context";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import styles from "./PollPage.module.css"; // Import CSS Module
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-
-import { Plus } from 'lucide-react';
+import { 
+  PlusCircle, 
+  Trash2, 
+  CheckCircle2, 
+  ChevronRight, 
+  ChevronDown 
+} from 'lucide-react';
 
 const PollPage = () => {
-  const [polls, setPolls] = useState([]); // Set to an empty array initially
+  const [polls, setPolls] = useState([]);
   const { loggedin, profile, loading } = useContext(LoginContext);
-  const [selectedPollOption, setSelectedPollOption] = useState(null);
-  const [newPoll, setNewPoll] = useState({ question: "", options: ["", ""] });
-  const [message, setMessage] = useState("");
-  const [failedPollId, setFailedPollId] = useState(null);
-  const navigate = useNavigate();
-
+  const [newPoll, setNewPoll] = useState({ 
+    question: "", 
+    options: ["", ""] 
+  });
+  const [activeSection, setActiveSection] = useState(null);
 
   const adminUsers = process.env.REACT_APP_ADMIN_USERS
     ? process.env.REACT_APP_ADMIN_USERS.split(",")
     : [];
   const isAdmin = profile && adminUsers.includes(profile.email);
-  console.log("isAdmin",adminUsers);
-  if(profile){
-    console.log("profile",profile.email);
-    console.log("profil1111e",process.env.REACT_APP_ADMIN_USERS);
-    console.log("profil1111e",process.env.REACT_APP_CLIENT_ID);
-  }
- 
-
-  
-
 
   useEffect(() => {
     if (!loading && !loggedin) {
       window.location.href = "/login";
     }
-  });
+  }, [loading, loggedin]);
 
   useEffect(() => {
-    // Fetch polls from backend
     axios
       .get(process.env.REACT_APP_API_URL + "/polls")
       .then((res) => {
-        // Check the response and log it
-        console.log(res.data);
-
-        // Assuming the data is in res.data.polls, adjust accordingly
-        setPolls(res.data.polls || []); // Ensure polls is always an array
-
+        setPolls(res.data.polls || []);
       })
-      .catch((err) => {
-        console.error("Error fetching polls:", err);
-
+      .catch(() => {
+        toast.error("Network error. Polls unavailable.");
       });
   }, []);
 
-
-
-  if (loading) {
-    return (
-      <>
-
-
-        <div class="loader">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
-        </div>
-      </>
-    );
-  }
-
-  // Check if polls is an array before calling map()
-  if (!Array.isArray(polls)) {
-    return <div>Something went wrong. No polls available.</div>;
-  }
   const handlePollSubmit = (e) => {
     e.preventDefault();
     if (!newPoll.question || newPoll.options.filter(Boolean).length < 2) {
-      // setMessage("Please provide a valid poll question and at least two options.");
-      toast.error("Please provide a valid poll question and at least two options.", { autoClose: 2000 });
+      toast.error("Minimum two options required");
       return;
     }
 
@@ -95,114 +57,166 @@ const PollPage = () => {
         createdBy: profile.email,
       })
       .then((res) => {
-        toast.success("Poll created successfully!", { autoClose: 2000 });
         setPolls([...polls, res.data.poll]);
         setNewPoll({ question: "", options: ["", ""] });
-        setMessage("");
+        setActiveSection(null);
+        toast.success("Poll Created!");
       })
-      .catch((err) => {
-        console.error("Error creating poll:", err);
-        setMessage("Failed to create poll. Please try again.");
+      .catch(() => {
+        toast.error("Poll Creation Failed");
       });
   };
 
   const handleDeletePoll = (pollId) => {
-    console.log("deleting poll with id", pollId);
-
     axios
       .delete(process.env.REACT_APP_API_URL + `/polls/${pollId}`)
       .then(() => {
-        toast.success("Poll deleted successfully!", { autoClose: 2000 });
-        setPolls(polls.filter((poll) => poll._id !== pollId)); // Remove the deleted poll from the state
+        setPolls(polls.filter((poll) => poll._id !== pollId));
+        toast.success("Poll Deleted");
       })
-      .catch((err) => {
-        console.error("Error deleting poll:", err);
-        toast.error("Failed to delete poll. Please try again.");
+      .catch(() => {
+        toast.error("Deletion Failed");
       });
   };
 
+  if (loading) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="flex justify-center items-center h-screen bg-neutral-900"
+      >
+        <motion.div 
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ 
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="w-24 h-24 border-4 border-transparent border-t-cyan-500 rounded-full"
+        />
+      </motion.div>
+    );
+  }
+
   return (
-    <>
-      <ToastContainer />
-      <div className={styles.container}>
-      <div className={styles.description}>
-        <h1 className="text-3xl font-bold text-center text-blue-800 mb-4" style={{ fontSize: "2.5rem" }}>
-          Welcome to the Polling Portal!
+    <div className="min-h-screen bg-transparent text-white p-6 max-w-4xl mx-auto">
+      <ToastContainer theme="dark" />
+
+      <motion.header 
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-center mb-12"
+      >
+        <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-emerald-400">
+          Community Pulse
         </h1>
-        <p className="text-gray-700 text-center max-w-2xl mx-auto mb-6" style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
-          Participate in engaging polls created by the community! Your opinion matters. Browse through the polls below and cast your vote. Poll results are updated in real-time, so check back to see how others voted.
-        </p>
-      </div>
+        <p className="text-neutral-400 mt-2">Amplify Collective Voices</p>
+      </motion.header>
 
-        {isAdmin && (
-          <div className={styles.createPoll}>
-            <h2 className="text-2xl font-bold text-blue-900 mb-4">Create a New Poll</h2>
-            <form onSubmit={handlePollSubmit} className="w-full max-w-4xl mx-auto p-4 space-y-6">
-              <input
-                type="text"
-                placeholder="Enter poll question"
-                value={newPoll.question}
-                onChange={(e) => setNewPoll({ ...newPoll, question: e.target.value })}
-                className={styles.input}
-              />
-              {newPoll.options.map((option, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  placeholder={`Option ${index + 1}`}
-                  value={option}
-                  onChange={(e) =>
-                    setNewPoll({
-                      ...newPoll,
-                      options: newPoll.options.map((opt, i) => (i === index ? e.target.value : opt)),
-                    })
-                  }
-                  className={styles.input}
-                />
-              ))}
-              <div className="flex gap-5" >
-                <button
-                  type="button"
-                  onClick={() => setNewPoll({ ...newPoll, options: [...newPoll.options, ""] })}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-black "
-                >
-                  <Plus className="h-5 w-5" /> Add Option
-                </button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                  Create Poll
-                </button>
-              </div>
-            </form>
+      {isAdmin && (
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="mb-8"
+        >
+          <div 
+            onClick={() => setActiveSection(activeSection === 'create' ? null : 'create')}
+            className="cursor-pointer bg-neutral-800 p-4 rounded-xl flex justify-between items-center hover:bg-neutral-700 transition"
+          >
+            <span className="font-semibold">Create New Poll</span>
+            {activeSection === 'create' ? <ChevronDown /> : <ChevronRight />}
           </div>
-        )}
-        <div className="space-y-4 mt-4">
 
-          {polls.map((poll) => (
-            <div key={poll._id} className={styles.pollCard}>
-              <h2 className={styles.pollQuestion}>{poll.question}</h2>
-              <div className={styles.buttonGroup}>
-                <Link to={`/polls/results/${poll._id}`}>
-                  <button className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 animate-pulse">Do Polling</button>
-                </Link>
-                {isAdmin && (
-                  <button class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 hover:opacity-80 hover:scale-95 transform transition-all duration-300 ease-in-out"
-                    onClick={() => handleDeletePoll(poll._id)}>
-                    Delete
+          <AnimatePresence>
+            {activeSection === 'create' && (
+              <motion.form
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                onSubmit={handlePollSubmit}
+                className="bg-neutral-800 p-6 rounded-b-xl space-y-4"
+              >
+                <input
+                  type="text"
+                  placeholder="Poll Question"
+                  value={newPoll.question}
+                  onChange={(e) => setNewPoll({ ...newPoll, question: e.target.value })}
+                  className="w-full bg-neutral-700 text-white p-3 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none"
+                />
+                
+                {newPoll.options.map((option, index) => (
+                  <input
+                    key={index}
+                    type="text"
+                    placeholder={`Option ${index + 1}`}
+                    value={option}
+                    onChange={(e) => {
+                      const newOptions = [...newPoll.options];
+                      newOptions[index] = e.target.value;
+                      setNewPoll({ ...newPoll, options: newOptions });
+                    }}
+                    className="w-full bg-neutral-700 text-white p-3 rounded-lg"
+                  />
+                ))}
+
+                <div className="flex justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setNewPoll({ ...newPoll, options: [...newPoll.options, ""] })}
+                    className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300"
+                  >
+                    <PlusCircle /> Add Option
                   </button>
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-cyan-500 to-emerald-500 text-white px-6 py-2 rounded-lg hover:opacity-90 flex items-center gap-2"
+                  >
+                    <CheckCircle2 /> Create
+                  </button>
+                </div>
+              </motion.form>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      )}
 
-                )}
-
-
-              </div>
+      <div className="space-y-4">
+        {polls.map((poll) => (
+          <motion.div
+            key={poll._id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-neutral-800 rounded-xl p-5 flex justify-between items-center group"
+          >
+            <div>
+              <h3 className="text-lg font-semibold text-neutral-200 group-hover:text-cyan-400 transition">
+                {poll.question}
+              </h3>
             </div>
-          ))}
-        </div>
+            <div className="flex items-center space-x-3">
+              <Link to={`/polls/results/${poll._id}`}>
+                <button className="bg-cyan-500/20 text-cyan-300 px-4 py-2 rounded-lg hover:bg-cyan-500/40 transition">
+                  Vote
+                </button>
+              </Link>
+              {isAdmin && (
+                <button 
+                  onClick={() => handleDeletePoll(poll._id)}
+                  className="text-red-500 hover:text-red-400 transition"
+                >
+                  <Trash2 />
+                </button>
+              )}
+            </div>
+          </motion.div>
+        ))}
       </div>
-
-    </>
+    </div>
   );
 };
-
-
 
 export default PollPage;
