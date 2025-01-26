@@ -68,7 +68,7 @@ const Navbar = () => {
   }, [loggedin, profile, user.email]);
 
   return (
-    <nav className="py-3 text-white z-50 sticky">
+    <nav className="top-4 text-white z-50 sticky">
       <div className="container px-4 mx-auto relative lg:text-sm">
         <div className="flex justify-between items-center">
           {/* Logo */}
