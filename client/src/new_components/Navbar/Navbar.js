@@ -44,6 +44,7 @@ const Navbar = () => {
       setLinks([
         { name: "Home", path: "/" },
         { name: "Search People", path: "/userlist" },
+        { name: "Polls", path: "/polls" },
         {
           name: "My Profile",
           path: `/profile/${profile.roll_no}/${profile.name}`,
@@ -92,9 +93,8 @@ const Navbar = () => {
             <li>
               <button
                 onClick={toggleTheme}
-                className={`hover:text-lightgreen cursor-pointer ${
-                  loggedin ? "text-sm" : "text-base"
-                }`}
+                className={`hover:text-lightgreen cursor-pointer ${loggedin ? "text-sm" : "text-base"
+                  }`}
               >
                 Change Theme
               </button>
@@ -105,9 +105,8 @@ const Navbar = () => {
           <div className="hidden lg:flex justify-end space-x-12 items-center bg-[#76ABAE] rounded-md">
             <a
               href={loggedin ? "/logout" : "/login"}
-              className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${
-                loggedin ? "text-sm" : "text-base"
-              }`}
+              className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${loggedin ? "text-sm" : "text-base"
+                }`}
             >
               {loggedin ? "Logout" : "Sign In"}
             </a>
@@ -129,9 +128,8 @@ const Navbar = () => {
                 <li key={index}>
                   <a
                     href={link.path}
-                    className={`hover:text-lightgreen text-center ${
-                      loggedin ? "text-sm" : "text-base"
-                    }`}
+                    className={`hover:text-lightgreen text-center ${loggedin ? "text-sm" : "text-base"
+                      }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.name}
@@ -144,9 +142,8 @@ const Navbar = () => {
                     toggleTheme();
                     setIsMobileMenuOpen(false);
                   }}
-                  className={`hover:text-lightgreen text-center ${
-                    loggedin ? "text-sm" : "text-base"
-                  }`}
+                  className={`hover:text-lightgreen text-center ${loggedin ? "text-sm" : "text-base"
+                    }`}
                 >
                   Change Theme
                 </button>
@@ -155,9 +152,8 @@ const Navbar = () => {
             <div className="mt-6">
               <a
                 href={loggedin ? "/logout" : "/login"}
-                className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${
-                  loggedin ? "text-sm" : "text-base"
-                }`}
+                className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${loggedin ? "text-sm" : "text-base"
+                  }`}
               >
                 {loggedin ? "Logout" : "Sign In"}
               </a>
