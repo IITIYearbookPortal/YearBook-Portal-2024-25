@@ -247,7 +247,7 @@ const Home = () => {
       <Element
         name="first"
         id="hero"
-        className="bg-bannerImg bg-no-repeat bg-cover bg-center relative h-[100vh] -mt-12 -pt-2"
+        className="bg-bannerImg bg-no-repeat bg-cover bg-center relative h-[100vh] -mt-10 -pt-2"
       >
         <div className="w-full h-screen flex items-end bg-blackOverlay">
           <div className="container mx-auto mb-60 px-16">
@@ -467,8 +467,8 @@ const Home = () => {
     return (
       <Element name="fourth" className="snap-start bg-lightgreen ">
         <div className="">
-           time line
-          {/* <VerticalTimeline>
+           
+          <VerticalTimeline>
             <VerticalTimelineElement
               className="vertical-timeline-element--work"
               contentStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
@@ -514,7 +514,7 @@ const Home = () => {
               <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
               <p>User Experience, Visual Design</p>
             </VerticalTimelineElement>
-          </VerticalTimeline> */}
+          </VerticalTimeline>
         </div>
       </Element>
 
