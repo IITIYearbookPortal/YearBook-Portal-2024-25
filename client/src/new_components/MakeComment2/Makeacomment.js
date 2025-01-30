@@ -173,7 +173,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           <div className="h-fit m-[12px] relative">
             <h2
               class={`text-4xl font-semibold ${
-                isDarkMode ? "text-white" : "text-black"
+                isDarkMode ? "text-white" : "text-white"
               }`}
             >
               Make a Comment
