@@ -265,16 +265,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
 
 
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'approved':
-        return 'bg-emerald-400/20 text-emerald-400';
-      case 'rejected':
-        return 'bg-red-400/20 text-red-400';
-      default:
-        return 'bg-yellow-400/20 text-yellow-400';
-    }
-  };
+
 
   const getStatusText = (status) => {
     return status.charAt(0).toUpperCase() + status.slice(1);
@@ -314,7 +305,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
 
       <div className=" mx-auto space-y-6">
         {/* Profile Card */}
-        <div className="bg-gray-900 max-w-4xl mx-auto rounded-2xl p-6 text-white">
+        <div className="bg-gray-900 max-w-4xl mt-5 mb-5 mx-auto rounded-2xl p-6 text-white">
           <div className="flex justify-between items-start mb-6">
             <div className="text-emerald-400 font-medium">Student Details</div>
 
@@ -642,7 +633,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
           </div>
         </div>
       </div>
-    </div>
+    
   );
 
   function handleDragEnd(event) {
