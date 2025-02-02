@@ -14,6 +14,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
   const [decodedToken, setDecodedToken] = useState(null);
   const { result, isStudent, setIsStudent, user, loggedin, profile, loading } =
     useContext(LoginContext);
+    console.log(profile)
 
   const { name, roll_no } = useParams();
 
@@ -140,15 +141,15 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
   };
 
   return (
-    <div className="fadeInUp h-screen">
+    <div className="fadeInUp h-screen bg-[#1F2937]">
       <ToastContainer />
       <div class="main flex flex-row items-center justify-center">
-        <div class="main2 flex justify-center flex-col w-1/2 h-6/10 ml-0">
-          <div className="mx-auto relative top-10/4 left-10/4">
+        <div class="main2 flex justify-center flex-col w-[30%] h-[400px] ml-0 bg-[#111827] rounded-2xl top-[100px]">
+          <div className="mx-auto relative top-[20px] left-10/4">
             <img
               src={user2.profImage}
               class="bg-white rounded-full object-cover border-2 border-black m-4"
-              style={{ width: "170px", height: "170px" }}
+              style={{ width: "150px", height: "150px" }}
               alt="profile"
             ></img>
           </div>
@@ -156,7 +157,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
             className={`info block p-0 ${
               isDarkMode
                 ? "bg-gray-700 text-white border-2 border-white"
-                : "bg-white text-black border-2 border-black"
+                : "bg-[#1F2937] text-white border-2 border-black"
             }`}
           >
             <div class="text-center">
@@ -168,11 +169,11 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           </div>
         </div>
 
-        <div class="flex justify-center  my-20 flex-col Comment mx-10 items-center">
+        <div class="flex justify-center  my-20 flex-col Comment mx-10 items-center ">
           <div className="h-fit m-[12px] relative">
             <h2
               class={`text-4xl font-semibold ${
-                isDarkMode ? "text-white" : "text-black"
+                isDarkMode ? "text-white" : "text-white"
               }`}
             >
               Make a Comment
@@ -190,7 +191,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
                 : "bg-white text-black border-2 border-black"
             }`}
             placeholder=" Add your Comment (upto 300 characters)"
-            style={{ height: "300px" }}
+            style={{ height: "250px" }}
           ></textarea>
           <p class="outof text-gray-500 self-end relative bottom-8 right-12">
             {300 - len}/300
@@ -205,12 +206,11 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           <>{message}</>
         </div>
       </div>
-
-      <div>
+      <div className="bg-[#1F2937]">
         <div class="hed">
           <h2
-            class={`text-4xl font-semibold ${
-              isDarkMode ? "text-white" : "text-black"
+            class={`text-4xl font-semibold items-center ${
+              isDarkMode ? "text-white" : "text-white"
             }`}
           >
             Approved Comments
@@ -220,10 +220,10 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           {comment.map((val) => {
             return (
               <div
-                className={`info w-1/4 overflow-y-auto h-40 text-black ${
+                className={`info2 w-[500px] overflow-y-auto h-40 text-black  ${
                   isDarkMode
-                    ? "bg-gray-700 text-white border-2 border-white"
-                    : "bg-white text-black border-2 border-black"
+                    ? "bg-gray-700 text-white  border-white"
+                    : "bg-[#111827] text-white  border-black"
                 }`}
               >
                 <p className="cmt">{val.comment} </p>
@@ -233,6 +233,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           })}
         </div>
       </div>
+
     </div>
   );
 }

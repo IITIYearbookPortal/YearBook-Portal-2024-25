@@ -181,7 +181,7 @@ function Fill1(props) {
         <div
           class={
             hid == 1
-              ? " h-screen w-screen   flex justify-center items-center text-1xl relative  border-b-2 "
+              ? " h-screen w-screen bg-[#222831] text-white  flex justify-center items-center text-1xl relative  border-b-2 "
               : "hidden"
           }
         >
@@ -198,7 +198,7 @@ function Fill1(props) {
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-black   rounded-2xl text-center"
+              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-black text-black rounded-2xl text-center"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -232,7 +232,7 @@ function Fill1(props) {
             {" "}
             <img
               src={Abtn}
-              class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr"
+              class="h-[50px] w-[50px] sm:h-[60px] sm:w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert"
             />{" "}
           </button>
         </div>
@@ -248,7 +248,7 @@ function Fill1(props) {
         <div
           class={
             hid == 2
-              ? " h-screen w-screen   flex justify-center items-center text-1xl relative  border-b-2 "
+              ? " h-screen w-screen bg-[#222831] text-white  flex justify-center items-center text-1xl relative  border-b-2 "
               : "hidden"
           }
         >

@@ -206,16 +206,16 @@ function Fill1(props) {
         <div
           class={
             hid == 1
-              ? " h-screen w-screen flex justify-center items-center text-1xl relative  border-b-2  fadeInRight "
+              ? " h-screen w-screen bg-[#222831] text-white  flex justify-center items-center text-1xl relative  border-b-2  fadeInRight "
               : "hidden"
           }
         >
-          <div class="h-12 top-44 text-[25px]  absolute  md:text-3xl md:top-40  lg:text-4xl lg:top-48 flex justify-center items-center tmp afu ">
+          <div class="h-12 top-[30px] sm:top-30  absolute  md:text-3xl md:top-40  lg:text-4xl lg:top-48 flex justify-center items-center tmp afu ">
             {" "}
             We want to remember you forever 🤞{" "}
           </div>
 
-          <div class=" h-10 top-56 text-[25px] absolute md:text-3xl md:top-64 lg:mt-2 lg:text-4xl flex justify-center items-center tmp afu">
+          <div class=" h-10 top-[60px] sm:top-56 absolute md:text-3xl md:top-64 lg:mt-2 lg:text-4xl flex justify-center items-center tmp afu">
             {" "}
             Do tell us your <span class="text-red-600 ml-4">
               phone number
@@ -279,7 +279,7 @@ function Fill1(props) {
                 });
               }
             }}
-            class="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black bottom-36 absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10  lg:mt-[12rem] btnh border-dashed afu "
+            class="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black bottom-[80px] absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10  lg:mt-[12rem] btnh border-dashed afu "
           >
             {" "}
             Continue{" "}
@@ -289,7 +289,7 @@ function Fill1(props) {
             <img
               src={phoneimg}
               alt="phone"
-              class=" h-[90px] w-[90px] lg:h-40 lg:w-40"
+              class="hidden sm:block h-[90px] w-[90px] lg:h-40 lg:w-40 filter invert"
             />
           </div>
 
@@ -303,24 +303,24 @@ function Fill1(props) {
         <div
           class={
             hid == 2
-              ? " h-screen w-screen   flex justify-center items-center text-1xl relative  border-b-2"
+              ? " h-screen w-screen  bg-[#222831] text-white flex justify-center items-center text-1xl relative  border-b-2"
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-44 left-4 absolute text-3xl  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center tmp afd">
+          <div class="h-12 w-full top-[80px] left-4 absolute text-[20px]  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center tmp afd">
             {" "}
             And your{" "}
-            <span class="text-red-600 ml-2 mr-2 text-5xl"> Personal </span>{" "}
+            <span class="text-red-600 ml-2 mr-2 text-[20px] md:text-5xl"> Personal </span>{" "}
             email ?{" "}
           </div>
 
-          <div class="h-14 w-48 lg:h-14 lg:w-72 absolute top-[310px] lg:top-80 mt-0 flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl afd">
+          <div class="h-14 w-48 lg:h-14 lg:w-72 absolute top-[150px] lg:top-80 mt-0 flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl afd">
             <input
               type="text"
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-black rounded-2xl text-center"
+              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 text-black border-black rounded-2xl text-center"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -340,7 +340,7 @@ function Fill1(props) {
               }
               // {EmailId != '' ? setHid(5): setHid(4)};
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 mt-60 flex items-center justify-center lg:bottom-60 absolute lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
+            class="border-2 border-black bg-white text-black h-8 w-32 mt-60 flex items-center justify-center bottom-[100px] lg:bottom-60 absolute lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -354,7 +354,7 @@ function Fill1(props) {
             {" "}
             <img
               src={Abtn}
-              class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr"
+              class="hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert"
             />{" "}
           </button>
         </div>
@@ -368,22 +368,22 @@ function Fill1(props) {
         <div
           class={
             hid == 3
-              ? " h-screen w-screen flex justify-center items-center  relative  border-b-2 "
+              ? " h-screen w-screen bg-[#222831] text-white flex justify-center items-center  relative  border-b-2 "
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-44 left-4 absolute text-[23px]  md:text-3xl md:top-40 lg:text-[34px] xl:text-4xl lg:top-48 flex justify-center items-center tmp asr ">
+          <div class="h-12 w-full top-[40px] left-4 absolute text-[18px]  md:text-3xl md:top-40 lg:text-[34px] xl:text-4xl lg:top-48 flex justify-center items-center tmp asr ">
             {" "}
             Don't take it personally "Corporate" wants to verify your phone
             number{" "}
           </div>
 
-          <div class=" h-10 w-full top-[250px] left-0 absolute md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[18px] lg:left-12 flex justify-center asr">
+          <div class=" h-10 w-full top-[180px] text-[15px] left-0 absolute md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[18px] lg:left-12 flex justify-center asr">
             {" "}
             (Enter the OTP you recieved on your phone){" "}
           </div>
 
-          <div class="h-14 w-48  absolute top-80 mt-10 flex justify-center items-center flex-row md:mt-4 lg:mt-10 lg:text-xl afu">
+          <div class="h-14 w-48  absolute top-[150px] md:top-64 mt-10 flex justify-center items-center flex-row md:mt-4 lg:mt-10 lg:text-xl afu">
             <input
               type="text"
               class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-black text-black rounded-2xl text-center"
@@ -428,7 +428,7 @@ function Fill1(props) {
 
               // { verify == true ? setHid(4) : setHid(3) };
             }}
-            class="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black bottom-36 absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-36 btnh border-dashed afu"
+            class="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black bottom-[80px] sm:bottom-36 absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-36 btnh border-dashed afu"
           >
             {" "}
             Continue{" "}
@@ -443,7 +443,7 @@ function Fill1(props) {
         <div
           class={
             hid == 4
-              ? " h-screen w-screen flex justify-center items-center text-1xl relative  border-b-2 "
+              ? " h-screen w-screen bg-[#222831] text-white flex justify-center items-center text-1xl relative  border-b-2 "
               : "hidden"
           }
         >

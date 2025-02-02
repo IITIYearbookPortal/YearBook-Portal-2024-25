@@ -53,18 +53,18 @@ const Nongrad = () => {
     // navigate(`/comment/edit/${val.user_comment_reciever_id}-${val.comment_id}-${val.comment}`);
   };
   return (
-    <div className="w-screen h-screen flex flex-col gap-y-4 justify-start items-center">
-      <h1 id="cmtm" className="text-center mt-4">
-        My Comments
-      </h1>
-      <div className="flex gap-x-4 lg:gap-x-0 lg:flex-col lg:absolute lg:right-4 lg:top-2">
-        <div className="name3 mt-4">
+    <div className="w-screen h-screen flex flex-col gap-y-4 justify-start items-center text-white bg-[#1F2937]">
+       <div className="flex text-center rounded-2xl border-4 justify center gap-x-4 py-5 lg:gap-x-0 text-[#6ccf59] lg:flex-col lg:relative  lg:top-[50px] border-black w-80 bg-[#111827] border-black ">
+        <div className="name3 ">
           <h3>Name: {token.name}</h3>
         </div>
         <div className="name3 mt-4">
           <h3>Email: {token.email}</h3>
         </div>
       </div>
+      <h1 className="text-center p-1 mt-10 font-extrabold text-4xl">
+        My Comments
+      </h1>
       <p className="text-lg text-center">
         Start Commenting on other people to view your comments here.{" "}
         <a href="/userlist" className="hover:underline">
@@ -79,7 +79,7 @@ const Nongrad = () => {
         {comments && comments.length !== 0 && (
           <>
             {comments.map((val) => (
-              <div id="comment" className="w-96">
+              <div id="comment" className="w-96 bg-[#111827] border-none">
                 <p id="commentp">{val.comment}</p>
                 <button
                   id="ebtn"

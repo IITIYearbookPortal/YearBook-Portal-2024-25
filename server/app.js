@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 
 const port = process.env.PORT || 8000;
+console.log("pr",port);
 
 app.use(express.json());
 

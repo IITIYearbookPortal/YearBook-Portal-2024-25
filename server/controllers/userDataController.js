@@ -39,7 +39,8 @@ const getUsersData = asyncHandler(async (req, res) => {
     name: user.name,
     roll_no: user.roll_no,
     department :user.department,
-    academic_program: user.academic_program
+    academic_program: user.academic_program,
+    profile_img: user.profile_img
 
   }))
 

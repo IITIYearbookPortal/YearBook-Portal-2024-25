@@ -31,6 +31,8 @@ import GoldCard from "./new_components/MemberCards/GoldCard.js";
 import BlackCard from "./new_components/MemberCards/BlackCard.js";
 import About from "./new_components/About/about.jsx";
 import DevP from "./new_components/developers_page/devp.js";
+import PollPage from './new_components/PollPage/PollPage.js';
+import PollResultsPage from "./new_components/PollPage/PollResultsPage";
 
 const App = ({ location }) => {
   const [user, setUser] = useState({});
@@ -286,6 +288,8 @@ const App = ({ location }) => {
           <Route exact path="/login" element={<Homepage2 />} />
           <Route exact path="/footer" element={<Homepage2 />} />
           <Route exact path="/logout" element={<Homepage2 />} />
+          
+          <Route path="/polls" element={<PollPage isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
 
           {/* Registration Page */}
           {/* <Route exact path="/fill/:userId/old" element={<Fill />} /> */}
@@ -330,7 +334,7 @@ const App = ({ location }) => {
               />
             }
           />
-
+           <Route path="/polls/results/:pollId" element={<PollResultsPage />} /> {/* Poll results route */}
           {/* Profile Page */}
           {/* <Route exact path="/profile/:roll/:name/old" element={<SecondLogin />} /> */}
           <Route

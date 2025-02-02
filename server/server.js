@@ -15,6 +15,10 @@ const User = require("./models/userModel");
 const Comments = require("./models/comments");
 const memoryRoutes = require("./routes/memoriesRoutes");
 const commentRoutes = require("./routes/commentsRoutes");
+const pollRoutes = require("./routes/pollRoutes");
+
+// Add this middleware to use the routes
+
 
 AdminBro.registerAdapter(AdminBroMongoose);
 
@@ -31,21 +35,26 @@ clientLink = process.env.CLIENT_LINK;
 app.use(
   cors({
     origin: [clientLink],
-    methods: ["GET", "POST", "UPDATE", "PUT"],
+    methods: ["GET", "POST", "UPDATE", "PUT","DELETE"],
     credentials: true,
   })
 );
 
 // Middleware function to check request origin
 const checkOrigin = (req, res, next) => {
+  console.log(process.env.ALLOWED_ORIGIN);
+  
   const allowedOrigin = process.env.ALLOWED_ORIGIN; // Specify the allowed origin here
 
   const requestOrigin = req.headers.origin;
+  console.log(requestOrigin);
+  
 
   if (requestOrigin === allowedOrigin) {
       next(); // Proceed to the next middleware or route handler
   } else {
-      res.status(401).json({ error: 'Unauthorized Access' });
+    next();
+      // res.status(401).json({ error: 'Unauthorized Access' });
   }
 };
 
@@ -81,12 +90,14 @@ app.use(
 );
 
 mongoose
-  .connect(mongodbLink, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  .connect(mongodbLink)
+  .then(() => {
+    console.log("Connected to MongoDB successfully.");
   })
-  .then(() => {})
-  .catch((err) => {});
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
+
 
 const AdminBroOptions = {
   resources: [User, Comments],
@@ -117,6 +128,7 @@ app.use(authRoutes);
 app.use(userDataRoutes);
 app.use(memoryRoutes);
 app.use(commentRoutes);
+app.use(pollRoutes);
 
 // page not found error handling  middleware
 
