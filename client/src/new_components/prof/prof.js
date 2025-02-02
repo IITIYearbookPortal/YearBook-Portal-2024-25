@@ -6,7 +6,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { arrayMove } from "@dnd-kit/sortable";
 import { toast, ToastContainer } from "react-toastify";
+ 
 import { Clock, Download, Filter, Grid, List, ArrowUpDown,Pencil, User, X, Mail,Trash2Icon, Phone,Delete, Building2, Calendar, Clock3, Check, Trophy, Users, Medal, GraduationCap, MessageCircle, ThumbsUp, ThumbsDown, GraduationCapIcon, Trash2 } from 'lucide-react';
+
 import "react-toastify/dist/ReactToastify.css";
 
 export const Prof = ({ isDarkMode, setIsDarkMode }) => {
@@ -248,6 +250,19 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
     navigate(`/comment/edit/${val.comment_reciever_roll_no}/${val.comment_id}`);
     // navigate(`/comment/edit/${val.user_comment_reciever_id}-${val.comment_id}-${val.comment}`);
   };
+  
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-emerald-400/20 text-emerald-400';
+      case 'rejected':
+        return 'bg-red-400/20 text-red-400';
+      default:
+        return 'bg-yellow-400/20 text-yellow-400';
+    }
+  };
+
 
 
   const getStatusColor = (status) => {
@@ -265,6 +280,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
   const [comments, setComments] = useState([
+
     {
       id: 1,
       author: "Prof. Sarah Johnson",
@@ -295,6 +311,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
   ]);
   return (
     <div className="min-h-screen bg-gray-800 p-6">
+
       <div className=" mx-auto space-y-6">
         {/* Profile Card */}
         <div className="bg-gray-900 max-w-4xl mx-auto rounded-2xl p-6 text-white">
@@ -343,9 +360,11 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                 <div>
                   <div className="text-2xl font-bold">About</div>
                   <div className="text-gray-400 text-sm">{profile.about}</div>
+
                 </div>
               </div>
             </div>
+          </div>
 
           </div>
         </div>
@@ -411,6 +430,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
             </div>
           
             
+
 
 
           </div>
@@ -479,6 +499,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                   </div>
                 </div>
                
+
 
 
               </div>
@@ -616,6 +637,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
 
               </div>
             </div>
+
 
           </div>
         </div>
