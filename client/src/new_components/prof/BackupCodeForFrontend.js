@@ -302,14 +302,12 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
   ]);
   return (
     <div className="min-h-screen bg-gray-800 p-6">
-      <ToastContainer />
-      <div className="mx-auto space-y-6">
+
+      <div className=" mx-auto space-y-6">
         {/* Profile Card */}
         <div className="bg-gray-900 max-w-4xl mt-5 mb-5 mx-auto rounded-2xl p-6 text-white">
           <div className="flex justify-between items-start mb-6">
             <div className="text-emerald-400 font-medium">Student Details</div>
-
-            <div className="p-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 "><button>Edit Profile</button></div>
 
           </div>
 
@@ -349,252 +347,308 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
           <div className="w-full gap-4 mt-8">
             <div className="bg-gray-800 rounded-xl p-4">
               <div className="flex px-2 items-center gap-3">
+
                 <div>
                   <div className="text-2xl font-bold">About</div>
                   <div className="text-gray-400 text-sm">{profile.about}</div>
+
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-6">
-            <button
-              onClick={() => {
-                const ans = window.confirm("Are you sure you want to edit your Profile?");
-                if (ans) {
-                  navigate(`/edit/${profile.roll_no}/${profile.name}`);
-                }
-              }}
-              className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
-            >
-              <Pencil className="w-4 h-4" />
-              <span>Edit Profile</span>
-            </button>
           </div>
         </div>
 
-        {/* Approved Comments Section */}
-        <div className="bg-gray-900 max-w-4xl mx-auto h-[55vh] overflow-y-scroll rounded-2xl px-6 py-3 text-white">
+        {/* Approvals Section */}
+
+        <div className="bg-gray-900 max-w-4xl mx-auto h-[55vh]  overflow-y-scroll rounded-2xl px-6 py-3 text-white">
           <div className="flex justify-between items-center mb-6">
-
-          <div className="">
-              <div className="text-emerald-400 font-bold">Approved Comments </div>
-              <div className="text-gray-300 font-medium">Top twelve comments will be shown on the yearbook (Drag to reorder comments)</div>
-              </div>
+            <div className="text-emerald-400 font-medium">Approved Comments</div>
 
           </div>
 
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="approvedComments">
-              {(provided) => (
-                <div 
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="space-y-4"
-                >
-                  {approvedComments && approvedComments.map((val, index) => (
-                    <Draggable key={val._id} draggableId={val._id} index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="bg-gray-800 rounded-xl p-4"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-start gap-3">
-                              <img
-                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <h4 className="font-medium">{val.name}</h4>
-                                </div>
-                                <p className="text-gray-300 mt-1">{val.comment}</p>
-                                <div className="flex items-center gap-3 mt-2">
-                                  <button
-                                    onClick={() => {
-                                      const ans = window.confirm("Are you sure you want to remove your Approved Comment?");
-                                      if (ans) {
-                                        removeApprovedComment(val.order, val.comment, val.who, index);
-                                      }
-                                    }}
-                                    className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors"
-                                  >
-                                    <X className="w-4 h-4" />
-                                    <span>Remove</span>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
+          <div className="space-y-4">
+            <div key="1" className="bg-gray-800 rounded-xl p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <img
+                    src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
+                    alt="John Doe"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-medium">John Doe</h4>
+                    </div>
+                    <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
+                    <div className="flex items-center gap-3 mt-2">
+                   
+                  <button className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors">
+                    <X className="w-4 h-4" />
+                    <span>Reject</span>
+                  </button>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+                
+              </div>
+            </div>
+            <div key="2" className="bg-gray-800 rounded-xl p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <img
+                    src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
+                    alt="John Doe"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-medium">John Doe</h4>
+                    </div>
+                    <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
+                    <div className="flex items-center gap-3 mt-2">
+                   
+                  <button className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors">
+                    <X className="w-4 h-4" />
+                    <span>Reject</span>
+                  </button>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          
+            
+
+
+
+          </div>
+
         </div>
+        {/* comments Section */}
+        <div className=" w-[80vw] mx-auto rounded-2xl p-6 text-white">
+          <div className="  lg:flex gap-2 rounded-2xl text-white">
+            {/* my comments Section */}
+            <div className="h-[70vh]  overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
+              <div className=" mb-6">
+                <div className="text-emerald-400 font-bold">My Comments </div>
+                <div className="text-gray-300 font-medium">Comment on other people to view them here </div>
 
-        {/* Comments Section */}
-        <div className="w-[80vw] mx-auto rounded-2xl p-6 text-white">
-          <div className="lg:flex gap-2 rounded-2xl text-white">
-            {/* My Comments Section */}
-            <div className="h-[70vh] w-1/3 overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
-              <div className="mb-6">
-                <div className="text-emerald-400 font-bold">My Comments</div>
-                <div className="text-gray-300 font-medium">Comment on other people to view them here</div>
               </div>
 
-              <div className="space-y-4">
-                {comments && comments.map((val, index) => (
-                  <div key={index} className="bg-gray-800 rounded-xl p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
+              <div className=" space-y-4">
+                <div key="1" className="bg-gray-800 rounded-xl p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
                       <img
-                                  src={val.comment_receiver_image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium">{val.comment_reciever_name}</h4>
-                          </div>
-                          <p className="text-gray-300 mt-1">{val.comment}</p>
-                          <div className="flex items-center gap-3 mt-2">
-                            <button
-                              onClick={() => HandlEdit(val)}
-                              className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
-                            >
-                              <Pencil className="w-4 h-4" />
-                              <span>Edit</span>
-                            </button>
-                          </div>
+                        src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
+                        alt="John Doe"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">John Doe</h4>
+                        </div>
+                        <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
+                        <div className="flex items-center gap-3 mt-2">
+
+                        <button className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors">
+                        <Pencil className="w-4 h-4" />
+                        <span>Edit</span>
+                      </button>
                         </div>
                       </div>
                     </div>
+                   
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* New Comments Section */}
-            <div className="h-[70vh] w-1/3 overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
-              <div className="mb-6">
-                <div className="text-emerald-400 font-bold">New Comments</div>
-                <div className="text-gray-300 font-medium">Comments that your friends make on you will be shown here</div>
-              </div>
-
-              <div className="space-y-4">
-                {newComments && newComments.map((val, index) => (
-                  <div key={index} className="bg-gray-800 rounded-xl p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
+                </div>
+                <div key="2" className="bg-gray-800 rounded-xl p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
                       <img
-                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium">{val.name}</h4>
-                          </div>
-                          <p className="text-gray-300 mt-1">{val.comment}</p>
-                          <div className="flex pt-3 gap-2">
-                            <button
-                              disabled={state}
-                              onClick={async (e) => {
-                                e.preventDefault();
-                                const confirmed = window.confirm("Are you sure you want to approve this comment?");
-                                if (confirmed) {
-                                  await axios.put(process.env.REACT_APP_API_URL + "/setApprovedComments", {
-                                    _id: val._id,
-                                    id: val.id,
-                                    comment_reciever_id: profile._id,
-                                    comment: val.comment,
-                                    comment_reciever_roll_no: comment_reciever_roll_no,
-                                  });
-                                  setState(true);
-                                  setTimeout(() => {
-                                    setState(false);
-                                  }, 7000);
-                                  window.location.reload();
-                                }
-                              }}
-                              className="p-2 flex items-center gap-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
-                            >
-                              <Check className="w-4 h-4" />
-                              <span>Approve</span>
-                            </button>
-                            <button
-                              disabled={state}
-                              onClick={async (e) => {
-                                e.preventDefault();
-                                const confirmed = window.confirm("Are you sure you want to reject this comment?");
-                                if (confirmed) {
-                                  await axios.post(process.env.REACT_APP_API_URL + "/setRejectedComments", {
-                                    comment: val.comment,
-                                    _id: val._id,
-                                    id: val.id,
-                                    comment_reciever_id: profile._id,
-                                    comment_reciever_roll_no: comment_reciever_roll_no,
-                                  });
-                                  setState(true);
-                                  setTimeout(() => {
-                                    setState(false);
-                                  }, 20000);
-                                  window.location.reload();
-                                }
-                              }}
-                              className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors"
-                            >
-                              <X className="w-4 h-4" />
-                              <span>Reject</span>
-                            </button>
-                          </div>
+                        src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
+                        alt="John Doe"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">John Doe</h4>
+                        </div>
+                        <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
+                        <div className="flex items-center gap-3 mt-2">
+
+                        <button className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors">
+                        <Pencil className="w-4 h-4" />
+                        <span>Edit</span>
+                      </button>
                         </div>
                       </div>
                     </div>
+                   
                   </div>
-                ))}
+                </div>
+               
+
+
+
               </div>
             </div>
-
-            {/* Rejected Comments Section */}
-            <div className="h-[70vh] w-1/3 overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
-              <div className="mb-6">
-                <div className="text-emerald-400 font-bold">Rejected Comments</div>
-                <div className="text-gray-300 font-medium">Comments you reject will be shown here. (Remember, you cannot restore these comments!)</div>
+            {/* new comments Section */}
+            <div className="h-[70vh]  overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
+              <div className=" mb-6">
+              <div className="text-emerald-400 font-bold">New Comments </div>
+              <div className="text-gray-300 font-medium">Comment that your friends make on you will be shown here </div>
               </div>
 
-              <div className="space-y-4">
-                {rejectedComments && rejectedComments.map((val, index) => (
-                  <div key={index} className="bg-gray-800 rounded-xl p-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3">
+              <div className=" space-y-4">
+                <div key="1" className="bg-gray-800 rounded-xl p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
                       <img
-                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium">{val.name}</h4>
-                          </div>
-                          <p className="text-gray-300 mt-1">{val.comment}</p>
+                        src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
+                        alt="John Doe"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">John Doe</h4>
+                        </div>
+                        <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
+                        <div className="flex pt-3 gap-2">
+                      <button className="p-2 flex items-center gap-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors">
+                        <Check className="w-4 h-4" />
+                        <span>Approve</span>
+                      </button>
+                      <button className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors">
+                        <X className="w-4 h-4" />
+                        <span>Reject</span>
+                      </button>
+                    </div>
+                      </div>
+                    </div>
+                   
+                  </div>
+                </div>
+                <div key="2" className="bg-gray-800 rounded-xl p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
+                      <img
+                        src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
+                        alt="John Doe"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">John Doe</h4>
+                        </div>
+                        <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
+                        <div className="flex pt-3 gap-2">
+                      <button className="p-2 flex items-center gap-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors">
+                        <Check className="w-4 h-4" />
+                        <span>Approve</span>
+                      </button>
+                      <button className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors">
+                        <X className="w-4 h-4" />
+                        <span>Reject</span>
+                      </button>
+                    </div>
+                      </div>
+                    </div>
+                   
+                  </div>
+                </div>
+                
+
+
+              </div>
+            </div>
+            {/* rejected comments Section */}
+            
+            <div className="h-[70vh]  overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
+              <div className=" mb-6">
+              <div className="text-emerald-400 font-bold">Rejected Comments </div>
+              <div className="text-gray-300 font-medium">Comments you reject will  will be shown here. (Remember, you cannot restore these comments!) </div>
+              </div>
+
+              <div className=" space-y-4">
+                <div key="1" className="bg-gray-800 rounded-xl p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
+                      <img
+                        src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
+                        alt="John Doe"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">John Doe</h4>
+                        </div>
+                        <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
+                        <div className="flex items-center gap-3 mt-2">
+
+                        <button className="p-2 flex items-center gap-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors">
+                        <Check className="w-4 h-4" />
+                        <span>Approve</span>
+                      </button>
                         </div>
                       </div>
                     </div>
+                   
                   </div>
-                ))}
+                </div>
+                <div key="2" className="bg-gray-800 rounded-xl p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
+                      <img
+                        src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
+                        alt="John Doe"
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">John Doe</h4>
+                        </div>
+                        <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
+                        <div className="flex items-center gap-3 mt-2">
+
+                        <button className="p-2 flex items-center gap-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors">
+                        <Check className="w-4 h-4" />
+                        <span>Approve</span>
+                      </button>
+                        </div>
+                      </div>
+                    </div>
+                   
+                  </div>
+                </div>
+               
+
+
               </div>
             </div>
+
+
           </div>
         </div>
       </div>
-    </div>
+    
   );
+
+  function handleDragEnd(event) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setApprovedComments((items) => {
+        const activeIndex = items.indexOf(active.id);
+        const overIndex = items.indexOf(over.id);
+        return arrayMove(items, activeIndex, overIndex);
+        // items: [2, 3, 1]   0  -> 2
+        // [1, 2, 3] oldIndex: 0 newIndex: 2  -> [2, 3, 1]
+      });
+    }
+  }
 };
 
 export default Prof;
