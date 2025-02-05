@@ -308,6 +308,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
         <div className="bg-gray-900 max-w-4xl mt-5 mb-5 mx-auto rounded-2xl p-6 text-white">
           <div className="flex justify-between items-start mb-6">
             <div className="text-emerald-400 font-medium">Student Details</div>
+            <div className="p-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 "><button>Edit Profile</button></div>
 
           </div>
 
@@ -364,8 +365,10 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
 
         <div className="bg-gray-900 max-w-4xl mx-auto h-[55vh]  overflow-y-scroll rounded-2xl px-6 py-3 text-white">
           <div className="flex justify-between items-center mb-6">
-            <div className="text-emerald-400 font-medium">Approved Comments</div>
-
+          <div className="">
+              <div className="text-emerald-400 font-bold">Approved Comments </div>
+              <div className="text-gray-300 font-medium">Top twelve comments will be shown on the yearbook (Drag to reorder comments)</div>
+              </div>
           </div>
 
           <div className="space-y-4">
