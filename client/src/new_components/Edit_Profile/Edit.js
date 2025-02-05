@@ -203,7 +203,7 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
             className={`leftprt ${
               isDarkMode
                 ? "bg-gray-700 border-2 border-white"
-                : "bg-white border-2 border-black"
+                : " bg-[#111827] border-2 border-black"
             }`}
           >
             <h2> </h2>
@@ -539,7 +539,7 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
             </button>
 
             {upload && (
-              <h3 class={`${isDarkMode ? "text-white" : "text-black"}`}>
+              <h3 class={`${isDarkMode ? "text-white" : "text-white"}`}>
                 {wait && "Wait... while image is uploading"}
                 {imageUploaded && "Image Uploaded"}
               </h3>
