@@ -717,7 +717,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                   borderColor: "white",
                   paddingRight: "10px",
                   paddingLeft: "10px",
-                  borderRadius: "10px"
+                  borderRadius: "10px",
+                  backgroundColor: "white",
                 },
               }}
             />
@@ -786,7 +787,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
+              class="h-[32px] w-[200px] lg:h-10 lg:w-[500px] lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });

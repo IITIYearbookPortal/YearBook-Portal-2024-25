@@ -374,7 +374,7 @@ const getComments = asyncHandler(async (req, res) => {
             user_comment_reciever_id: user.comment_reciever_id._id,
             comment_reciever_roll_no: user.comment_reciever_id.roll_no,
             order: comment.order,
-            // who: false,
+            comment_receiver_image: user.comment_reciever_id.profile_img,
           });
         }
       });
