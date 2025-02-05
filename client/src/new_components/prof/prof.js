@@ -309,7 +309,13 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
           <div className="flex justify-between items-start mb-6">
             <div className="text-emerald-400 font-medium">Student Details</div>
 
-            <div className="p-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 "><button>Edit Profile</button></div>
+            <div onClick={() => {
+                const ans = window.confirm("Are you sure you want to edit your Profile?");
+                if (ans) {
+                  navigate(`/edit/${profile.roll_no}/${profile.name}`);
+                }
+              }}
+              className="p-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 "><button>Edit Profile</button></div>
 
           </div>
 
@@ -357,20 +363,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
             </div>
           </div>
 
-          <div className="mt-6">
-            <button
-              onClick={() => {
-                const ans = window.confirm("Are you sure you want to edit your Profile?");
-                if (ans) {
-                  navigate(`/edit/${profile.roll_no}/${profile.name}`);
-                }
-              }}
-              className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
-            >
-              <Pencil className="w-4 h-4" />
-              <span>Edit Profile</span>
-            </button>
-          </div>
+        
         </div>
 
         {/* Approved Comments Section */}
