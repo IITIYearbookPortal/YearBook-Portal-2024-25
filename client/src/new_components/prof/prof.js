@@ -395,6 +395,10 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex items-start gap-3">
+                              <img
+                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
                               <div>
                                 <div className="flex items-center gap-2">
                                   <h4 className="font-medium">{val.name}</h4>
@@ -443,6 +447,10 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                   <div key={index} className="bg-gray-800 rounded-xl p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
+                      <img
+                                  src={val.comment_receiver_image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
                         <div>
                           <div className="flex items-center gap-2">
                             <h4 className="font-medium">{val.comment_reciever_name}</h4>
@@ -477,6 +485,10 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                   <div key={index} className="bg-gray-800 rounded-xl p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
+                      <img
+                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
                         <div>
                           <div className="flex items-center gap-2">
                             <h4 className="font-medium">{val.name}</h4>
@@ -554,6 +566,10 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                   <div key={index} className="bg-gray-800 rounded-xl p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
+                      <img
+                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
                         <div>
                           <div className="flex items-center gap-2">
                             <h4 className="font-medium">{val.name}</h4>
