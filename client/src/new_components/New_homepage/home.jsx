@@ -18,11 +18,14 @@ import jwt_decode from "jwt-decode";
 import bg from "./bg-1.jpg";
 
 //timeline 
-import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
 import 'react-vertical-timeline-component/style.min.css';
-import WorkIcon from '@mui/icons-material/Work';
-import SchoolIcon from '@mui/icons-material/School';
-import StarIcon from '@mui/icons-material/Star';
+
+const timelineData = [
+  { year: "2021", title: "'Education is not just about knowledge, but about shaping the future.'" },
+  { year: "2022", title: " 'In the halls of learning, innovation knows no bounds.'" },
+  { year: "2023", title: "'Collaboration and curiosity fuel the brightest minds on campus.'" },
+  { year: "2024", title: "'The seeds of success are sown in the classrooms of today.'" }
+];
 
 
 
@@ -396,130 +399,103 @@ const Home = () => {
   };
 
   const ThirdPage = () => {
+
+    //timeline page
+
+
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 868);
+  
+    useEffect(() => {
+      const handleResize = () => setIsMobile(window.innerWidth < 868);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     return (
       <Element
         name="third"
-        className="snap-start bg-darkbg min-h-screen flex flex-col items-center justify-center relative text-white  bg-cover p-4"
-      // style={{
-      //   backgroundImage: `url(/images/global/dark3.png)`, //  background image
-      //   backgroundSize: "cover",
-      //   backgroundRepeat: "no-repeat",
-      // }}
+        className="snap-start bg-darkbg min-h-screen   bg-cover p-10"
+     
       >
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-lg md:text-3xl text-center leading-loose"
-        >
-          In{" "}
-          <span className="text-3xl md:text-5xl">
-            20<span className="text-[#d94d3c]">21</span>
-          </span>
-          , we learnt how to embrace
-        </motion.h1>
-        <br />
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="text-5xl   text-center"
-        >
-          SICKNESS
-        </motion.h1>
+     {isMobile ? (
+      <div className="flex flex-col items-center w-full px-4 sm:px-8 md:px-16 lg:px-32 py-10 0 text-white">
+      <h2 className="text-3xl font-bold mb-10 text-white">Timeline</h2>
+      <div className="relative w-full max-w-5xl">
+        <div className="absolute left-1/2 w-1 h-full transform bg-gray-600 -translate-x-1/2"></div>
+        {timelineData.map((item, index) => (
+          <div
+            key={index}
+            className={`flex ${index % 2 === 0 ? "justify-start" : "justify-end"} w-full mb-8 relative`}
+          >
+            {/* Combine year and title in one vertically-aligned container */}
+            <div className="w-1/2 flex flex-col px-4">
+              <div className="flex flex-col items-start">
+                <div className="bg-lightgreen text-black px-4 py-2 rounded-lg font-bold">{item.year}</div>
+                <div className="mt-2 p-4 rounded-lg shadow-lg text-sm sm:text-base">{item.title}</div>
+              </div>
+            </div>
+            <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-lightgreen rounded-full border-4 border-gray-900"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+     
+      ) :(
+        
+    <div className="p-8  text-white">
+        <motion.h2
+        viewport={{ once: true }}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        className="text-6xl font-bold mb-14  text-white text-center ">
+          Timeline
+        </motion.h2>
 
-        <motion.img
-          viewport={{ once: false }}
-          initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: -30 }}
-          transition={{ duration: 1, delay: 2 }}
-          src="/images/homepage/covid.png"
-          alt=""
-          className="absolute left-4 md:left-0 bottom-32 md:bottom-50 w-28 md:w-52 exclude-dark-mode"
-        />
-        <motion.img
-          viewport={{ once: false }}
-          initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: -30 }}
-          transition={{ duration: 1, delay: 1 }}
-          src="/images/homepage/covid.png"
-          alt=""
-          className="absolute left-[50%] bottom-0 w-16 md:w-32 exclude-dark-mode"
-        />
-        <motion.img
-          viewport={{ once: false }}
-          initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-          whileInView={{ opacity: 1, scale: 1, rotate: 30 }}
-          transition={{ duration: 1, delay: 3 }}
-          src="/images/homepage/covid.png"
-          alt=""
-          className="absolute right-0 top-10 w-32 md:w-40 exclude-dark-mode"
-        />
-      </Element>
-    );
-  };
-
-  const FourthPage = () => {
-
-    // timeline page 
-    return (
-      <Element name="fourth" className="snap-start bg-lightgreen ">
-        <div className="">
-           
-          <VerticalTimeline>
-            <VerticalTimelineElement
-              className="vertical-timeline-element--work"
-              contentStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
-              contentArrowStyle={{ borderRight: "7px solid  rgb(33, 150, 243)" }}
-              date="2011 - present"
-              iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
-              icon={<WorkIcon />}
-            >
-              <h3 className="vertical-timeline-element-title">Creative Director</h3>
-              <h4 className="vertical-timeline-element-subtitle">Miami, FL</h4>
-              <p>
-                Creative Direction, User Experience, Visual Design, Project Management,
-                Team Leading
-              </p>
-            </VerticalTimelineElement>
-            <VerticalTimelineElement
-              className="vertical-timeline-element--work"
-              date="2010 - 2011"
-              iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
-              icon={<WorkIcon />}
-            >
-              <h3 className="vertical-timeline-element-title">Art Director</h3>
-              <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
-              <p>Creative Direction, User Experience, Visual Design, SEO, Online Marketing</p>
-            </VerticalTimelineElement>
-            <VerticalTimelineElement
-              className="vertical-timeline-element--work"
-              date="2008 - 2010"
-              iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
-              icon={<WorkIcon />}
-            >
-              <h3 className="vertical-timeline-element-title">Web Designer</h3>
-              <h4 className="vertical-timeline-element-subtitle">Los Angeles, CA</h4>
-              <p>User Experience, Visual Design</p>
-            </VerticalTimelineElement>
-            <VerticalTimelineElement
-              className="vertical-timeline-element--work"
-              date="2006 - 2008"
-              iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
-              icon={<WorkIcon />}
-            >
-              <h3 className="vertical-timeline-element-title">Web Designer</h3>
-              <h4 className="vertical-timeline-element-subtitle">San Francisco, CA</h4>
-              <p>User Experience, Visual Design</p>
-            </VerticalTimelineElement>
-          </VerticalTimeline>
+       <div className="mt-48">
+        <div className={`flex flex-row items-center relative mx-4 mt-20`}> 
+            <div
+            className={`absolute left-1/2 transform -translate-x-1/2 rounded-full border-4 border-gray-500 "h-1 w-full top-2`}></div>
+          <div className={`flex align-text-bottom`}>
+          {timelineData.map((item, index) => (
+            <motion.div
+              key={index}
+              className={`flex flex-row gap-4 relative mb-8`}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1.5, delay: index * 0.2 }}
+            ><div className={`mr-4px`}>
+              <div className="w-2 h-2 bg-lightgreen rounded-full -translate-y-[-8px] z-10"></div>
+              <div className={`mt-2`}>
+              <div className="text-lg font-semibold bg-lightgreen text-black p-2 rounded-lg mt-5 h-[40px] w-max">{item.year}</div>
+              <div className="mt-2 rounded-lg shadow-lg text-sm sm:text-base mr-3 flex-grow p-2">{item.title}</div>
+              </div>
+              </div>
+            </motion.div>
+          ))}</div>
         </div>
+        </div>
+      </div> 
+      )}
+             
       </Element>
-
     );
   };
+
+  // const FourthPage = () => {
+
+  //   
+  //   return (
+  //     <Element name="fourth" className="snap-start bg-lightgreen ">
+  //       <div className="">
+           
+  //         timeline 
+  //       </div>
+  //     </Element>
+
+  //   );
+  // };
 
   // const FifthPage = () => {
   //   return (
@@ -656,7 +632,7 @@ const Home = () => {
           ref={containerref} className="sticky rounded-xl  inset-0 w-full h-full overflow-hidden ">
           <motion.div
 
-            className="bg-black rounded-xl absolute flex flex-wrap h-full inset-0  "
+            className="bg-greenOverlay rounded-xl absolute flex flex-wrap h-full inset-0  "
             style={{ scale }}
           >
             <img
@@ -1201,7 +1177,7 @@ const Home = () => {
       //       </Element>
       <Element
         name="sixth"
-        className="snap-start relative h-screen flex flex-col items-center justify-center bg-cover bg-darkbg text-white overflow-hidden "
+        className="snap-start relative min-h-screen flex flex-col items-center justify-center bg-cover bg-darkbg text-white overflow-hidden "
 
       >
         <div className="flex flex-col md:flex-row items-center w-full h-full overflow-hidden mt-10">
@@ -1268,7 +1244,7 @@ const Home = () => {
 
           {/* SVG Section */}
           <motion.svg
-            className="w-full md:w-1/2 h-48 md:h-96 mt-6 md:mt-0 overflow-hidden"
+            className="w-full md:w-1/2 h-96 md:h-96 mt-6 md:mt-0 overflow-hidden pb-5 "
             viewport={{ once: true }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1662,11 +1638,11 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
     );
   };
 
-  const SeventhPage = (props) => {
+  const SeventhPage = () => {
     return (
       <Element
         id="signin"
-        className="snap-start relative h-screen flex items-center justify-center bg-greenOverlay overflow-hidden"
+        className="snap-start relative py-20 flex items-center justify-center bg-greenOverlay overflow-hidden"
       >
         <div className="container mx-auto px-4 sm:px-2 md:px-8 lg:px-16 flex flex-col md:flex-row items-center justify-between">
           <motion.div
@@ -1675,7 +1651,7 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="relative w-full max-w-full h-[250px] sm:h-[350px] md:h-[450px] lg:h-[500px] rounded-2xl overflow-hidden shadow-xl">
+            <div className="relative w-full max-w-full h-[500px]  rounded-2xl overflow-hidden shadow-xl">
               <img
                 src="/images/homepage/sunset.jpg"
                 alt="Sign In Illustration"
@@ -1690,7 +1666,7 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
             transition={{ duration: 0.8 }}
           >
             <motion.h1
-              className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-2 sm:mb-4 md:mb-6 flex flex-col items-center max-w-full"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mt-2 mb-2 sm:mb-4 md:mb-6 flex flex-col items-center max-w-full"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
@@ -1751,7 +1727,7 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
         <FirstPage />
         <SecondPage />
         <ThirdPage />
-        <FourthPage />
+        {/* <FourthPage /> */}
         <FifthPage />
         <SixthPage />
         <div ref={loginComponentRef}>
