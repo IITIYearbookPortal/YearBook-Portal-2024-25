@@ -49,7 +49,7 @@ const Navbar = () => {
           name: "My Profile",
           path: `/profile/${profile.roll_no}/${profile.name}`,
         },
-        { name: "My Black Card", path: "/blackcard" },
+        { name: "Black Card", path: "/blackcard" },
         { name: "More Links", path: "/footer" },
         { name: "Logout", path: "/logout" },
       ]);
@@ -69,9 +69,9 @@ const Navbar = () => {
   }, [loggedin, profile, user.email]);
 
   return (
-    <nav className="top-4 text-white z-50 sticky">
-      <div className="container px-4 mx-auto relative lg:text-sm">
-        <div className="flex justify-between items-center">
+    <nav className=" text-white z-50 sticky bg-black bg-opacity-50">
+      <div className="container px-4 mx-auto relative lg:text-sm ">
+        <div className="flex justify-between items-center py-3">
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
             <img src={logo} alt="logo" className="h-10 w-10 mr-2" />
@@ -79,7 +79,7 @@ const Navbar = () => {
           </div>
 
           {/* Centered Links (Desktop View) */}
-          <ul className="absolute left-1/2 transform -translate-x-1/2 hidden lg:flex space-x-12 text-base">
+          <ul className="absolute left-1/2 font-bold transform -translate-x-1/2 hidden lg:flex space-x-12 text-base">
             {links.map((link, index) => (
               <li key={index}>
                 <a
@@ -90,15 +90,7 @@ const Navbar = () => {
                 </a>
               </li>
             ))}
-            <li>
-              <button
-                onClick={toggleTheme}
-                className={`hover:text-lightgreen cursor-pointer ${loggedin ? "text-sm" : "text-base"
-                  }`}
-              >
-                Change Theme
-              </button>
-            </li>
+            
           </ul>
 
           {/* Sign In Button */}
