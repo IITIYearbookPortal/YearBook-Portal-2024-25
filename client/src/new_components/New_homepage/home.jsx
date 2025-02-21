@@ -327,71 +327,61 @@ const Home = () => {
     return (
       <Element
         name="second"
-        className="relative bg-greenOverlay snap-start min-h-screen flex justify-center bg-cover p-4"
+        className="relative bg-black snap-start min-h-screen flex flex-col justify-center items-center bg-cover p-4"
       >
-        <div className="w-full h-screen flex items-start md:mt-20">
-          <div className="container mx-auto mb-20 px-4 md:mb-40 md:px-10 lg:mb-60 lg:ml-20 mt-8">
-            {/* First Heading */}
-            <motion.h1
-              viewport={{ once: true }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="text-5xl md:text-5xl lg:text-6xl text-left ml-5 md:ml-8 lg:ml-12 px-4 md:px-10 lg:px-20"
-            >
-              "Relive the good times,
-              <br />
-            </motion.h1>
+      <div className="relative w-full h-full flex flex-col items-center text-center">
+        <motion.h1
+          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-3xl text-[#fee06d] sm:text-4xl md:text-5xl lg:text-6xl px-4"
+        >
+          "Relive the good times,
+        </motion.h1>
 
-            {/* Second Heading */}
-            <motion.h1
-              viewport={{ once: true }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-              className="text-5xl md:text-5xl lg:text-6xl text-left mt-2 md:mt-4 px-4 md:px-10 lg:px-20 ml-4 md:ml-8 lg:ml-12"
-            >
-              one cherished comment at a time"
-              <br />
-            </motion.h1>
+        <motion.h1
+          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-3xl text-[#fee06d] sm:text-4xl md:text-5xl lg:text-6xl mt-2 px-4"
+        >
+          one cherished comment at a time"
+        </motion.h1>
 
-            {/* Description */}
-            <div className="flex items-start justify-center min-h-screen">
-              <div className="container mx-auto max-w-2xl md:max-w-3xl">
-                <motion.h1
-                  viewport={{ once: true }}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1, delay: 1 }}
-                  className="text-md md:text-lg lg:text-2xl text-center mt-6 px-4"
-                >
-                  This is your space to capture and celebrate the memories that made your college journey special. From heartfelt farewells to funny moments, every comment holds a piece of your story. Relive the laughter, friendships, and milestones that shaped these unforgettable years.
-                </motion.h1>
-              </div>
-            </div>
+        <motion.p
+          viewport={{ once: true }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1 }}
+          className="text-md text-[#a1cfe9] sm:text-lg md:text-xl lg:text-2xl mt-8 max-w-3xl px-6 sm:px-10 lg:px-20"
+        >
+          This is your space to capture and celebrate the memories that made your college journey special. From heartfelt farewells to funny moments, every comment holds a piece of your story. Relive the laughter, friendships, and milestones that shaped these unforgettable years.
+        </motion.p>
 
-
-            {/* Images */}
-            <motion.img
-              viewport={{ once: false }}
-              initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-              whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
-              transition={{ duration: 1, delay: 1 }}
-              src="/images/homepage/24-yearbook.png"
-              alt=""
-              className="absolute left-22 sm:left-15 md:left-15 lg:right-20 bottom-20 sm:bottom-20 md:bottom-40 lg:top-40 w-32 h-32 sm:w-32 sm:h-32 lg:w-48 lg:h-48 exclude-dark-mode"
-            />
-            <motion.img
-              viewport={{ once: false }}
-              initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-              whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
-              transition={{ duration: 1, delay: 1 }}
-              src="/images/homepage/24-yearbook.png"
-              alt=""
-              className="absolute right-4 sm:right-10 md:right-20 lg:right-40 bottom-20 sm:bottom-28 md:bottom-36 w-32 h-32 sm:w-32 sm:h-32 lg:w-48 lg:h-48 exclude-dark-mode"
-            />
-          </div>
+        <div className="relative w-full h-full flex flex-col items-center justify-center mt-8 sm:flex-row sm:justify-center lg:space-x-20 md:space-x-20">
+          <motion.img
+            viewport={{ once: false }}
+            initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+            whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
+            transition={{ duration: 1, delay: 1 }}
+            src="/images/homepage/24-yearbook.png"
+            alt="Yearbook 2024"
+            className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-48 lg:h-48 exclude-dark-mode"
+          />
+          <motion.img
+            viewport={{ once: false }}
+            initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+            whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
+            transition={{ duration: 1, delay: 1 }}
+            src="/images/homepage/23-yearbook.png"
+            alt="Yearbook 2023"
+            className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-48 lg:h-48 exclude-dark-mode mt-4 sm:mt-0"
+          />
         </div>
+      </div>
+    
       </Element>
 
 
@@ -1177,7 +1167,7 @@ const Home = () => {
       //       </Element>
       <Element
         name="sixth"
-        className="snap-start relative min-h-screen flex flex-col items-center justify-center bg-cover bg-darkbg text-white overflow-hidden "
+        className="snap-start relative min-h-screen flex flex-col items-center justify-center bg-cover bg-black text-white overflow-hidden "
 
       >
         <div className="flex flex-col md:flex-row items-center w-full h-full overflow-hidden mt-10">
@@ -1191,7 +1181,7 @@ const Home = () => {
             >
               In{" "}
               <span className="text-5xl">
-                20<span className="text-[#d94d3c]">24</span>
+                20<span className="text-[#d94d3c]">25</span>
               </span>
               , we
             </motion.h1>
@@ -1651,7 +1641,7 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <div className="relative w-full max-w-full h-[500px]  rounded-2xl overflow-hidden shadow-xl">
+            <div className="relative lg:ml-[40px] w-full max-w-full h-[500px] lg:w-[500px] lg:h-[600px] rounded-2xl overflow-hidden shadow-xl">
               <img
                 src="/images/homepage/sunset.jpg"
                 alt="Sign In Illustration"
@@ -1726,7 +1716,7 @@ m142 -2 c-6 -7 -19 8 -57 62 -15 21 -8 17 21 -13 23 -24 39 -46 36 -49z"
         {/* <SoundPlayer/> */}
         <FirstPage />
         <SecondPage />
-        <ThirdPage />
+        {/* <ThirdPage /> */}
         {/* <FourthPage /> */}
         <FifthPage />
         <SixthPage />
