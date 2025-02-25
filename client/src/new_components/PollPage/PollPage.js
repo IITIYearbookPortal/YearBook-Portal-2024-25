@@ -122,16 +122,16 @@ const PollPage = () => {
   };
 
   return (
-    <>
+    <div className="bg-gray-800">
       <ToastContainer />
       <div className={styles.container}>
       <div className={styles.description}>
-        <h1 className="text-3xl font-bold text-center text-blue-800 mb-4" style={{ fontSize: "2.5rem" }}>
+        <div className="text-[2.5rem] font-bold text-center text-green-400 mb-4">
           Welcome to the Polling Portal!
-        </h1>
-        <p className="text-gray-700 text-center max-w-2xl mx-auto mb-6" style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
+        </div>
+        <div className="text-gray-300 text-center max-w-2xl mx-auto mb-6" style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
           Participate in engaging polls created by the community! Your opinion matters. Browse through the polls below and cast your vote. Poll results are updated in real-time, so check back to see how others voted.
-        </p>
+        </div>
       </div>
 
         {isAdmin && (
@@ -178,11 +178,11 @@ const PollPage = () => {
         <div className="space-y-4 mt-4">
 
           {polls.map((poll) => (
-            <div key={poll._id} className={styles.pollCard}>
+            <div key={poll._id} className="bg-gray-900 p-5 mb-[15px] rounded-lg shadow-md flex flex-col items-start">
               <h2 className={styles.pollQuestion}>{poll.question}</h2>
               <div className={styles.buttonGroup}>
                 <Link to={`/polls/results/${poll._id}`}>
-                  <button className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 animate-pulse">Do Polling</button>
+                  <button className="px-4 py-2 bg-green-500 text-[#EEEEEE] font-semibold rounded-lg shadow-md hover:bg-green-600 animate-pulse">Do Polling</button>
                 </Link>
                 {isAdmin && (
                   <button class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 hover:opacity-80 hover:scale-95 transform transition-all duration-300 ease-in-out"
@@ -199,7 +199,7 @@ const PollPage = () => {
         </div>
       </div>
 
-    </>
+    </div>
   );
 };
 
