@@ -434,10 +434,10 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
         </div>
 
         {/* Comments Section */}
-        <div className="w-[80vw] mx-auto rounded-2xl p-6 text-white">
-          <div className="lg:flex gap-2 rounded-2xl text-white">
+        <div className="w-[95vw] mx-auto rounded-2xl p-6 text-white flex flex-wrap">
+          <div className="gap-2 rounded-2xl text-white grid md:grid-cols-3 grid-cols-1">
             {/* My Comments Section */}
-            <div className="h-[70vh] w-1/3 overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
+            <div className="h-[70vh] overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
               <div className="mb-6">
                 <div className="text-emerald-400 font-bold">My Comments</div>
                 <div className="text-gray-300 font-medium">Comment on other people to view them here</div>
@@ -448,10 +448,10 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                   <div key={index} className="bg-gray-800 rounded-xl p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
-                      <img
-                                  src={val.comment_receiver_image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
+                        <img
+                            src={val.comment_receiver_image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
                         <div>
                           <div className="flex items-center gap-2">
                             <h4 className="font-medium">{val.comment_reciever_name}</h4>
@@ -475,7 +475,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
             </div>
 
             {/* New Comments Section */}
-            <div className="h-[70vh] w-1/3 overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
+            <div className="h-[70vh]  overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
               <div className="mb-6">
                 <div className="text-emerald-400 font-bold">New Comments</div>
                 <div className="text-gray-300 font-medium">Comments that your friends make on you will be shown here</div>
@@ -487,15 +487,15 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-3">
                       <img
-                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
-                        <div>
+                          src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div className="w-full">
                           <div className="flex items-center gap-2">
                             <h4 className="font-medium">{val.name}</h4>
                           </div>
-                          <p className="text-gray-300 mt-1">{val.comment}</p>
-                          <div className="flex pt-3 gap-2">
+                            <p className="text-gray-300 mt-1 flex max-w-full break-words">{val.comment}</p>
+                          <div className="flex pt-3 gap-2 flex-wrap">
                             <button
                               disabled={state}
                               onClick={async (e) => {
@@ -556,7 +556,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
             </div>
 
             {/* Rejected Comments Section */}
-            <div className="h-[70vh] w-1/3 overflow-y-scroll bg-gray-900 p-6 rounded-2xl">
+            <div className="h-[70vh] overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
               <div className="mb-6">
                 <div className="text-emerald-400 font-bold">Rejected Comments</div>
                 <div className="text-gray-300 font-medium">Comments you reject will be shown here. (Remember, you cannot restore these comments!)</div>
