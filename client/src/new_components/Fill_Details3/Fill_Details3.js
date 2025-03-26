@@ -853,13 +853,15 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             (we assure you, we are not creepy) 🙂{" "}
           </div>
 
-          <div class="w-[110px] h-[110px] top-[170px] md:w-60 md:h-60 border-2 border-gray-400 absolute right-2 top-64 md:right-28 md:top-20 rounded-full overflow-hidden flex justify-center items-center xl:top-30 xl:right-80 abl">
+          <div class="w-[110px] h-[110px] top-[200px] border-2 border-gray-400 absolute right-2 rounded-full overflow-hidden flex justify-center items-center 
+    sm:top-[700px] md:w-60 md:h-60 md:right-28 md:top-[300px] 
+    lg:top-20 xl:top-[120px] xl:right-80  ">
             <img src={imageUrl} class=" w-fit "></img>
           </div>
 
           <img
             src={arrow}
-            class="hidden sm:block w-[95px]   right-[115px] md:w-48 md:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl text-white  filter invert"
+            class="hidden lg:block w-[95px] right-[115px] lg:w-48 lg:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl text-white filter invert"
           ></img>
 
           <input
@@ -872,7 +874,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 setisSelected(true);
               }
             }}
-            class="border-2 border-black h-9 w-60 bottom-12 left-[30px] top-[150px] absolute md:right-[430px]   leading-none text-center rounded-3xl w-[150px] h-[30px] md:mt-2 md:w-60 md:h-10 lg:top-96 lg:ml-6 xl:left-[270px] xl:top-[400px] btnh border-dashed p-[6px] px-10 afu"
+            class="border-2 border-black h-9 w-60 bottom-12 left-[30px] top-[150px] absolute md:right-[430px]   leading-none text-center rounded-3xl w-[150px] h-[30px] md:mt-2 md:w-60 md:h-10 lg:top-96 lg:ml-6 xl:left-[270px] xl:top-[400px] sm:top-[380px] btnh border-dashed p-[6px] px-10 afu"
           style={{ zIndex: 1}}
           ></input>
           {/* <button onClick={() => {}} class="border-2 border-black h-9 w-32 bottom-12 left-[30px] top-[424px] md:bottom-36 absolute md:right-[322px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-40 xl:left-[420px] xl:top-[400px] btnh border-dashed afu"> Choose File </button> */}
@@ -890,14 +892,14 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 });
               }
             }}
-            class="border-2 border-black bg-white text-black h-9 w-32 bottom-12 top-[280px] md:bottom-36 absolute md:right-[322px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-80 xl:left-[580px] xl:top-[400px] btnh border-dashed afu"
+            class=" border-2 border-black top-[320px] bg-white text-black h-9 w-32  md:bottom-36 absolute md:right-[322px] sm:top-[300px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-80 xl:left-[580px] xl:top-[400px] btnh border-dashed afu"
           >
             {" "}
             Upload Photo{" "}
           </button>
           <img
             src={arrow}
-            class="hidden sm:block left-[400px] w-[80px] right-[115px] md:w-48 md:h-32 lg:top-[400px] lg:right-[22rem] absolute xl:right-[38rem] abl  "
+            class="hidden xl:block left-[400px] w-[80px] right-[115px] md:w-48 md:h-32 lg:top-[400px] lg:right-[22rem] absolute xl:right-[38rem] abl  "
             style={{  transform: 'rotate(30deg)', filter: 'invert(1)', transition: 'none' }}
           ></img>
 
@@ -922,7 +924,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 });
               }
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 top-[340px]  flex items-center justify-center absolute lg:left-[443px] lg:top-[470px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-44   md:w-32 md:h-10  lg:mt-16   xl:left-[710px] btnh border-dashed afd"
+            class="border-2 border-black bg-white text-black h-8 w-32 top-[370px]  flex items-center justify-center absolute lg:left-[443px] lg:top-[470px] p-0 text-base leading-none text-center  rounded-3xl md:top-[400px] md:mt-44 sm:top-[350px]  md:w-32 md:h-10  lg:mt-16   xl:left-[710px] btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -1159,7 +1161,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             Resend Otp{" "}
           </button>
           {/* </a> */}
-          <div class="flex mt-64 left-[12px] absolute  md:top-52 md:ml-52 md:h-10 md:text-[20px] md:mt-72 lg:left-40 xl:left-64 afu ">
+          <div class="flex mt-64 md:mt-60 left-[10px] absolute  md:top-52 md:ml-52 md:h-10 md:text-[20px] md:mt-72 lg:left-40 xl:left-64 afu ">
             {seconds > 0 || minutes > 0 ? (
               <p>
                 Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:
@@ -1179,7 +1181,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               }
             }}
             disabled={isButtonDisabled}
-            class="h-8 w-32 flex items-center justify-center mt-64 border-2 border-black bg-white text-black absolute right-[95px]  p-0 text-base leading-none text-center  rounded-3xl md:mr-32 top-[5px] md:top-96 md:mt-20 md:w-32 md:h-10  lg:right-52 xl:right-[350px]  lg:mt-28 btnh border-dashed afu"
+            class="h-8 w-32 flex items-center justify-center mt-64 border-2 border-black bg-white text-black absolute right-[95px]   p-0 text-base leading-none text-center  rounded-3xl md:mr-32 top-[150px] md:top-96 md:mt-20 md:w-32 md:h-10  lg:right-52 xl:right-[350px]  lg:mt-28 btnh border-dashed afu"
           >
             {" "}
             Continue{" "}
