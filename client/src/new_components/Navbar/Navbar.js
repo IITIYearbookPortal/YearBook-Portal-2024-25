@@ -100,7 +100,7 @@ const Navbar = () => {
               className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${loggedin ? "text-sm" : "text-base"
                 }`}
             >
-              {loggedin ? "Logout" : "Sign In"}
+              {loggedin ? "Logout" : "Sign Up"}
             </a>
           </div>
 
