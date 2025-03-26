@@ -10,6 +10,7 @@ import styles from "./PollPage.module.css"; // Import CSS Module
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import { Plus } from 'lucide-react';
+import alumniEmails from "../../new_components/Navbar/akumniData.json";
 
 const PollPage = () => {
   const [polls, setPolls] = useState([]); // Set to an empty array initially
@@ -20,17 +21,17 @@ const PollPage = () => {
   const [failedPollId, setFailedPollId] = useState(null);
   const navigate = useNavigate();
 
+ 
+
+  // Check if the current user is an alumni
+  const isAlumni = profile && alumniEmails.includes(profile.email);
+
 
   const adminUsers = process.env.REACT_APP_ADMIN_USERS
     ? process.env.REACT_APP_ADMIN_USERS.split(",")
     : [];
   const isAdmin = profile && adminUsers.includes(profile.email);
-  console.log("isAdmin",adminUsers);
-  if(profile){
-    console.log("profile",profile.email);
-    console.log("profil1111e",process.env.REACT_APP_ADMIN_USERS);
-    console.log("profil1111e",process.env.REACT_APP_CLIENT_ID);
-  }
+ 
  
 
   
@@ -41,6 +42,12 @@ const PollPage = () => {
       window.location.href = "/login";
     }
   });
+  useEffect(() => {
+    // Redirect non-alumni users to home
+    if (!loading && profile && !isAlumni) {
+      navigate("/");
+    }
+  }, [loading, profile, isAlumni, navigate]);
 
   useEffect(() => {
     // Fetch polls from backend
@@ -120,6 +127,8 @@ const PollPage = () => {
         toast.error("Failed to delete poll. Please try again.");
       });
   };
+
+
 
   return (
     <div className="bg-gray-800">
