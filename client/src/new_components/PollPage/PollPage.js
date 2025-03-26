@@ -130,7 +130,7 @@ const PollPage = () => {
           Welcome to the Polling Portal!
         </div>
         <div className="text-gray-300 text-center max-w-2xl mx-auto mb-6" style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
-          Participate in engaging polls created by the community! Your opinion matters. Browse through the polls below and cast your vote. Poll results are updated in real-time, so check back to see how others voted.
+          Participate in engaging polls created by the community! Your opinion matters. Browse through the polls below and cast your vote. 
         </div>
       </div>
 
