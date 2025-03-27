@@ -233,9 +233,7 @@ const verifyPhoneOtp = async (req, res, next) => {
         html: `<p>Thank you for registering on the Yearbook Portal.<br/>
         
         It's a pleasure to have you join the Alumni Community of IIT Indore! We congratulate you on your graduation!<br/>
-        To stay connected with your Batch and the Institute, we urge you to join the following WhatsApp Group-
-        <a href='https://chat.whatsapp.com/JWVAs4MBiYJ9SkiMPRIro4'>Whatsapp Group Link</a><br/>
-        We also urge you to create your profile on the Alumni Portal by visiting
+        To stay connected with your Batch and the Institute, we urge you to create your profile on the Alumni Portal by visiting
         <a href='https://alumni.iiti.ac.in/'>Alumni Portal Link</a><br/>
         You can connect with us on LinkedIn to ensure all your updates can be featured on the Official Page of the Alumni Cell.
       <a href = 'https://in.linkedin.com/company/alumni-cell-iit-indore'>LinkedIn</a></p><br/>

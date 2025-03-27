@@ -52,7 +52,7 @@ function BlackCard(props) {
       </p>
 
       <p class="text-[18px] text-white font-bold w-fit md:text-2xl lg:w-auto mb-6">
-        Here's a platinum black card for all your troubles
+        Here's a platinum card for all your troubles
       </p>
 
       <p class="lg:text-[20px] text-white pb-2">(We don't know if this is usefull yet)</p>
