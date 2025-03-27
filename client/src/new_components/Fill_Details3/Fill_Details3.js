@@ -251,7 +251,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
     setWait(true);
     axios
-      .post("https://api-eu.cloudinary.com/v1_1/dnqlvxfuc/upload", formData)
+      .post("https://api-eu.cloudinary.com/v1_1/dmbwxmzlh/upload", formData)
       .then((res) => {
         setWait(false);
         setImageUrl(res.data.url);
