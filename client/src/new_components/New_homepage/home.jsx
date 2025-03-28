@@ -641,17 +641,7 @@ const Home = () => {
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/1.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
               src="/images/homepage/connections/4.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
-              src="/images/homepage/connections/1.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
@@ -661,27 +651,37 @@ const Home = () => {
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/1.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
               src="/images/homepage/connections/6.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/1.jpg"
+              src="/images/homepage/connections/7.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/2.jpg"
+              src="/images/homepage/connections/8.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/1.jpg"
+              src="/images/homepage/connections/9.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/10.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/11.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/12.jpg"
               alt="Background"
               className="w-1/4 p-1 h-1/3 object-cover"
             />
