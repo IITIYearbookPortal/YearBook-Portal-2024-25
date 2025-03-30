@@ -251,7 +251,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
     setWait(true);
     axios
-      .post("https://api-eu.cloudinary.com/v1_1/dnqlvxfuc/upload", formData)
+      .post("https://api-eu.cloudinary.com/v1_1/dmbwxmzlh/upload", formData)
       .then((res) => {
         setWait(false);
         setImageUrl(res.data.url);
@@ -717,7 +717,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                   borderColor: "white",
                   paddingRight: "10px",
                   paddingLeft: "10px",
-                  borderRadius: "10px"
+                  borderRadius: "10px",
+                  backgroundColor: "white",
                 },
               }}
             />
@@ -787,6 +788,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               name="personal_email_id"
               value={userData.personal_email_id}
               class="h-[32px] w-[200px] max-w-xs lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
+
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });

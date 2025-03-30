@@ -6,7 +6,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { arrayMove } from "@dnd-kit/sortable";
 import { toast, ToastContainer } from "react-toastify";
-import { Clock, Download, Filter, Grid, List, ArrowUpDown, User, Mail, Phone, Building2, Calendar, Clock3,Trophy,Users,Medal,GraduationCap,MessageCircle,ThumbsUp,ThumbsDown, GraduationCapIcon} from 'lucide-react';
+ 
+import { Clock, Download, Filter, Grid, List, ArrowUpDown,Pencil, User, X, Mail,Trash2Icon, Phone,Delete, Building2, Calendar, Clock3, Check, Trophy, Users, Medal, GraduationCap, MessageCircle, ThumbsUp, ThumbsDown, GraduationCapIcon, Trash2 } from 'lucide-react';
+
 import "react-toastify/dist/ReactToastify.css";
 
 export const Prof = ({ isDarkMode, setIsDarkMode }) => {
@@ -89,7 +91,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
         updatedOrder: updatedOrder,
         previousOrderMap: previousOrderMap,
       })
-      .then((res) => {})
+      .then((res) => { })
       .catch((error) => {
         console.error("Error updating comment order:", error);
         // If there's an error, revert the state to the previous one
@@ -118,7 +120,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
           setRejectedComments(res.data.rejectedComments);
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }, [profile]);
 
   useEffect(() => {
@@ -135,7 +137,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
             setComments(res.data.User);
           }
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   }, [profile]);
 
@@ -261,10 +263,15 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
     }
   };
 
+
+
+
+
   const getStatusText = (status) => {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
-  const [comments,setComments] = useState([
+  const [comments, setComments] = useState([
+
     {
       id: 1,
       author: "Prof. Sarah Johnson",
@@ -295,21 +302,21 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
   ]);
   return (
     <div className="min-h-screen bg-gray-800 p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <ToastContainer />
+      <div className="mx-auto space-y-6">
         {/* Profile Card */}
-        <div className="bg-gray-900 rounded-2xl p-6 text-white">
+        <div className="bg-gray-900 max-w-4xl mt-5 mb-5 mx-auto rounded-2xl p-6 text-white">
           <div className="flex justify-between items-start mb-6">
             <div className="text-emerald-400 font-medium">Student Details</div>
-            <div className="flex gap-3">
-              <select className="bg-gray-800 rounded-lg px-3 py-1 text-sm">
-                <option>2024 Batch</option>
-                <option>2023 Batch</option>
-              </select>
-              <button className="bg-emerald-400 text-gray-900 rounded-lg px-4 py-1 text-sm font-medium flex items-center gap-2">
-                <Download className="w-4 h-4" />
-                Download Info
-              </button>
-            </div>
+
+            <div onClick={() => {
+                const ans = window.confirm("Are you sure you want to edit your Profile?");
+                if (ans) {
+                  navigate(`/edit/${profile.roll_no}/${profile.name}`);
+                }
+              }}
+              className="p-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 "><button>Edit Profile</button></div>
+
           </div>
 
           <div className="flex gap-6 items-start">
@@ -345,170 +352,242 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+          <div className="w-full gap-4 mt-8">
             <div className="bg-gray-800 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-gray-700 p-2 rounded-lg">
-                  <Trophy className="w-5 h-5 text-yellow-400" />
-                </div>
+              <div className="flex px-2 items-center gap-3">
                 <div>
-                  <div className="text-2xl font-bold">9.8</div>
-                  <div className="text-gray-400 text-sm">CGPA</div>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gray-800 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-gray-700 p-2 rounded-lg">
-                  <Users className="w-5 h-5 text-blue-400" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">12</div>
-                  <div className="text-gray-400 text-sm">Projects</div>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gray-800 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-gray-700 p-2 rounded-lg">
-                  <Medal className="w-5 h-5 text-purple-400" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">5</div>
-                  <div className="text-gray-400 text-sm">Achievements</div>
-                </div>
-              </div>
-            </div>
-            <div className="bg-gray-800 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <div className="bg-gray-700 p-2 rounded-lg">
-                  <GraduationCap className="w-5 h-5 text-emerald-400" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">8</div>
-                  <div className="text-gray-400 text-sm">Certifications</div>
+                  <div className="text-2xl font-bold">About</div>
+                  <div className="text-gray-400 text-sm">{profile.about}</div>
                 </div>
               </div>
             </div>
           </div>
+
+        
         </div>
 
-        {/* Comments & Approvals Section */}
-        <div className="bg-gray-900 rounded-2xl p-6 text-white">
+        {/* Approved Comments Section */}
+        <div className="bg-gray-900 max-w-4xl mx-auto h-[55vh] overflow-y-scroll rounded-2xl px-6 py-3 text-white">
           <div className="flex justify-between items-center mb-6">
-            <div className="text-emerald-400 font-medium">Comments & Approvals</div>
-            <div className="flex gap-3">
-              <button className="bg-gray-800 px-3 py-2 rounded-lg text-sm flex items-center gap-2">
-                <MessageCircle className="w-4 h-4" />
-                New Comment
-              </button>
-              <button className="bg-gray-800 px-3 py-2 rounded-lg text-sm flex items-center gap-2">
-                <Filter className="w-4 h-4" />
-                Filter
-              </button>
+
+          <div className="">
+              <div className="text-emerald-400 font-bold">Approved Comments </div>
+              <div className="text-gray-300 font-medium">Top twelve comments will be shown on the yearbook (Drag to reorder comments)</div>
+              </div>
+
+          </div>
+
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="approvedComments">
+              {(provided) => (
+                <div 
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="space-y-4"
+                >
+                  {approvedComments && approvedComments.map((val, index) => (
+                    <Draggable key={val._id} draggableId={val._id} index={index}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className="bg-gray-800 rounded-xl p-4"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-start gap-3">
+                              <img
+                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <h4 className="font-medium">{val.name}</h4>
+                                </div>
+                                <p className="text-gray-300 mt-1">{val.comment}</p>
+                                <div className="flex items-center gap-3 mt-2">
+                                  <button
+                                    onClick={() => {
+                                      const ans = window.confirm("Are you sure you want to remove your Approved Comment?");
+                                      if (ans) {
+                                        removeApprovedComment(val.order, val.comment, val.who, index);
+                                      }
+                                    }}
+                                    className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors"
+                                  >
+                                    <X className="w-4 h-4" />
+                                    <span>Remove</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+
+        {/* Comments Section */}
+        <div className="w-[95vw] mx-auto rounded-2xl p-6 text-white flex flex-wrap">
+          <div className="gap-2 rounded-2xl text-white grid md:grid-cols-3 grid-cols-1">
+            {/* My Comments Section */}
+            <div className="h-[70vh] overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
+              <div className="mb-6">
+                <div className="text-emerald-400 font-bold">My Comments</div>
+                <div className="text-gray-300 font-medium">Comment on other people to view them here</div>
+              </div>
+
+              <div className="space-y-4">
+                {comments && comments.map((val, index) => (
+                  <div key={index} className="bg-gray-800 rounded-xl p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-3">
+                        <img
+                            src={val.comment_receiver_image || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium">{val.comment_reciever_name}</h4>
+                          </div>
+                          <p className="text-gray-300 mt-1">{val.comment}</p>
+                          <div className="flex items-center gap-3 mt-2">
+                            <button
+                              onClick={() => HandlEdit(val)}
+                              className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
+                            >
+                              <Pencil className="w-4 h-4" />
+                              <span>Edit</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-4">
-  <div key="1" className="bg-gray-800 rounded-xl p-4">
-    <div className="flex items-start justify-between">
-      <div className="flex items-start gap-3">
-        <img
-          src="https://randomuser.me/api/portraits/men/1.jpg" // Dummy avatar
-          alt="John Doe"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div>
-          <div className="flex items-center gap-2">
-            <h4 className="font-medium">John Doe</h4>
-            <span className="text-sm text-gray-400">• HR</span> {/* Dummy department */}
-          </div>
-          <p className="text-gray-300 mt-1">This is a dummy comment to demonstrate the structure of the comment component.</p>
-          <div className="flex items-center gap-3 mt-2">
-            <span className="text-sm text-gray-400">Jan 25, 2025</span> {/* Dummy date */}
-            <span className="px-2 py-1 rounded-full text-xs bg-green-500 text-white">
-              Approved
-            </span> {/* Dummy status */}
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <button className="p-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors">
-          <ThumbsUp className="w-4 h-4" />
-        </button>
-        <button className="p-2 rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors">
-          <ThumbsDown className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  </div>
+            {/* New Comments Section */}
+            <div className="h-[70vh]  overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
+              <div className="mb-6">
+                <div className="text-emerald-400 font-bold">New Comments</div>
+                <div className="text-gray-300 font-medium">Comments that your friends make on you will be shown here</div>
+              </div>
 
-  {/* Add more dummy comment blocks as needed */}
-  <div key="2" className="bg-gray-800 rounded-xl p-4">
-    <div className="flex items-start justify-between">
-      <div className="flex items-start gap-3">
-        <img
-          src="https://randomuser.me/api/portraits/men/2.jpg" // Dummy avatar
-          alt="Jane Smith"
-          className="w-10 h-10 rounded-full object-cover"
-        />
-        <div>
-          <div className="flex items-center gap-2">
-            <h4 className="font-medium">Jane Smith</h4>
-            <span className="text-sm text-gray-400">• Marketing</span> {/* Dummy department */}
-          </div>
-          <p className="text-gray-300 mt-1">Here's another dummy comment for testing.</p>
-          <div className="flex items-center gap-3 mt-2">
-            <span className="text-sm text-gray-400">Jan 24, 2025</span> {/* Dummy date */}
-            <span className="px-2 py-1 rounded-full text-xs bg-red-500 text-white">
-              Rejected
-            </span> {/* Dummy status */}
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <button className="p-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors">
-          <ThumbsUp className="w-4 h-4" />
-        </button>
-        <button className="p-2 rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors">
-          <ThumbsDown className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+              <div className="space-y-4">
+                {newComments && newComments.map((val, index) => (
+                  <div key={index} className="bg-gray-800 rounded-xl p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-3">
+                      <img
+                          src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div className="w-full">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium">{val.name}</h4>
+                          </div>
+                            <p className="text-gray-300 mt-1 flex max-w-full break-words">{val.comment}</p>
+                          <div className="flex pt-3 gap-2 flex-wrap">
+                            <button
+                              disabled={state}
+                              onClick={async (e) => {
+                                e.preventDefault();
+                                const confirmed = window.confirm("Are you sure you want to approve this comment?");
+                                if (confirmed) {
+                                  await axios.put(process.env.REACT_APP_API_URL + "/setApprovedComments", {
+                                    _id: val._id,
+                                    id: val.id,
+                                    comment_reciever_id: profile._id,
+                                    comment: val.comment,
+                                    comment_reciever_roll_no: comment_reciever_roll_no,
+                                  });
+                                  setState(true);
+                                  setTimeout(() => {
+                                    setState(false);
+                                  }, 7000);
+                                  window.location.reload();
+                                }
+                              }}
+                              className="p-2 flex items-center gap-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
+                            >
+                              <Check className="w-4 h-4" />
+                              <span>Approve</span>
+                            </button>
+                            <button
+                              disabled={state}
+                              onClick={async (e) => {
+                                e.preventDefault();
+                                const confirmed = window.confirm("Are you sure you want to reject this comment?");
+                                if (confirmed) {
+                                  await axios.post(process.env.REACT_APP_API_URL + "/setRejectedComments", {
+                                    comment: val.comment,
+                                    _id: val._id,
+                                    id: val.id,
+                                    comment_reciever_id: profile._id,
+                                    comment_reciever_roll_no: comment_reciever_roll_no,
+                                  });
+                                  setState(true);
+                                  setTimeout(() => {
+                                    setState(false);
+                                  }, 20000);
+                                  window.location.reload();
+                                }
+                              }}
+                              className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors"
+                            >
+                              <X className="w-4 h-4" />
+                              <span>Reject</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
+            {/* Rejected Comments Section */}
+            <div className="h-[70vh] overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
+              <div className="mb-6">
+                <div className="text-emerald-400 font-bold">Rejected Comments</div>
+                <div className="text-gray-300 font-medium">Comments you reject will be shown here. (Remember, you cannot restore these comments!)</div>
+              </div>
 
-          <div className="flex justify-center gap-2 mt-6">
-            {[1, 2, 3, 4, '...', 8, 9, 10].map((page, index) => (
-              <button
-                key={index}
-                className={`w-8 h-8 flex items-center justify-center rounded-lg ${
-                  page === 1 ? 'bg-emerald-400 text-gray-900' : 'bg-gray-800 text-gray-400'
-                }`}
-              >
-                {page}
-              </button>
-            ))}
+              <div className="space-y-4">
+                {rejectedComments && rejectedComments.map((val, index) => (
+                  <div key={index} className="bg-gray-800 rounded-xl p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start gap-3">
+                      <img
+                                  src={val.id.profile_img || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
+                                  className="w-10 h-10 rounded-full object-cover"
+                                />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium">{val.name}</h4>
+                          </div>
+                          <p className="text-gray-300 mt-1">{val.comment}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-
-  function handleDragEnd(event) {
-    const { active, over } = event;
-
-    if (active.id !== over.id) {
-      setApprovedComments((items) => {
-        const activeIndex = items.indexOf(active.id);
-        const overIndex = items.indexOf(over.id);
-        return arrayMove(items, activeIndex, overIndex);
-        // items: [2, 3, 1]   0  -> 2
-        // [1, 2, 3] oldIndex: 0 newIndex: 2  -> [2, 3, 1]
-      });
-    }
-  }
 };
 
 export default Prof;
