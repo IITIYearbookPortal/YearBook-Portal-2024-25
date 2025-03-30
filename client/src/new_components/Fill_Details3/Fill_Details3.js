@@ -773,10 +773,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-44 left-4 absolute text-3xl  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center afd text-[#EEEEEE]">
+          <div class="h-12 w-full top-44 left-4 absolute text-3xl flex-wrap  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center afd text-[#EEEEEE]">
             {" "}
             And your{" "}
-            <span class="text-red-600 ml-2 mr-2 text-5xl"> Personal </span>{" "}
+            <span class="text-red-600 flex-wrap ml-2 mr-2 text-5xl"> Personal </span>{" "}
             email ?{" "}
           </div>
 
@@ -786,7 +786,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
+              class="h-[32px] w-[200px] max-w-xs lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -821,11 +821,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             />{" "}
           </button>
 
-          <div class=" afu w-full">
+          <div class=" afu w-full flex sm:block justify-center items-center">
             <img
               src={emailimg}
               alt="phone"
-              class=" h-[90px] w-[90px] lg:h-40 lg:w-40 ml-48"
+              class="h-[90px] w-[90px] lg:h-40 lg:w-40 mx-auto sm:ml-48 sm:mx-0"
             />
           </div>
         </div>
@@ -852,8 +852,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             (we assure you, we are not creepy) 🙂{" "}
           </div>
 
-          <div class="w-[110px] h-[110px] top-[200px] border-2 border-gray-400 absolute right-2 rounded-full overflow-hidden flex justify-center items-center 
-    sm:top-[700px] md:w-60 md:h-60 md:right-28 md:top-[300px] 
+          <div class="w-[110px] h-[110px] top-[200px] border-2 border-gray-400 absolute  rounded-full overflow-hidden flex justify-center items-center 
+    sm:top-[700px] md:w-60 md:h-60 md:right-28 sm:right-10 md:top-[300px] 
     lg:top-20 xl:top-[120px] xl:right-80  ">
             <img src={imageUrl} class=" w-fit "></img>
           </div>
@@ -949,7 +949,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 6
-              ? " h-[218vh]  md:h-[105vh]  w-screen   flex flex-row md:justify-center md:items-center text-1xl relative  border-b-2 bg-[#222831] text-white  "
+              ? " h-screen  md:h-[105vh]  w-screen   flex flex-row md:justify-center md:items-center text-1xl relative  border-b-2 bg-[#222831] text-white  "
               : "hidden"
           }
         >
@@ -1090,7 +1090,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 }
               }
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 bottom-[2rem]  left-32 flex items-center justify-center absolute lg:left-[469px] lg:bottom-8  p-0 text-base leading-none text-center  rounded-3xl md:bottom-[7rem] md:mt-32 md:w-32 md:h-10  lg:mt-8 xl:bottom-10  xl:left-[648px] btnh border-dashed afd"
+            class="border-2 border-black bg-white text-black h-8 w-32 bottom-[2rem] left-32 flex items-center justify-center absolute lg:left-[469px] lg:bottom-8  p-0 text-base leading-none text-center  rounded-3xl md:bottom-[7rem] md:mt-32 md:w-32 md:h-10  lg:mt-8 xl:bottom-10  xl:left-[648px] btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -1154,7 +1154,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             onClick={() => {
               resendOTP();
             }}
-            class="hover:underline  underline-offset-2 flex items-center justify-center mt-80  h-8 w-32 left-8 absolute p-0 text-xl leading-none md:ml-52 md:top-96 md:mt-28 md:w-32 md:h-10 lg:mt-36  lg:left-40 xl:left-64 afu"
+            class="hover:underline  underline-offset-2 mt-2 flex items-center justify-center mt-80  h-8 w-32 left-8 absolute p-0 text-xl leading-none md:ml-52 md:top-96 md:mt-40 md:w-32 md:h-10 lg:mt-36  lg:left-40 xl:left-64 afu"
           >
             {" "}
             Resend Otp{" "}
@@ -1180,7 +1180,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               }
             }}
             disabled={isButtonDisabled}
-            class="h-8 w-32 flex items-center justify-center mt-64 border-2 border-black bg-white text-black absolute right-[95px]   p-0 text-base leading-none text-center  rounded-3xl md:mr-32 top-[150px] md:top-96 md:mt-20 md:w-32 md:h-10  lg:right-52 xl:right-[350px]  lg:mt-28 btnh border-dashed afu"
+            class="h-8 w-32 flex items-center justify-center sm:right-auto border-2 border-black bg-white text-black absolute    p-0 text-base leading-none text-center  rounded-3xl md:mr-28 top-[250px] md:top-96 md:mt-15 md:w-32 sm:top-90 md:h-10  lg:right-52 xl:right-[350px]  lg:mt-28 btnh border-dashed afu"
           >
             {" "}
             Continue{" "}
