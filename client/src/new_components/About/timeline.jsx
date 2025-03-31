@@ -33,7 +33,7 @@ export const Timeline = ({
         </h2>
         <p
           className="text-neutral-300 text-md  px-44">
-          This is a website where you can create your profile that will be shown on the Yearbook'24, comment on your friends, choose which comments you wish to show on your handle in the yearbook, and much more! Feeling lost? Here's what you can do:
+          This is a website where you can create your profile that will be shown on the Yearbook'25, comment on your friends, choose which comments you wish to show on your handle in the yearbook, and much more! Feeling lost? Here's what you can do:
         </p>
       </div>
       <div ref={ref} className="relative max-w-7xl mx-auto pb-20 md:left-20">
