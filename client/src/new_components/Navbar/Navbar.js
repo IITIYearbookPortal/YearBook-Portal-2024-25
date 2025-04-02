@@ -128,7 +128,7 @@ const Navbar = () => {
                   </a>
                 </li>
               ))}
-              <li>
+              {/* <li>
                 <button
                   onClick={() => {
                     toggleTheme();
@@ -139,9 +139,9 @@ const Navbar = () => {
                 >
                   Change Theme
                 </button>
-              </li>
+              </li> */}
             </ul>
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <a
                 href={loggedin ? "/logout" : "/login"}
                 className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${loggedin ? "text-sm" : "text-base"
@@ -149,7 +149,7 @@ const Navbar = () => {
               >
                 {loggedin ? "Logout" : "Sign In"}
               </a>
-            </div>
+            </div> */}
           </div>
         )}
       </div>
