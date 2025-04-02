@@ -74,7 +74,7 @@ function Navigation({ isOpen, setIsOpen }) {
             { name: "My Black Card", path: "/blackcard" },
             //  { name: "Change Theme", path: "/changetheme" },
             { name: "More Links", path: "/footer" },
-            { name: "Logout", path: "/logout" },
+            // { name: "Logout", path: "/logout" },
           ]);
         } else {
           setLinks([
@@ -87,7 +87,7 @@ function Navigation({ isOpen, setIsOpen }) {
             { name: "My Souvenir", path: "/goldcard" },
             // { name: "Change Theme", path: "/changetheme" },
             { name: "More Links", path: "/footer" },
-            { name: "Logout", path: "/logout" },
+            // { name: "Logout", path: "/logout" },
           ]);
         }
       }
@@ -100,21 +100,21 @@ function Navigation({ isOpen, setIsOpen }) {
     }
   }, [isOpen, loggedin, profile]);
 
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const storedThemeMode = localStorage.getItem("themeMode");
-    return storedThemeMode === "dark";
-  });
+  // const [isDarkMode, setIsDarkMode] = useState(() => {
+  //   const storedThemeMode = localStorage.getItem("themeMode");
+  //   return storedThemeMode === "dark";
+  // });
 
-  useEffect(() => {}, [isDarkMode]);
+  // useEffect(() => {}, [isDarkMode]);
 
-  const toggleTheme = () => {
-    setIsDarkMode((prevMode) => {
-      const newMode = !prevMode;
-      localStorage.setItem("themeMode", newMode ? "dark" : "light");
-      window.location.reload();
-      return newMode;
-    });
-  };
+  // const toggleTheme = () => {
+  //   setIsDarkMode((prevMode) => {
+  //     const newMode = !prevMode;
+  //     localStorage.setItem("themeMode", newMode ? "dark" : "light");
+  //     window.location.reload();
+  //     return newMode;
+  //   });
+  // };
 
   return (
     <motion.ul
@@ -131,14 +131,14 @@ function Navigation({ isOpen, setIsOpen }) {
           setIsOpen={setIsOpen}
         />
       ))}
-      <motion.li
+      {/* <motion.li
         variants={variants2}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         className="h-8 w-auto z-50 text-4xl hover:underline hover:text-5xl cursor-pointer"
       >
         <button onClick={toggleTheme}>Change Theme</button>
-      </motion.li>
+      </motion.li> */}
     </motion.ul>
   );
 }
