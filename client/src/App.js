@@ -104,10 +104,6 @@ const App = ({ location }) => {
     await axios
       .post(process.env.REACT_APP_API_URL + "/checkAuth", {
         email: userObject.email,
-      }, {
-        headers:{
-          'Origin':process.env.REACT_APP_ALLOWED_ORIGIN
-        }
       })
       .then((res) => {
         // If the user already exists in the auth model

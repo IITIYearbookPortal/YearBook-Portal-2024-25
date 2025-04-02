@@ -1198,7 +1198,7 @@ const Home = () => {
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 2 }}
+              transition={{ duration: 1, delay: 1 }}
               className="text-3xl mt-4 break-words"
             >
               leaving behind, a legacy of
@@ -1207,7 +1207,7 @@ const Home = () => {
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 3 }}
+              transition={{ duration: 1, delay: 2 }}
               className="text-5xl md:ml-30 mt-6 break-words"
             >
               Resilience
@@ -1216,7 +1216,7 @@ const Home = () => {
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 3 }}
+              transition={{ duration: 1, delay: 2 }}
               className="text-3xl text-center my-2 break-words"
             >
               and
@@ -1225,7 +1225,7 @@ const Home = () => {
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 3 }}
+              transition={{ duration: 1, delay: 2 }}
               className="text-5xl text-center font-bold break-words"
             >
               Friendship
