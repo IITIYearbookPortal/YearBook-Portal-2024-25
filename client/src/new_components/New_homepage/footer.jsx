@@ -47,7 +47,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <BookOpen className="w-8 h-8 text-yellow-400" />
-              <h3 className="text-2xl font-bold">Yearbook 2024</h3>
+              <h3 className="text-2xl font-bold">Yearbook 2025</h3>
             </div>
             <p className="text-gray-300">
               Preserving memories and celebrating achievements of the graduating class of IIT Indore.
