@@ -641,17 +641,7 @@ const Home = () => {
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/1.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
               src="/images/homepage/connections/4.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
-              src="/images/homepage/connections/1.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
@@ -661,27 +651,37 @@ const Home = () => {
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/1.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
               src="/images/homepage/connections/6.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/1.jpg"
+              src="/images/homepage/connections/7.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/2.jpg"
+              src="/images/homepage/connections/8.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/1.jpg"
+              src="/images/homepage/connections/9.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/10.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/11.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/12.jpg"
               alt="Background"
               className="w-1/4 p-1 h-1/3 object-cover"
             />
@@ -1198,7 +1198,7 @@ const Home = () => {
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 2 }}
+              transition={{ duration: 1, delay: 1 }}
               className="text-3xl mt-4 break-words"
             >
               leaving behind, a legacy of
@@ -1207,7 +1207,7 @@ const Home = () => {
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 3 }}
+              transition={{ duration: 1, delay: 2 }}
               className="text-5xl md:ml-30 mt-6 break-words"
             >
               Resilience
@@ -1216,7 +1216,7 @@ const Home = () => {
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 3 }}
+              transition={{ duration: 1, delay: 2 }}
               className="text-3xl text-center my-2 break-words"
             >
               and
@@ -1225,7 +1225,7 @@ const Home = () => {
               viewport={{ once: true }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 3 }}
+              transition={{ duration: 1, delay: 2 }}
               className="text-5xl text-center font-bold break-words"
             >
               Friendship

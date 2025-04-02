@@ -25,18 +25,18 @@ export const Timeline = ({
 
   return (
     (<div
-      className="w-full bg-[#222831] font-sans md:px-10"
+      className="w-full bg-[#222831] md:px-10"
       ref={containerRef}>
       <div className="max-w-7xl mx-auto py-20 px-4 text-center">
-        <h2 className="text-lg md:text-4xl mb-4 text-white font-bold">
+        <h2 className="text-[18px] text-green-400 md:text-4xl mb-4  font-bold">
         About
         </h2>
         <p
-          className="text-neutral-300 text-md  px-44">
-          This is a website where you can create your profile that will be shown on the Yearbook'24, comment on your friends, choose which comments you wish to show on your handle in the yearbook, and much more! Feeling lost? Here's what you can do:
+          className="text-[18px] text-white font-bold text-md  px-44">
+          This is a website where you can create your profile that will be shown on the Yearbook'25, comment on your friends, choose which comments you wish to show on your handle in the yearbook, and much more! Feeling lost? Here's what you can do:
         </p>
       </div>
-      <div ref={ref} className="relative max-w-7xl mx-auto pb-20 md:left-20">
+      <div ref={ref} className="relative max-w-7xl top-[-150px] mx-auto pb-20 md:left-20">
         {data.map((item, index) => (
           <div key={index} className="flex justify-start pt-10 md:pt-40 md:gap-52">
             <div
@@ -47,7 +47,7 @@ export const Timeline = ({
                   className="h-4 w-4 rounded-full bg-neutral-800 border border-neutral-700 p-2" />
               </div>
               <h3
-                className="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-[#EEEEEE] ">
+                className="hidden md:block text-xl md:pl-20 md:text-5xl font-bold text-green-400 ">
                 {item.title}
               </h3>
             </div>

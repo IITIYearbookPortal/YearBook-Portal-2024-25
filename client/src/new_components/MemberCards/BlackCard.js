@@ -47,15 +47,15 @@ function BlackCard(props) {
 
   return (
     <div className="h-screen w-screen overflow-hidden   bg-cover flex flex-col justify-center items-center">
-      <p class="text-[18px] md:text-3xl font-bold mb-8 mt-16">
+      <p class="text-[18px] text-green-400 md:text-3xl font-bold mb-8 mt-16">
         Hurray ! You are now our most esteemed user
       </p>
 
-      <p class="text-[18px]  font-bold w-fit md:text-2xl lg:w-auto mb-6">
-        Here's a platinum black card for all your troubles
+      <p class="text-[18px] text-white font-bold w-fit md:text-2xl lg:w-auto mb-6">
+        Here's a platinum card for all your troubles
       </p>
 
-      <p class="lg:text-[20px] pb-2">(We don't know if this is usefull yet)</p>
+      <p class="lg:text-[20px] text-white pb-2">(We don't know if this is usefull yet)</p>
       <img
         src={`/images/blackbox/${profile.roll_no}.png`}
         alt="Black Card"
@@ -65,7 +65,7 @@ function BlackCard(props) {
         onClick={() => {
           profile1();
         }}
-        class="border-2 h-[40px] w-[170px]  border-black flex justify-center items-center btnh border-dashed relative rounded-2xl text-xl"
+        class="border-2 h-[40px] w-[170px] border-[#EEEEEE] bg-[#222831] text-white flex justify-center items-center btnh border-dashed relative rounded-2xl text-xl"
       >
         {" "}
         Continue{" "}
