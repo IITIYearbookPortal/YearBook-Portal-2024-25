@@ -17,7 +17,6 @@ import jwt_decode from "jwt-decode";
 
 function Fill1(props) {
   const {
-    user,
     loading,
     userData,
     setUserData,
@@ -31,10 +30,11 @@ function Fill1(props) {
   } = useContext(LoginContext);
 
   const jti = useParams();
-  let token;
+ 
+  let user;
 
   if (window.localStorage.getItem("token") !== null) {
-    token = jwt_decode(window.localStorage.getItem("token"));
+    user = jwt_decode(window.localStorage.getItem("token"));
   }
 
   useEffect(() => {
@@ -43,7 +43,7 @@ function Fill1(props) {
         window.location.href = "/login";
       }
 
-      if (isStudent || token.jti !== jti.userId) {
+      if (isStudent || user.jti !== jti.userId) {
         window.location.href = "/error";
       }
     }
