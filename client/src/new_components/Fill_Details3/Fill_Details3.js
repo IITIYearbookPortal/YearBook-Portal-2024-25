@@ -1156,13 +1156,13 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             onClick={() => {
               resendOTP();
             }}
-            class="hover:underline  underline-offset-2 mt-2 flex items-center justify-center mt-80  h-8 w-32 left-8 absolute p-0 text-xl leading-none md:ml-52 md:top-96 md:mt-40 md:w-32 md:h-10 lg:mt-36  lg:left-40 xl:left-64 afu"
+            class="hover:underline  underline-offset-2 flex  items-center justify-center mt-20  h-8 w-32 absolute p-0 text-xl leading-none md:ml-52 md:top-96 md:mt-40 md:w-32 md:h-10 lg:mt-36  lg:left-40 xl:left-64 afu"
           >
             {" "}
             Resend Otp{" "}
           </button>
           {/* </a> */}
-          <div class="flex mt-64 md:mt-60 left-[10px] absolute  md:top-52 md:ml-52 md:h-10 md:text-[20px] md:mt-72 lg:left-40 xl:left-64 afu ">
+          <div class="flex  md:mt-60  absolute  md:top-52 md:ml-52 md:h-10 md:text-[20px] md:mt-72 lg:left-40 xl:left-64 afu ">
             {seconds > 0 || minutes > 0 ? (
               <p>
                 Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:

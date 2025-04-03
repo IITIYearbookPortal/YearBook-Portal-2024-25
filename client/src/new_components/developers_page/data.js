@@ -9,6 +9,11 @@ import img9 from "./images/Vedant.webp"
 import img10 from "./images/Harsh.webp"
 import img11 from "./images/Prachi.webp"
 import img12 from "./images/Aditiganvir.webp"
+import img13 from "./images/Yashasvi.webp"
+import img14 from "./images/Himanshu.webp"
+import img15 from "./images/SaiVarshith.webp"
+import img16 from "./images/Yash.webp"
+import img17 from "./images/Ashish_Donth.webp"
   
   export const Headdata = [
     {
@@ -59,6 +64,47 @@ import img12 from "./images/Aditiganvir.webp"
 
   export const Voldata = [
     {
+      name:"Ashish Donth",
+      image:img17,
+      role:"Frontend",
+      github_id:"https://github.com/Namunah1",
+      insta_id:"https://www.instagram.com/ashish.hgaf?igsh=cjA4YnFncXdrZ3Uw",
+      linkedin_id:"https://www.linkedin.com/in/ashish-donth-726a5b285/",
+    },
+    {
+      name:"Himanshu",
+      image:img14,
+      role:"Frontend",
+      github_id:"https://github.com/jadu-hkhk",
+      insta_id:"https://www.instagram.com/jadu_hkhk?igsh=MTYzam5sYjk4YXYxZA==",
+      linkedin_id:"https://www.linkedin.com/in/himanshu-8104ab299?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+    },
+    {
+      name:"Sai Varshith",
+      image:img15,
+      role:"Backend",
+      github_id:"https://github.com/SaiVarshithMallavarapu",
+      insta_id:"https://www.instagram.com/m_sai_varshith?igsh=MTdoOWd4MTZsMHllMw==",
+      linkedin_id:"https://www.linkedin.com/in/sai-varshith-mallavarapu-857742264",
+    },
+    {
+      name:"Yash",
+      image:img16,
+      role:"Frontend",
+      github_id:"https://github.com/yashvardhan2006",
+      insta_id:"https://www.instagram.com/vedantdms/",
+      linkedin_id:" https://www.linkedin.com/in/yash-vardhan-solanki-424384224",
+    },{
+      name:"Yashasvi",
+      image:img13,
+      role:"Frontend",
+      github_id:"https://github.com/Yashasvi1515",
+      insta_id:"https://www.instagram.com/_.yashasvi.__/",
+      linkedin_id:"https://www.linkedin.com/in/yashasvi-shukla-49882030a/",
+    },
+  ];
+  export const pastMembers = [
+    {
       name:"Adarsh Ranjan",
       image:img2,
       role:"Backend",
@@ -106,5 +152,6 @@ import img12 from "./images/Aditiganvir.webp"
       insta_id:"https://www.instagram.com/vedantdms/",
       linkedin_id:"https://www.linkedin.com/in/vedant-dinkar-a6a4301b9/",
     },
-  ];
+  ]
+
 
