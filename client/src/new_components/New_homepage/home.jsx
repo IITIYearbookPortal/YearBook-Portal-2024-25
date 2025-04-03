@@ -262,7 +262,7 @@ const Home = () => {
               transition={{ duration: 1 }}
               className="snap-scroll text-3xl md:text-5xl text-white"
             >
-              "Change can be scary, " <br />
+              "Change can be scary,  <br />
             </motion.h1>
             <motion.h1
               viewport={{ once: true }}
@@ -271,7 +271,7 @@ const Home = () => {
               transition={{ duration: 1 }}
               className="snap-scroll text-3xl md:text-5xl mt-4 text-white"
             >
-              "but so is staying in the same place" <br />
+              but so is staying in the same place" <br />
             </motion.h1>
             <motion.h1
               viewport={{ once: true }}
