@@ -14,6 +14,9 @@ import img14 from "./images/Himanshu.webp"
 import img15 from "./images/SaiVarshith.webp"
 import img16 from "./images/Yash.webp"
 import img17 from "./images/Ashish_Donth.webp"
+import img18 from "./images/Mitanshu.webp"
+import img19 from "./images/Sarang.webp"
+  
   
   export const Headdata = [
     {
@@ -67,6 +70,14 @@ import img17 from "./images/Ashish_Donth.webp"
 
   export const Voldata = [
     {
+      name:"Sai Varshith",
+      image:img15,
+      role:"Backend",
+      github_id:"https://github.com/SaiVarshithMallavarapu",
+      insta_id:"https://www.instagram.com/m_sai_varshith?igsh=MTdoOWd4MTZsMHllMw==",
+      linkedin_id:"https://www.linkedin.com/in/sai-varshith-mallavarapu-857742264",
+    },
+    {
       name:"Ashish Donth",
       image:img17,
       role:"Frontend",
@@ -82,14 +93,7 @@ import img17 from "./images/Ashish_Donth.webp"
       insta_id:"https://www.instagram.com/jadu_hkhk?igsh=MTYzam5sYjk4YXYxZA==",
       linkedin_id:"https://www.linkedin.com/in/himanshu-8104ab299?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
     },
-    {
-      name:"Sai Varshith",
-      image:img15,
-      role:"Backend",
-      github_id:"https://github.com/SaiVarshithMallavarapu",
-      insta_id:"https://www.instagram.com/m_sai_varshith?igsh=MTdoOWd4MTZsMHllMw==",
-      linkedin_id:"https://www.linkedin.com/in/sai-varshith-mallavarapu-857742264",
-    },
+    
     {
       name:"Yash",
       image:img16,
@@ -104,6 +108,22 @@ import img17 from "./images/Ashish_Donth.webp"
       github_id:"https://github.com/Yashasvi1515",
       insta_id:"https://www.instagram.com/_.yashasvi.__/",
       linkedin_id:"https://www.linkedin.com/in/yashasvi-shukla-49882030a/",
+    },
+    {
+      name:"Mitanshu Kumawat",
+      image:img18,
+      role:"Frontend",
+      github_id:"https://github.com/MitanshuKumawat/",
+      insta_id:"https://www.instagram.com/mitanshu8905/",
+      linkedin_id:"https://www.linkedin.com/in/mitanshu-kumawat-015a28283/",
+    },
+    {
+      name:"Sarang Thakare",
+      image:img19,
+      role:"Frontend",
+      github_id:"https://github.com/SARANGVT",
+      insta_id:"",
+      linkedin_id:"https://www.linkedin.com/in/sarang-thakare-101866229",
     },
   ];
   export const pastMembers = [
