@@ -19,13 +19,13 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
          */}
         <div>
           <div class="relative text-black min-h-48 w-full md:block m-auto md:40 ">
-            <img
+            {/* <img
               class="object-cover w-full h-full transition-transform duration-500 ease-in-out transform "
               src={img}
               style={{ borderRadius: "0", width: "100%", height: "100%" }}
-            />
+            /> */}
 
-            <div class="absolute inset-0 bg-black opacity-60"></div>
+            <div class="absolute inset-0 opacity-60"></div>
 
             <div
               class="absolute inset-0 flex flex-col items-center gap-6 text-white"
@@ -34,7 +34,7 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
                 animation: "3s ease-out 0s 1 normal forwards running slideUp",
               }}
             >
-              <img
+              {/* <img
                 src={img2}
                 alt="Logo"
                 class="h-24 w-auto relative"
@@ -43,7 +43,7 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
                   width: "10%",
                   height: "12%",
                 }}
-              />
+              /> */}
 
               <p className="inline max-w-lg text-base font-bold sm:text-3xl md:text-5xl md:mx-auto text-center">
                 Meet The Team
@@ -153,7 +153,7 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
               })}
             </div>
           </div>
-          <div class="flex flex-col justify-center items-center pb-12 mb-16">
+          {/* <div class="flex flex-col justify-center items-center pb-12 mb-16">
             <h1 className="flex text-[#76ABAE] justify-center items-center text-3xl mb-6 font-bold">
               Core Team
             </h1>
@@ -229,7 +229,7 @@ export const DevP = ({ isDarkMode, setIsDarkMode }) => {
                 );
               })}
             </div>
-          </div>
+          </div> */}
           <div class="flex flex-col justify-center items-center pb-12">
             <h1 className="flex text-[#76ABAE] justify-center items-center text-3xl mb-6 font-bold">
               Members

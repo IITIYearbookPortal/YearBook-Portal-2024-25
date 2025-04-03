@@ -17,17 +17,27 @@ import img17 from "./images/Ashish_Donth.webp"
   
   export const Headdata = [
     {
-      name:"Tarun Balaji",
-      image:img1,
+      name:"Prachi Patil",
+      image:img11,
       role:" ",
-      github_id:"https://github.com/Ghost4681",
-      insta_id:"https://www.instagram.com/tarunbalaji2003/",
-      linkedin_id:"https://www.linkedin.com/in/a-tarun-balaji/",
+      github_id:"https://github.com/Prachi-0205",
+      insta_id:"https://www.instagram.com/prachi_patil0205/",
+      linkedin_id:"https://www.linkedin.com/in/prachi-patil-93402725b/",
+
     }
   ];
 
   
   export const Coredata = [
+    {
+      name:"Tarun Balaji",
+      image:img1,
+      role:"Backend and Frontend",
+      github_id:"https://github.com/Ghost4681",
+      insta_id:"https://www.instagram.com/tarunbalaji2003/",
+      linkedin_id:"https://www.linkedin.com/in/a-tarun-balaji/",
+      
+    },
     {
       name:"Harsh Soni",
       image:img10,
@@ -52,14 +62,7 @@ import img17 from "./images/Ashish_Donth.webp"
       insta_id:"https://www.instagram.com/ayush__awasthi__/",
       linkedin_id:"https://www.linkedin.com/in/ayush-awasthi-a232b8254/",
     },
-    {
-      name:"Prachi Patil",
-      image:img11,
-      role:"Backend",
-      github_id:"https://github.com/Prachi-0205",
-      insta_id:"https://www.instagram.com/prachi_patil0205/",
-      linkedin_id:"https://www.linkedin.com/in/prachi-patil-93402725b/",
-    },
+    
   ];
 
   export const Voldata = [
@@ -104,6 +107,39 @@ import img17 from "./images/Ashish_Donth.webp"
     },
   ];
   export const pastMembers = [
+    {
+      name:"Tarun Balaji",
+      image:img1,
+      role:"Backend and Frontend",
+      github_id:"https://github.com/Ghost4681",
+      insta_id:"https://www.instagram.com/tarunbalaji2003/",
+      linkedin_id:"https://www.linkedin.com/in/a-tarun-balaji/",
+      
+    },
+    {
+      name:"Harsh Soni",
+      image:img10,
+      role:"Backend",
+      github_id:"https://github.com/SoniHarsh1",
+      insta_id:"https://www.instagram.com/harsh.soni_1/",
+      linkedin_id:"https://www.linkedin.com/in/harsh-soni15/",
+    },
+    {
+      name:"Aditi Ganvir",
+      image:img12,
+      role:"Backend",
+      github_id:"https://github.com/aditiganvir28",
+      insta_id:"https://www.instagram.com/ganviraditi/",
+      linkedin_id:"https://www.linkedin.com/in/aditi-ganvir-216336232/",
+    },
+    {
+      name:"Ayush Awasthi",
+      image:img6,
+      role:"Backend",
+      github_id:"https://github.com/ayushawasthi24",
+      insta_id:"https://www.instagram.com/ayush__awasthi__/",
+      linkedin_id:"https://www.linkedin.com/in/ayush-awasthi-a232b8254/",
+    },
     {
       name:"Adarsh Ranjan",
       image:img2,
