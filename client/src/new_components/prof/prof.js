@@ -372,7 +372,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
 
           <div className="">
               <div className="text-emerald-400 font-bold">Approved Comments </div>
-              <div className="text-gray-300 font-medium">Top twelve comments will be shown on the yearbook (Drag to reorder comments)</div>
+              <div className="text-gray-300 font-medium">Top eight comments will be shown on the yearbook (Drag to reorder comments)</div>
               </div>
 
           </div>

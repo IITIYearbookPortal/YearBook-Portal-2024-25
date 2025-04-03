@@ -452,7 +452,7 @@ function Fill1(props) {
           </div>
 
           <div class="h-12 w-full top-56 left-4 absolute text-2xl  md:text-[20px] md:top-52 lg:text-[22px] lg:top-64 flex justify-center items-center tmp afu">
-            (You may now close this window){" "}
+            (Check spam folder as well and close this window){" "}
           </div>
 
           {/* 

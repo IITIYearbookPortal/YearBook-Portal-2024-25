@@ -34,7 +34,7 @@ export default function About() {
         <div>
           <p
             className="text-neutral-200 text-xs md:text-lg font-normal mb-8">
-            Click on the icon at the top left to explore various.
+            Click on the icon at the top left to explore
           </p>
           <p
             className="text-neutral-200 text-xs md:text-lg font-normal mb-8">
@@ -58,7 +58,7 @@ export default function About() {
         <div>
           <p
             className="text-neutral-200 text-xs md:text-lg font-normal mb-4">
-            Search for your friends using their names or institute .
+            Search for your friends using their names or roll no.
           </p>
           <p
             className="text-neutral-200 text-xs md:text-lg font-normal mb-8">
@@ -105,11 +105,11 @@ export default function About() {
           </p>
           <p
             className="text-neutral-200 text-xs md:text-lg font-normal mb-8">
-            Vote for your favourite candidate in the polls section 
+            Cast your vote for your favorite candidate in the polls section
           </p>
           <p
             className="text-neutral-200 text-xs md:text-lg font-normal mb-8">
-            and make then win the title.
+            and help them secure the title.
           </p>
           <div className="grid grid-cols-2 gap-4">
             <img
@@ -129,10 +129,10 @@ export default function About() {
       <Timeline data={data} />
       <div className='w-full mt-8 px-[10vw] text-xl text-right text-gray-500 font-sans'>
         Still facing issues? Contact: <br />
-        +91 99677 21357<br />
-        Varad Pendse<br />
-        +91 83919 73739<br />
-        Ansh Kyal
+        +91 6263106823<br />
+        Keshvi<br />
+        +91 8860271033<br />
+        Anshuman
       </div>
     </div>)
   );
