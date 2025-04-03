@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, MapPin, Mail, Phone, Linkedin, Instagram, Youtube } from 'lucide-react';
 import "./homepage.module.css";
 import { Link } from "react-router-dom";
+import { LoginContext } from "../../helpers/Context";
 
 const Footer = () => {
+  const {loggedin,setLoggedin} = useContext(LoginContext);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedThemeMode = localStorage.getItem("themeMode");
     return storedThemeMode === "dark";
@@ -29,7 +31,7 @@ const Footer = () => {
                C240,95 480,95 720,45 
                C960,-5 1200,-5 1440,45 
                L1440,0 L0,0 Z"
-            fill="url(#greenOverlay)"
+            fill={loggedin?"#000000":"url(#greenOverlay)"}
           />
         </svg>
       </div>
