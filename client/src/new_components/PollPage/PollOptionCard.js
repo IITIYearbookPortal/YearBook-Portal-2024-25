@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
 
-const PollOptionCard = ({ option, selectedOption, onSelectOption, user }) => {
+const PollOptionCard = ({ option, selectedOption, onSelectOption, user,isUser }) => {
   const navigate = useNavigate();
   const isSelected = selectedOption === option.option;
   const [showDetails, setShowDetails] = useState(false);
@@ -82,9 +82,12 @@ const PollOptionCard = ({ option, selectedOption, onSelectOption, user }) => {
 
         {/* Name Bar */}
         <div className="absolute bottom-0 left-0 right-0 bg-[#222831]/90 p-3">
-          <p className="text-lg font-semibold text-[#EEEEEE]">
-            {user?.name || option.option}
-          </p>
+        <p className="text-lg font-semibold text-[#EEEEEE]">
+  {isUser 
+    ? user?.name || option.option
+    : `${user.roll_no} - ${user.name}`
+  }
+</p>
           {!showDetails && (
             <p className="text-sm text-[#76ABAE]/80">
               Tap to view details
@@ -117,30 +120,37 @@ const PollOptionCard = ({ option, selectedOption, onSelectOption, user }) => {
                         <span className="text-[#76ABAE]">Roll No:</span> {user.roll_no}
                       </p>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#76ABAE]" />
-                      <p className="text-[#EEEEEE] text-sm">
-                        <span className="text-[#76ABAE]">Department:</span> {user.department}
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#76ABAE]" />
-                      <p className="text-[#EEEEEE] text-sm">
-                        <span className="text-[#76ABAE]">Program:</span> {user.academic_program}
-                      </p>
-                    </div>
+                    {user.department && (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#76ABAE]" />
+                        <p className="text-[#EEEEEE] text-sm">
+                          <span className="text-[#76ABAE]">Department:</span> {user.department}
+                        </p>
+                      </div>
+                    )}
+                    {user.academic_program && (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#76ABAE]" />
+                        <p className="text-[#EEEEEE] text-sm">
+                          <span className="text-[#76ABAE]">Program:</span> {user.academic_program}
+                        </p>
+                      </div>
+                    )}
                   </div>
 
                   {/* view profile button */}
                   <div className="mt-auto space-y-2">
                     <div className="border-t border-[#76ABAE]/20 pt-2">
                       <motion.button
-                        className="w-full px-4 py-2 bg-[#76ABAE] text-[#222831] rounded-lg 
-                          font-medium hover:bg-[#76ABAE]/90 transition-colors duration-300
-                          flex items-center justify-center space-x-2"
+                        className={`w-full px-4 py-2 rounded-lg font-medium flex items-center justify-center space-x-2
+                          ${isUser 
+                            ? 'bg-[#76ABAE] text-[#222831] hover:bg-[#76ABAE]/90' 
+                            : 'bg-[#76ABAE]/30 text-[#222831]/50 cursor-not-allowed'
+                          } transition-colors duration-300`}
                         onClick={handleProfileClick}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
+                        disabled={!isUser}
                       >
                         <span>View Profile</span>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -8,6 +8,12 @@ import "react-toastify/dist/ReactToastify.css";
 import PollOptionCard from "./PollOptionCard";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Add this helper function at the top of your component
+const splitOptionData = (combinedOption) => {
+  const [rollNo, name] = combinedOption.split(' - ');
+  return { rollNo, name };
+};
+
 const PollResultsPage = () => {
   const { loggedin, profile } = useContext(LoginContext);
   const { pollId } = useParams();
@@ -42,9 +48,10 @@ const PollResultsPage = () => {
       });
   };
 
+  // Modify the fetchUserData function
   const fetchUserData = (options) => {
     if (Array.isArray(poll.options)) {
-      const rollNumbers = options.map(option => option.option);
+      const rollNumbers = options.map(option => splitOptionData(option.option).rollNo);
       axios.get(`${process.env.REACT_APP_API_URL}/getUsersData`)
         .then(response => {
           const filteredUsers1 = response.data.filter(user =>
@@ -144,7 +151,9 @@ const PollResultsPage = () => {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"
         >
           {poll.options.map((option) => {
-            const user = filteredUsers.find((user) => user.roll_no === option.option);
+            const { rollNo, name } = splitOptionData(option.option);
+            const user = filteredUsers.find((user) => user.roll_no === rollNo);
+            
             return (
               <motion.div
                 key={option._id}
@@ -154,10 +163,14 @@ const PollResultsPage = () => {
                 transition={{ duration: 0.3 }}
               >
                 <PollOptionCard
-                  option={option}
+                  option={{
+                    ...option,
+                    displayName: user ? user.name : name // Use database name if found, otherwise use the name from poll
+                  }}
                   selectedOption={selectedOption}
                   onSelectOption={setSelectedOption}
-                  user={user}
+                  user={user || { name: name, roll_no: rollNo }} // Provide fallback user object
+                  isUser={!!user} // Check if user is found in filteredUsers
                 />
               </motion.div>
             );
