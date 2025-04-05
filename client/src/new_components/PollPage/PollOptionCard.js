@@ -19,7 +19,7 @@ const PollOptionCard = ({ option, selectedOption, onSelectOption, user,isUser })
   const handleProfileClick = (e) => {
     e.stopPropagation();
     if (user?.roll_no && user?.name) {
-      navigate(`/comment/${user.roll_no}/${user.name}`);
+      navigate(`/comment/${user.name}/${user.roll_no}`);
     }
   };
 
