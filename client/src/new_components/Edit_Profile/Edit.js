@@ -418,7 +418,7 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
             <input
               className="inped mb-2"
               type="text"
-              maxLength={350}
+              maxLength={300}
               placeholder="About Me (50-60 words)"
               size="60"
               name="about"

@@ -353,15 +353,15 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
           </div>
 
           <div className="w-full gap-4 mt-8">
-            <div className="bg-gray-800 rounded-xl p-4">
-              <div className="flex px-2 items-center gap-3">
-                <div>
-                  <div className="text-2xl font-bold">About</div>
-                  <div className="text-gray-400 text-sm">{profile.about}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div className="bg-gray-800 rounded-xl p-4">
+    <div className="flex flex-col px-2">
+      <div className="text-2xl font-bold">About</div>
+      <div className="text-gray-400 text-sm mt-2 break-words overflow-auto max-h-48">
+        {profile.about}
+      </div>
+    </div>
+  </div>
+</div>
 
         
         </div>

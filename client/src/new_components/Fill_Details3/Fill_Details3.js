@@ -71,6 +71,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
   const [sentOtp, setSentOtp] = useState(false);
   const [sub, setSub] = useState(false);
   const [wait, setWait] = useState(false);
+  const [len, setlen] = useState(0)
 
   const [hid, setHid] = useState(1);
 
@@ -105,6 +106,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
   // });
 
   const auth = getAuth();
+
+  const handleInputChange = (event) => {
+    let inputstr = event.target.value;
+    setlen(inputstr.length);
+  };
 
   const onSubmit = () => {
     setState(true);
@@ -1029,6 +1035,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           <div class=" h-48 w-36 md:h-80 w-70 absolute top-[250px] left-[40px] md:top-[220px] mt-12 md:mt-8 lg:mt-[10rem] lg:text-xl md:left-[400px] xl:left-[570px] xl:top-[215px] xl:mt-0 af">
             <textarea
               type="text"
+              onInput={handleInputChange}
+              maxLength={300}
               class="rounded-xl bg-white text-black font-bold  h-[13rem] w-[16rem] md:h-80 max-h-[17rem] md:w-[270px] lg:mt-[-8rem] xl:mt-12 border-2 border-black   text-base text-start p-2"
               placeholder="    About Me (50 - 60 words)"
               name="about"
@@ -1038,6 +1046,9 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 setabout(e.target.value);
               }}
             ></textarea>
+            <p class="absolute bottom-2 left-44 text-sm text-gray-600 bg-white px-2 py-1 rounded-md">
+            {300 - len}/300
+          </p>
           </div>
 
           {/* 3rd col */}
