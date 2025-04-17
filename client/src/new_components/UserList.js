@@ -177,9 +177,11 @@ const UserList = () => {
                   ? `/profile/${profile.roll_no}/${profile.name}`
                   : `/userlist/profile/${user.roll_no}/${user.name}`;
                 if (isCurrentUser) {
-                  navigate(profileLink);
+                  window.open(profileLink, '_blank');
+                  // navigate(profileLink);
                 } else {
-                  navigate(`/comment/${user.name}/${user.roll_no}`);
+                  window.open(`/comment/${user.name}/${user.roll_no}`, '_blank');
+                  // navigate(`/comment/${user.name}/${user.roll_no}`);
                 }
               }}
             >
