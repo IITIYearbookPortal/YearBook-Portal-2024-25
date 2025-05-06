@@ -1053,7 +1053,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
           {/* 3rd col */}
 
-          <div class="h-40 w-70  absolute top-[495px] left-[40px]  mt-4  md:top-[40px] md:mt-8 lg:mt-[13rem] lg:text-xl md:left-[720px] xl:left-[930px] xl:mt-10 xl:top-[220px] af">
+          <div class="h-40 w-70  absolute top-[495px] left-[40px]  mt-4   md:mt-20  md:left-[5rem] lg:mt-[13rem] lg:text-xl  xl:left-[930px] xl:mt-10 xl:top-[220px] af">
             <textarea
               type="text"
               class="rounded-xl bg-white text-black font-bold h-[8rem] max-h-[12rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
@@ -1067,7 +1067,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             ></textarea>
           </div>
 
-          <div class="h-40 w-70  absolute top-[630px] left-[40px]  mt-4  md:top-[40px] md:mt-8 lg:mt-[22rem] lg:text-xl md:left-[720px] xl:left-[930px] xl:mt-12 xl:top-[360px] af">
+          <div class="h-40 w-70  absolute top-[630px] left-[40px]  mt-4  md:mt-20 md:left-[5rem]  lg:mt-[22rem] lg:text-xl xl:left-[930px] xl:mt-12 xl:top-[360px] af">
             <textarea
               type="text"
               class="rounded-xl bg-white text-black font-bold h-[6rem] max-h-[13rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
@@ -1103,7 +1103,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 }
               }
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 bottom-[2rem] left-32 flex items-center justify-center absolute lg:left-[469px] lg:bottom-8  p-0 text-base leading-none text-center  rounded-3xl md:bottom-[7rem] md:mt-32 md:w-32 md:h-10  lg:mt-8 xl:bottom-10  xl:left-[648px] btnh border-dashed afd"
+            class="border-2 border-black bg-white text-black h-8 w-32 bottom-[2rem] left-32 flex items-center justify-center absolute lg:left-[469px] lg:bottom-8  p-0 text-base leading-none text-center  rounded-3xl md:bottom-[10rem]  md:w-32 md:h-10  lg:mt-8 xl:bottom-10  xl:left-[648px] btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
