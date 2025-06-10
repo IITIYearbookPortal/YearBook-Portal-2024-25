@@ -1,15 +1,15 @@
 const jwt = require('jsonwebtoken')
 
 exports.createJwtToken = (payload) => {
-  const token = jwt.sign(payload, '12345', { expiresIn: '12h' })
+  const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '48h' })
   return token
 }
 
-exports.verifyJwtToken = (token, next) => {
+exports.verifyJwtToken = (token) => {
   try {
-    const { userId } = jwt.verify(token, '12345')
+    const { userId } = jwt.verify(token, process.env.JWT_SECRET)
     return userId
   } catch (err) {
-    next(err)
+    return null;
   }
 }

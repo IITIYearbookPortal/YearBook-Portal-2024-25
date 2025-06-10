@@ -399,8 +399,11 @@ const updateUser = asyncHandler(async (req, res) => {
 
 //find a user who logged in in user's data
 const findAUser = asyncHandler(async (req, res) => {
-  const email = req.body.email
-
+  const token = req.body.token
+  const email = jwtutil.verifyJwtToken(token)
+  if (email === null) {
+    return res.send({ message: 'Invalid token' })
+  }
   const User = await Users.find({ email: email }).exec()
 
   const User2 = User.map(user => ({

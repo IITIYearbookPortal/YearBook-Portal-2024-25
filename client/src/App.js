@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Cookies from 'js-cookie';
 import "./App.css";
 import Navbar from "./new_components/Navbar/Navbar";
 // import Cards from "./components/team/Cards.jsx";
@@ -31,8 +32,9 @@ import GoldCard from "./new_components/MemberCards/GoldCard.js";
 import BlackCard from "./new_components/MemberCards/BlackCard.js";
 import About from "./new_components/About/about.jsx";
 import DevP from "./new_components/developers_page/devp.js";
-import PollPage from './new_components/PollPage/PollPage.js';
+import PollPage from "./new_components/PollPage/PollPage.js";
 import PollResultsPage from "./new_components/PollPage/PollResultsPage";
+import { Logout } from "@mui/icons-material";
 
 const App = ({ location }) => {
   const [user, setUser] = useState({});
@@ -73,7 +75,7 @@ const App = ({ location }) => {
       .then((res) => {
         setAllUsers(res.data); // Updated variable name
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }, []);
 
   // Google authentication for IITI students
@@ -83,7 +85,6 @@ const App = ({ location }) => {
       google.accounts.id.initialize({
         client_id: process.env.REACT_APP_CLIENT_ID,
         callback: handleCallbackResponse,
-        hosted_domain: "iiti.ac.in",
       });
       google.accounts.id.renderButton(document.getElementById("google-login"), {
         theme: "dark",
@@ -98,29 +99,33 @@ const App = ({ location }) => {
     // Getting all the data from Google for the user who signs in
     var userObject = jwt_decode(response.credential);
 
-    window.localStorage.setItem("token", response.credential);
+    window.sessionStorage.setItem("google-token", response.credential);
 
     // setLoggedin(true)
-    const email = userObject.email;
-    if (!email.endsWith('@iiti.ac.in')) {
-    // Handle unauthorized access
-    console.error('Unauthorized domain');
-    alert('Please use your IITI email address to login');
-    return;
-    }
 
     await axios
       .post(process.env.REACT_APP_API_URL + "/checkAuth", {
-        email: userObject.email,
+        // email: userObject.email,
+        googleToken: response.credential,
       })
       .then((res) => {
-        // If the user already exists in the auth model
-        if (res.data.message === "true") {
+        // Setting the jwt token in the local storage
+        if (res.data.message === "Invalid token") {
+          setUser({});
+          setLoggedin(false);
+          window.localStorage.clear();
+          window.sessionStorage.clear();
+          Cookies.remove('token');
+          navigate("/");
+        }
+        else if (res.data.message === "true") {
+          const token = res.data.token;
+          Cookies.set('token', token, { expires: 7, secure: false });
           // If the user is an alumni
           if (alumniEmail.includes(userObject.email)) {
             axios
               .post(process.env.REACT_APP_API_URL + "/findAUser", {
-                email: userObject.email,
+                token: res.data.token,
               })
               .then((res) => {
                 // If the user had made his profile
@@ -168,11 +173,12 @@ const App = ({ location }) => {
         else {
           axios
             .post(process.env.REACT_APP_API_URL + "/auth", {
-              email: userObject.email,
-              name: userObject.name,
+              googleToken: response.credential,
             })
             .then((res) => {
               // If alumni
+              const token = res.data.token;
+              Cookies.set('token', token, { expires: 7, secure: false });
               if (alumniEmail.includes(userObject.email)) {
                 navigate(`/fill/${userObject.jti}`);
               }
@@ -183,23 +189,23 @@ const App = ({ location }) => {
                 navigate("/goldcard");
               }
             })
-            .catch((err) => {});
+            .catch((err) => { });
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }
 
   //on reloading check if credentials exist in the localstorage if does exit check if student then set loggedin true
   //if an alumni, check if two time verified set logged in and verified true
   useEffect(() => {
-    const token = window.localStorage.getItem("token");
-
-    if (token !== null) {
-      const auth = jwt_decode(token);
+    const googleToken = window.sessionStorage.getItem("google-token");
+    const token = Cookies.get('token')
+    if (googleToken !== null && token !== null) {
+      const auth = jwt_decode(googleToken);
       if (alumniData.includes(auth.email)) {
         axios
           .post(process.env.REACT_APP_API_URL + "/findAUser", {
-            email: auth.email,
+            token: token,
           })
           .then((res) => {
             // If the user had made his profile
@@ -258,9 +264,8 @@ const App = ({ location }) => {
     >
       <div
         id="root2"
-        className={`App overflow-x-hidden bg-cover ${
-          isDarkMode ? "bg-bg-dark text-white" : "bg-bg-white text-black"
-        }`}
+        className={`App overflow-x-hidden bg-cover ${isDarkMode ? "bg-bg-dark text-white" : "bg-bg-white text-black"
+          }`}
       >
         {!/^\/fill\/.+$/.test(window.location.pathname) &&
           !/^\/otpVerificationnew\/.+$/.test(window.location.pathname) &&
@@ -277,11 +282,8 @@ const App = ({ location }) => {
         <Routes>
           {/* Homepage */}
           {/* <Route exact path="/oldHomepage" element={<Homepage />} /> */}
-
           {/* <Route path="/changetheme" element={<ThemeSettings toggleTheme={toggleTheme} isDarkMode={isDarkMode} />} /> */}
-
           <Route exact path="/" element={<Homepage2 />} />
-
           <Route exact path="/about" element={<About />} />
           {/* <Route exact path = "/profile/nongrad" element = {<Nongrad />} /> */}
           <Route
@@ -292,9 +294,12 @@ const App = ({ location }) => {
           <Route exact path="/login" element={<Homepage2 />} />
           <Route exact path="/footer" element={<Homepage2 />} />
           <Route exact path="/logout" element={<Homepage2 />} />
-          
-          <Route path="/polls" element={<PollPage isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
-
+          <Route
+            path="/polls"
+            element={
+              <PollPage isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+            }
+          />
           {/* Registration Page */}
           {/* <Route exact path="/fill/:userId/old" element={<Fill />} /> */}
           <Route exact path="/otpVerificationnew/:userId" element={<Fill1 />} />
@@ -306,10 +311,8 @@ const App = ({ location }) => {
               <Fill3 isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
             }
           />
-
           {/* Search Page */}
           {<Route exact path="/userlist" element={<UserList />} />}
-
           {
             <Route
               exact
@@ -321,7 +324,6 @@ const App = ({ location }) => {
               }
             />
           }
-
           {/* Make a Comment Page */}
           {/* <Route
             exact
@@ -338,7 +340,8 @@ const App = ({ location }) => {
               />
             }
           />
-           <Route path="/polls/results/:pollId" element={<PollResultsPage />} /> {/* Poll results route */}
+          <Route path="/polls/results/:pollId" element={<PollResultsPage />} />{" "}
+          {/* Poll results route */}
           {/* Profile Page */}
           {/* <Route exact path="/profile/:roll/:name/old" element={<SecondLogin />} /> */}
           <Route
@@ -348,11 +351,9 @@ const App = ({ location }) => {
               <Prof isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
             }
           />
-
           {/* Cards */}
           <Route exact path="/goldcard" element={<GoldCard />} />
           <Route exact path="/blackcard" element={<BlackCard />} />
-
           {/* Edit Profile Page */}
           <Route
             exact
@@ -361,7 +362,6 @@ const App = ({ location }) => {
               <Edit isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
             }
           />
-
           {/* Edit a Comment Page */}
           <Route
             exact
@@ -373,10 +373,8 @@ const App = ({ location }) => {
               />
             }
           />
-
           {/* About Page */}
           {/* <Route exact path="/about" element={<About />} /> */}
-
           {/* Team Page */}
           <Route
             exact
@@ -385,11 +383,9 @@ const App = ({ location }) => {
               <DevP isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
             }
           />
-
           {/* Error Pages */}
           <Route exact path="*" element={<Error />} />
           <Route exact path="/issue" element={<Error />} />
-
           {/* Balck and Gold Cards */}
           <Route exact path="/Newp1" element={<BlackCard />} />
           <Route exact path="/Newp2" element={<GoldCard />} />
