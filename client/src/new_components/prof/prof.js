@@ -271,7 +271,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
   const [comments, setComments] = useState([
-
+    
     {
       id: 1,
       author: "Prof. Sarah Johnson",
@@ -372,7 +372,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
 
           <div className="">
               <div className="text-emerald-400 font-bold">Approved Comments </div>
-              <div className="text-gray-300 font-medium">Top eight comments will be shown on the yearbook (Drag to reorder comments)</div>
+              <div className="text-gray-300 font-medium">Top eight comments will be featured in the final yearbook (Drag to reorder comments). Additionally, you'll receive a digital version of the yearbook that contains all your approved comments. We will try to include as many comments as we can for publication in the yearbook.</div>
               </div>
 
           </div>

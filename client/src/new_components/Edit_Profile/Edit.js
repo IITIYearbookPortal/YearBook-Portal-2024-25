@@ -81,7 +81,7 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
 
     setWait(true);
     axios
-      .post("https://api-eu.cloudinary.com/v1_1/dmbwxmzlh/upload", formData)
+      .post("https://api-eu.cloudinary.com/v1_1/dd5ixerth/upload", formData)
       .then((res) => {
         setWait(false);
         setImageUrl(res.data.url);
