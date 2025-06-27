@@ -336,6 +336,17 @@ const resendMail = asyncHandler(async (req, res) => {
 
 //Upadte users data
 const updateUser = asyncHandler(async (req, res) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Unauthorized - No token provided' })
+  }
+  
+  const token = authHeader.substring(7) // Remove 'Bearer ' prefix
+  const tokenemail = jwtutil.verifyJwtToken(token)
+  
+  if (tokenemail === null) {
+    return res.status(401).json({ message: 'Invalid token' })
+  }
   const {
     email,
     name,
@@ -368,7 +379,9 @@ const updateUser = asyncHandler(async (req, res) => {
   ) {
     return res.send({ message: 'All fields are required' })
   }
-
+  if (tokenemail !== email) {
+    return res.status(403).json({ message: 'You are not authorized to update this user' })
+  }
   // check if roll no. is a number or not
   if (isNaN(roll_no)) {
     return res.send({ message: 'Roll No. should be in Digits' })
@@ -435,14 +448,24 @@ const findAUser = asyncHandler(async (req, res) => {
 
 //Get Users data who has logged in to be displayed on the profile page
 const getProfileData = asyncHandler(async (req, res) => {
-  const { email } = req.body
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Unauthorized - No token provided' })
+  }
+  
+  const token = authHeader.substring(7) // Remove 'Bearer ' prefix
+  const email = jwtutil.verifyJwtToken(token)
+  
+  if (email === null) {
+    return res.status(401).json({ message: 'Invalid token' })
+  }
 
   const User = await Users.find({ email: email }).exec()
 
   if (!User.length) {
-    res.send({ message: 'No User Found' })
+    res.status(404).json({ message: 'No User Found' })
   } else {
-    res.send({ message: 'User Found', User: User })
+    res.status(200).json({ message: 'User Found', User: User })
   }
 })
 

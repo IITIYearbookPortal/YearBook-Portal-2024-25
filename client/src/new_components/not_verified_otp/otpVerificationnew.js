@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LoginContext } from "../../helpers/Context";
 import { useContext } from "react";
+import Cookies from "js-cookie";
 import phoneimg from "./th.png";
 import "./filldetails.module.css";
 import Abtn from "./arrowBtn.png";
@@ -34,9 +35,9 @@ function Fill1(props) {
   } = useContext(LoginContext);
 
   let user;
-
-  if (window.localStorage.getItem("token") !== null) {
-    user = jwt_decode(window.localStorage.getItem("token"));
+  
+  if (Cookies.get("yearbook-token") !== undefined && window.sessionStorage.getItem("token") !== null) {
+    user = jwt_decode(window.sessionStorage.getItem("token"));
   }
 
   const jti = useParams();

@@ -70,16 +70,6 @@ const App = ({ location }) => {
 
   const alumniEmail = alumniData;
 
-  // Get all users' name branch and email id
-  useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/getUsersData")
-      .then((res) => {
-        setAllUsers(res.data); // Updated variable name
-      })
-      .catch((err) => { });
-  }, []);
-
   // Google authentication for IITI students
   useEffect(() => {
     /* global google */
@@ -253,6 +243,7 @@ const App = ({ location }) => {
         profile,
         setProfile,
         allUsers,
+        setAllUsers,
         verified,
         setVerified,
         profileIcon,

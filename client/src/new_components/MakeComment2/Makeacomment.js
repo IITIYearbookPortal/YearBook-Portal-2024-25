@@ -8,13 +8,24 @@ import alumniData from "../Navbar/akumniData.json";
 import { LoginContext } from "../../helpers/Context";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
+import { forbiddenError, unauthorizedError } from "../../utils/authErrors";
 // import jwt from 'jsonwebtoken';
 
 export function Makeacomment({ isDarkMode, setIsDarkMode }) {
   const [decodedToken, setDecodedToken] = useState(null);
-  const { result, isStudent, setIsStudent, user, loggedin, profile, loading } =
-    useContext(LoginContext);
-    console.log(profile)
+  const {
+    user,
+    setUser,
+    setLoggedin,
+    result,
+    isStudent,
+    setIsStudent,
+    loggedin,
+    profile,
+    loading,
+  } = useContext(LoginContext);
+  console.log(profile);
 
   const { name, roll_no } = useParams();
 
@@ -44,7 +55,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
 
   useEffect(() => {
     // Retrieve the token from localStorage
-    const token = localStorage.getItem("token");
+    const token = window.sessionStorage.getItem("token");
 
     // Check if token exists
     if (token) {
@@ -71,11 +82,26 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
   useEffect(() => {
     if (profile) {
       axios
-        .post(process.env.REACT_APP_API_URL + "/getRecieversComments2", {
-          comment_reciever_roll_number: roll_no,
-          isStudent: isStudent,
-        })
+        .post(
+          process.env.REACT_APP_API_URL + "/getRecieversComments2",
+          {
+            comment_reciever_roll_number: roll_no,
+            isStudent: isStudent,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
+            },
+          }
+        )
         .then((res) => {
+          if (res.status === 404 || res.status === 500 || res.status === 400) {
+            window.location.href = "/error";
+          } else if (res.status === 401) {
+            forbiddenError(setLoggedin, setUser);
+          } else if (res.status === 403) {
+            unauthorizedError(setLoggedin, setUser);
+          }
           if (res.data.message === "User not found for the given roll_no") {
             navigate("/error");
             setMessage2(res.data.message);
@@ -104,15 +130,34 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
 
       if (confirmed) {
         await axios
-          .post(process.env.REACT_APP_API_URL + "/comments", {
-            // comment_sender_email: profile.email,
-            comment_sender_email: decodedToken.email,
-            comment_reciever_roll_no: roll_no,
-            isStudent: isStudent,
-            comment: comment2,
-            status: "new",
-          })
+          .post(
+            process.env.REACT_APP_API_URL + "/comments",
+            {
+              comment_reciever_roll_no: roll_no,
+              isStudent: isStudent,
+              comment: comment2,
+              status: "new",
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
+              },
+            }
+          )
           .then((res) => {
+            if (
+              res.status === 404 ||
+              res.status === 500 ||
+              res.status === 400
+            ) {
+              window.location.href = "/error";
+            }
+            if (res.status === 401) {
+              forbiddenError(setLoggedin, setUser);
+            }
+            if (res.status === 403) {
+              unauthorizedError(setLoggedin, setUser);
+            }
             toast("Comment Posted Successfully!", {
               theme: "dark",
               autoClose: 2000,
@@ -233,7 +278,6 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           })}
         </div>
       </div>
-
     </div>
   );
 }

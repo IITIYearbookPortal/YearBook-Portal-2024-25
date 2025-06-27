@@ -5,7 +5,18 @@ const Memories = require('../models/memories')
 
 //Memories_Image
 const memory_img = asyncHandler(async (req, res) => {
-    const user_email = req.body.user_email
+   const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Unauthorized - No token provided' })
+    }
+    
+    const token = authHeader.substring(7) // Remove 'Bearer ' prefix
+    const email = jwtutil.verifyJwtToken(token)
+    
+    if (email === null) {
+      return res.status(401).json({ message: 'Invalid token' })
+    }
+    const user_email = email
     const name = req.body.name
     const memory_img = req.body.memory_img
     console.log(memory_img)
@@ -18,7 +29,7 @@ const memory_img = asyncHandler(async (req, res) => {
           { $push: { memory_img: memory_img } },
         )
   
-        return res.send({ message: 'Image Uploaded Successfully.' })
+        return res.status(200).json({ message: 'Image Uploaded Successfully.' })
       }
       try {
         const addImage = await Memories.findOneAndUpdate(
@@ -29,7 +40,7 @@ const memory_img = asyncHandler(async (req, res) => {
         console.log(err)
       }
   
-      return res.send({ message: 'Image Upload Successfully.' })
+      return res.status(200).json({ message: 'Image Upload Successfully.' })
     } catch (err) {
       console.log(err)
     }

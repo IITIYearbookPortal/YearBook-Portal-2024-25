@@ -1,12 +1,24 @@
-
 const jwtutil = require("../utils/token.util");
 const Auth = require("../models/authModel");
 const asyncHandler = require("express-async-handler");
 const { jwt } = require("twilio");
-const {OAuth2Client} = require('google-auth-library');
+const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client();
 
 const getAllusers = asyncHandler(async (rq, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res
+      .status(401)
+      .json({ message: "Unauthorized - No token provided" });
+  }
+
+  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+  const email = jwtutil.verifyJwtToken(token);
+
+  if (email === null) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
   //Get all users from mongodb
   const auths = await Auth.find().lean();
 
@@ -14,26 +26,29 @@ const getAllusers = asyncHandler(async (rq, res) => {
   if (!auths?.length) {
     return res.status(404).json({ message: "No users found" });
   }
-  res.status(404).json(auths);
+  res.status(200).json(auths);
 });
 
 const verifyGoogleToken = (token) => {
   // Verify the Google token
   return new Promise((resolve, reject) => {
-    client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
-    }, (err, ticket) => {
-      if (err) {
-        return reject(err);
+    client.verifyIdToken(
+      {
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID, // Specify the CLIENT_ID of the app that accesses the backend
+      },
+      (err, ticket) => {
+        if (err) {
+          return reject(err);
+        }
+        const payload = ticket.getPayload();
+        const email = payload.email;
+        const name = payload.name;
+        resolve({ email, name });
       }
-      const payload = ticket.getPayload();
-      const email = payload.email;
-      const name = payload.name;
-      resolve({ email, name });
-    });
+    );
   });
-}
+};
 
 //Make the below two functions as one
 const createUsers = asyncHandler(async (req, res) => {
@@ -56,18 +71,18 @@ const createUsers = asyncHandler(async (req, res) => {
 
 //Check if the user logged in second time or first time
 const checkAuth = asyncHandler(async (req, res) => {
-    const googleToken = req.body.googleToken;
-    if (!googleToken) {
-      return res.status(400).send({ message: "Google token is required" });
-    }
-    const { email, name } = await verifyGoogleToken(googleToken);
-    const User = await Auth.find({ email: email }).exec();
-    if (!User.length) {
-      res.status(404).json({ message: "false" });
-    } else {
-      const jwttoken = await jwtutil.createJwtToken({ userId: email });
-      res.status(200).json({ message: "true", token: jwttoken });
-    }
+  const googleToken = req.body.googleToken;
+  if (!googleToken) {
+    return res.status(400).send({ message: "Google token is required" });
+  }
+  const { email, name } = await verifyGoogleToken(googleToken);
+  const User = await Auth.find({ email: email }).exec();
+  if (!User.length) {
+    res.status(404).json({ message: "false" });
+  } else {
+    const jwttoken = await jwtutil.createJwtToken({ userId: email });
+    res.status(200).json({ message: "true", token: jwttoken });
+  }
 });
 
 module.exports = {
