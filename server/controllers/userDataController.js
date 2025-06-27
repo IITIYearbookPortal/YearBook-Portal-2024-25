@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const nodemailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 const Users = require('../models/userModel')
-
+const jwtutil = require("../utils/token.util");
 // adding environment variable ****************
 const gmailUser = process.env.GMAIL_USER
 const gmailPass = process.env.GMAIL_PASS
@@ -399,11 +399,19 @@ const updateUser = asyncHandler(async (req, res) => {
 
 //find a user who logged in in user's data
 const findAUser = asyncHandler(async (req, res) => {
-  const token = req.body.token
-  const email = jwtutil.verifyJwtToken(token)
-  if (email === null) {
-    return res.send({ message: 'Invalid token' })
+  // Extract token from Authorization header
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Unauthorized - No token provided' })
   }
+  
+  const token = authHeader.substring(7) // Remove 'Bearer ' prefix
+  const email = jwtutil.verifyJwtToken(token)
+  
+  if (email === null) {
+    return res.status(401).json({ message: 'Invalid token' })
+  }
+  
   const User = await Users.find({ email: email }).exec()
 
   const User2 = User.map(user => ({
@@ -419,9 +427,9 @@ const findAUser = asyncHandler(async (req, res) => {
   })) 
 
   if (!User.length) {
-    res.send({ message: 'No user Found' })
+    return res.status(404).json({ message: 'No user Found' })
   } else {
-    res.send({ message: 'User Found', User2})
+    return res.status(200).json({ message: 'User Found', User2})
   }
 })
 

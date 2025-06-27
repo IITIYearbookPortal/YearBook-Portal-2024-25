@@ -35,6 +35,8 @@ import DevP from "./new_components/developers_page/devp.js";
 import PollPage from "./new_components/PollPage/PollPage.js";
 import PollResultsPage from "./new_components/PollPage/PollResultsPage";
 import { Logout } from "@mui/icons-material";
+import { logout } from "./utils/logout.js";
+import { forbiddenError, notFoundError } from "./utils/authErrors.js";
 
 const App = ({ location }) => {
   const [user, setUser] = useState({});
@@ -105,31 +107,30 @@ const App = ({ location }) => {
 
     await axios
       .post(process.env.REACT_APP_API_URL + "/checkAuth", {
-        // email: userObject.email,
         googleToken: response.credential,
       })
       .then((res) => {
         // Setting the jwt token in the local storage
-        if (res.data.message === "Invalid token") {
-          setUser({});
-          setLoggedin(false);
-          window.localStorage.clear();
-          window.sessionStorage.clear();
-          Cookies.remove('token');
-          navigate("/");
+        if (res.data.message === "Google token is required") {
+          forbiddenError(setUser, setLoggedin);
         }
         else if (res.data.message === "true") {
-          const token = res.data.token;
-          Cookies.set('token', token, { expires: 7, secure: false });
+          Cookies.set('yearbook-token', res.data.token, { expires: 7, secure: false, HttpOnly: true });
+          const token = Cookies.get('yearbook-token');
           // If the user is an alumni
           if (alumniEmail.includes(userObject.email)) {
             axios
-              .post(process.env.REACT_APP_API_URL + "/findAUser", {
-                token: res.data.token,
+              .post(process.env.REACT_APP_API_URL + "/findAUser", {}, {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
               })
               .then((res) => {
                 // If the user had made his profile
-                if (res.data.message === "User Found") {
+                if (res.status === 401) {
+                  forbiddenError(setUser, setLoggedin);
+                }
+                else if (res.data.message === "User Found") {
                   //If the user is not one time verified
                   if (res.data.User2[0].one_step_verified === true) {
                     setOneTimeVerified(true);
@@ -177,8 +178,7 @@ const App = ({ location }) => {
             })
             .then((res) => {
               // If alumni
-              const token = res.data.token;
-              Cookies.set('token', token, { expires: 7, secure: false });
+              Cookies.set('yearbook-token', res.data.token, { expires: 7, secure: false, HttpOnly: true });
               if (alumniEmail.includes(userObject.email)) {
                 navigate(`/fill/${userObject.jti}`);
               }
@@ -199,17 +199,22 @@ const App = ({ location }) => {
   //if an alumni, check if two time verified set logged in and verified true
   useEffect(() => {
     const googleToken = window.sessionStorage.getItem("google-token");
-    const token = Cookies.get('token')
+    const token = Cookies.get('yearbook-token')
     if (googleToken !== null && token !== null) {
       const auth = jwt_decode(googleToken);
       if (alumniData.includes(auth.email)) {
         axios
-          .post(process.env.REACT_APP_API_URL + "/findAUser", {
-            token: token,
+          .post(process.env.REACT_APP_API_URL + "/findAUser", {}, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           })
           .then((res) => {
+            if (res.status === 401) {
+              forbiddenError(setUser, setLoggedin);
+            }
             // If the user had made his profile
-            if (res.data.message === "User Found") {
+            else if (res.data.message === "User Found") {
               // If the user is two step verified
               if (res.data.User2[0].two_step_verified === true) {
                 setVerified(true);

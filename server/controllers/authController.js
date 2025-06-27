@@ -12,9 +12,9 @@ const getAllusers = asyncHandler(async (rq, res) => {
 
   // if no users
   if (!auths?.length) {
-    return res.send({ message: "No users found" });
+    return res.status(404).json({ message: "No users found" });
   }
-  res.json(auths);
+  res.status(404).json(auths);
 });
 
 const verifyGoogleToken = (token) => {
@@ -39,7 +39,7 @@ const verifyGoogleToken = (token) => {
 const createUsers = asyncHandler(async (req, res) => {
   const googleToken = req.body.googleToken;
   if (!googleToken) {
-    return res.status(400).send({ message: "Google token is required" });
+    return res.status(401).send({ message: "Google token is required" });
   }
 
   const { email, name } = await verifyGoogleToken(googleToken);
@@ -48,9 +48,9 @@ const createUsers = asyncHandler(async (req, res) => {
   const auths = await Auth.create({ email, name });
   const jwttoken = await jwtutil.createJwtToken({ userId: email });
   if (auths) {
-    res.send({ message: "New User Created", token: jwttoken });
+    res.status(200).json({ message: "New User Created", token: jwttoken });
   } else {
-    res.send({ message: "Invalid user data recieved" });
+    res.status(404).json({ message: "Invalid user data recieved" });
   }
 });
 
@@ -63,10 +63,10 @@ const checkAuth = asyncHandler(async (req, res) => {
     const { email, name } = await verifyGoogleToken(googleToken);
     const User = await Auth.find({ email: email }).exec();
     if (!User.length) {
-      res.send({ message: "false" });
+      res.status(404).json({ message: "false" });
     } else {
       const jwttoken = await jwtutil.createJwtToken({ userId: email });
-      res.send({ message: "true", token: jwttoken });
+      res.status(200).json({ message: "true", token: jwttoken });
     }
 });
 
