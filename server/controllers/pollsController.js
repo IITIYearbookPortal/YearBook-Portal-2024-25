@@ -4,11 +4,16 @@ const User = require('../models/userModel'); // Import User model if necessary f
 // Controller to create a new poll
 exports.createPoll = async (req, res) => {
   const { question, options, createdBy } = req.body;
-
+  const tokenEmail = req.tokenEmail; 
   if (!question || options.length < 2) {
     return res.status(400).json({ message: "Poll must have a question and at least two options." });
   }
-
+  if (!createdBy) {
+    return res.status(400).json({ message: "CreatedBy field is required." });
+  }
+  if (createdBy !== tokenEmail) {
+    return res.status(403).json({ message: "You are not authorized to create this poll." });
+  }
   try {
     const user = await User.findOne({ email: createdBy });
     if (!user) {
@@ -36,7 +41,10 @@ exports.createPoll = async (req, res) => {
 exports.votePoll = async (req, res) => {
     const { pollId, option, user } = req.body;
     const email=user
-  
+    const tokenEmail = req.tokenEmail;
+    if (tokenEmail !== email) {
+      return res.status(403).json({ message: "You are not authorized to vote on this poll." });
+    }
     if (!pollId || !option) {
       return res.status(400).json({ message: "Poll ID and option are required" });
     }

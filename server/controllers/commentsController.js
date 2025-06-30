@@ -253,6 +253,7 @@
 // --------------------------------------------------------------------------------------------------------------
 
 const asyncHandler = require("express-async-handler");
+const jwtutil = require("../utils/token.util");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const Users = require("../models/userModel");
@@ -261,18 +262,7 @@ const auth = require("../models/authModel");
 
 //Adding the comment
 const comments = asyncHandler(async (req, res) => {
-const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized - No token provided' })
-  }
-  
-  const token = authHeader.substring(7) // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token)
-  
-  if (email === null) {
-    return res.status(401).json({ message: 'Invalid token' })
-  }
-
+  const email = req.tokenEmail; // Email from middleware
   const comment_sender_email_id = email;
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
@@ -343,19 +333,7 @@ const authHeader = req.headers.authorization
 });
 
 const getComments = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized - No token provided" });
-  }
-
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token);
-
-  if (email === null) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   // let comment_receiver_roll_no = req.body.comment_reciever_roll_no;
 
@@ -433,19 +411,7 @@ const setApprovedComments = asyncHandler(async (req, res) => {
   // const comment_reciever_id = req.body.comment_reciever_id
   // const comment_sender_email_id = req.body.comment_sender_email_id
 
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized - No token provided" });
-  }
-
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token);
-
-  if (email === null) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
@@ -526,19 +492,7 @@ const setRejectedComments = asyncHandler(async (req, res) => {
   // const comment_reciever_id = req.body.comment_reciever_id
   // const comment_sender_email_id = req.body.comment_sender_email_id
 
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized - No token provided" });
-  }
-
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token);
-
-  if (email === null) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
@@ -772,19 +726,7 @@ const getRecieversComments = asyncHandler(async (req, res) => {
 // })
 
 const getRecieverComments2 = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized - No token provided" });
-  }
-
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token);
-
-  if (email === null) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   try {
     const comment_reciever_roll_no = req.body.comment_reciever_roll_number;
@@ -867,19 +809,7 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
 });
 
 const updateCommentOrder = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized - No token provided" });
-  }
-
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token);
-
-  if (email === null) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   try {
     const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
@@ -973,17 +903,7 @@ const updateCommentOrder = asyncHandler(async (req, res) => {
 });
 
 const removeCommentFromMyComments = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized - No token provided' })
-  }
-  
-  const token = authHeader.substring(7) // Remove 'Bearer ' prefix
-  const tokenemail = jwtutil.verifyJwtToken(token)
-  
-  if (tokenemail === null) {
-    return res.status(401).json({ message: 'Invalid token' })
-  }
+  const tokenemail = req.tokenEmail; // Email from middleware
 
   const email = req.body.email;
   const comment = req.body.comment;
@@ -1024,17 +944,7 @@ const removeCommentFromApprovedComments = asyncHandler(async (req, res) => {
   // const comment_reciever_email_id = req.body.comment_reciever_email_id
   // const comment = req.body.comment
   // const email = req.body.email
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized - No token provided' })
-  }
-  
-  const token = authHeader.substring(7) // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token)
-  
-  if (email === null) {
-    return res.status(401).json({ message: 'Invalid token' })
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   const order = req.body.order;
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
@@ -1147,17 +1057,7 @@ const removeCommentFromApprovedComments = asyncHandler(async (req, res) => {
 // let sharedEditComment;
 
 const editComment = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided" });
-  }
-
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token);
-
-  if (email === null) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   const EditComment = req.body.comment;
   // console.log("comment after edit", EditComment);
@@ -1193,17 +1093,7 @@ const editComment = asyncHandler(async (req, res) => {
 });
 
 const getEditCommentsInfo = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.authorization
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized - No token provided' })
-  }
-  
-  const token = authHeader.substring(7) // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token)
-  
-  if (email === null) {
-    return res.status(401).json({ message: 'Invalid token' })
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   try {
     const comment_reciever_id_edit = req.body.comment_reciever_id_edit;
@@ -1233,19 +1123,7 @@ const getEditCommentsInfo = asyncHandler(async (req, res) => {
 });
 
 const ungradmycomment = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized - No token provided" });
-  }
-
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token);
-
-  if (email === null) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
+  const email = req.tokenEmail; // Email from middleware
 
   const comment_reciever_email = email;
 
@@ -1376,17 +1254,8 @@ const ungradmycomment = asyncHandler(async (req, res) => {
 // });
 
 const protectionEditComment = asyncHandler(async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided" });
-  }
-
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-  const email = jwtutil.verifyJwtToken(token);
-
-  if (email === null) {
-    return res.status(401).json({ message: "Invalid token" });
-  }
+  const email = req.tokenEmail; // Email from middleware
+  
   const comment_id_edit = req.body.comment_id_edit;
   const isStudent = req.body.isStudent;
   // console.log("----",comment_id_edit)

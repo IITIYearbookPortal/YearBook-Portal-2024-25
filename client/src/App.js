@@ -105,14 +105,13 @@ const App = ({ location }) => {
           forbiddenError(setUser, setLoggedin);
         }
         else if (res.data.message === "true") {
-          Cookies.set('yearbook-token', res.data.token, { expires: 7, secure: false, HttpOnly: true });
-          const token = Cookies.get('yearbook-token');
+          Cookies.set('yearbook-token', res.data.token, { expires: 7, secure: true });
           // If the user is an alumni
           if (alumniEmail.includes(userObject.email)) {
             axios
               .post(process.env.REACT_APP_API_URL + "/findAUser", {}, {
                 headers: {
-                  Authorization: `Bearer ${token}`,
+                  Authorization: `Bearer ${Cookies.get('yearbook-token')}`,
                 },
               })
               .then((res) => {
@@ -168,7 +167,7 @@ const App = ({ location }) => {
             })
             .then((res) => {
               // If alumni
-              Cookies.set('yearbook-token', res.data.token, { expires: 7, secure: false, HttpOnly: true });
+              Cookies.set('yearbook-token', res.data.token, { expires: 7, secure: true });
               if (alumniEmail.includes(userObject.email)) {
                 navigate(`/fill/${userObject.jti}`);
               }
@@ -190,7 +189,7 @@ const App = ({ location }) => {
   useEffect(() => {
     const googleToken = window.sessionStorage.getItem("google-token");
     const token = Cookies.get('yearbook-token')
-    if (googleToken !== null && token !== null) {
+    if (googleToken !== null && token !== undefined) {
       const auth = jwt_decode(googleToken);
       if (alumniData.includes(auth.email)) {
         axios
