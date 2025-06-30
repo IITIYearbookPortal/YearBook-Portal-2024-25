@@ -34,7 +34,7 @@ const Navbar = () => {
 
   // Update links dynamically based on user state
   useEffect(() => {
-    if (!loggedin && !profile.length) {
+    if (!loggedin && !profile) {
       setLinks([
         { name: "Home", path: "/" },
         { name: "Login", path: "/login" },
