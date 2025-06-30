@@ -77,6 +77,7 @@ const App = ({ location }) => {
       google.accounts.id.initialize({
         client_id: process.env.REACT_APP_CLIENT_ID,
         callback: handleCallbackResponse,
+        // hosted_domain: "iiti.ac.in",
       });
       google.accounts.id.renderButton(document.getElementById("google-login"), {
         theme: "dark",
@@ -94,6 +95,13 @@ const App = ({ location }) => {
     window.sessionStorage.setItem("google-token", response.credential);
 
     // setLoggedin(true)
+    const email = userObject.email;
+    // if (!email.endsWith('@iiti.ac.in')) {
+    // // Handle unauthorized access
+    // console.error('Unauthorized domain');
+    // alert('Please use your IITI email address to login');
+    // return;
+    // }
 
     await axios
       .post(process.env.REACT_APP_API_URL + "/checkAuth", {

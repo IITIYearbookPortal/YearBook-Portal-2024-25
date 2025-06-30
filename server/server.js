@@ -42,26 +42,27 @@ app.use(
 );
 
 // Middleware function to check request origin
-// const checkOrigin = (req, res, next) => {
-//   console.log(process.env.ALLOWED_ORIGIN);
+const checkOrigin = (req, res, next) => {
+  // console.log(process.env.ALLOWED_ORIGIN);
   
-//   const allowedOrigin = process.env.ALLOWED_ORIGIN; // Specify the allowed origin here
+  const allowedOrigin = process.env.ALLOWED_ORIGIN; // Specify the allowed origin here
 
-//   const requestOrigin = req.headers.origin;
-//   console.log(requestOrigin);
+  const requestOrigin = req.headers.origin;
+  // console.log(requestOrigin);
+  // console.log("done")
   
 
-//   if (requestOrigin === allowedOrigin) {
-//       next(); // Proceed to the next middleware or route handler
-//   } else {
-//     next();
-//       // res.status(401).json({ error: 'Unauthorized Access' });
-//   }
-// };
+  if (requestOrigin === allowedOrigin) {
+      next(); // Proceed to the next middleware or route handler
+  } else {
+    // next();
+      res.status(401).json({ error: 'Unauthorized Access' });
+  }
+};
 
-// app.use((req, res, next) => {
-//   checkOrigin(req, res, next);
-// })
+app.use((req, res, next) => {
+  checkOrigin(req, res, next);
+})
 
 app.use(express.json());
 

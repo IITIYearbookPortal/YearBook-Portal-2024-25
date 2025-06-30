@@ -195,8 +195,8 @@ const UserList = () => {
                   window.open(profileLink, '_blank');
                   // navigate(profileLink);
                 } else {
-                  window.open(`/comment/${user.name}/${user.roll_no}`, '_blank');
-                  // navigate(`/comment/${user.name}/${user.roll_no}`);
+                  // window.open(`/comment/${user.name}/${user.roll_no}`, '_blank');
+                  navigate(`/comment/${user.name}/${user.roll_no}`);
                 }
               }}
             >
