@@ -757,7 +757,6 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
