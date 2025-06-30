@@ -35,9 +35,12 @@ function Fill1(props) {
   } = useContext(LoginContext);
 
   let user;
-  
-  if (Cookies.get("yearbook-token") !== undefined && window.sessionStorage.getItem("token") !== null) {
-    user = jwt_decode(window.sessionStorage.getItem("token"));
+
+  if (
+    Cookies.get("yearbook-token") !== undefined &&
+    window.sessionStorage.getItem("google-token") !== null
+  ) {
+    user = jwt_decode(window.sessionStorage.getItem("google-token"));
   }
 
   const jti = useParams();
@@ -91,11 +94,19 @@ function Fill1(props) {
 
   const sendOTP = () => {
     axios
-      .post(process.env.REACT_APP_API_URL + "/userDataNew", {
-        email: user.email,
-        personal_email_id: userData.personal_email_id,
-        contact_details: userData.contact_details,
-      })
+      .post(
+        process.env.REACT_APP_API_URL + "/userDataNew",
+        {
+          email: user.email,
+          personal_email_id: userData.personal_email_id,
+          contact_details: userData.contact_details,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
+          },
+        }
+      )
       .then((res) => {
         setMessage("Sent an OTP to your contact number.");
 
@@ -145,9 +156,17 @@ function Fill1(props) {
       .confirm(code)
       .then((result) => {
         axios
-          .post(process.env.REACT_APP_API_URL + "/verify", {
-            userId: user.email,
-          })
+          .post(
+            process.env.REACT_APP_API_URL + "/verify",
+            {
+              userId: user.email,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
+              },
+            }
+          )
           .then((res) => {
             if (
               res.data.message ===
@@ -177,22 +196,30 @@ function Fill1(props) {
     setMinutes(0);
     setSeconds(30);
     // setLink(`/emailverification/${user.jti}`);
-        axios
-          .post(process.env.REACT_APP_API_URL + "/verify", {
-            userId: user.email,
-          })
-          .then((res) => {
-            if (
-              res.data.message ===
-              "Sent a verification email to your personal email_id"
-            ) {
-              // setHid(8);
-              // setFill(true);
-              // setSentOtp(false);
-            }
-            setMessage(res.data.message);
-          })
-          .catch((err) => {});
+    axios
+      .post(
+        process.env.REACT_APP_API_URL + "/verify",
+        {
+          userId: user.email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (
+          res.data.message ===
+          "Sent a verification email to your personal email_id"
+        ) {
+          // setHid(8);
+          // setFill(true);
+          // setSentOtp(false);
+        }
+        setMessage(res.data.message);
+      })
+      .catch((err) => {});
   };
 
   return (
@@ -311,7 +338,10 @@ function Fill1(props) {
           <div class="h-12 w-full top-[80px] left-4 absolute text-[20px]  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center tmp afd">
             {" "}
             And your{" "}
-            <span class="text-red-600 ml-2 mr-2 text-[20px] md:text-5xl"> Personal </span>{" "}
+            <span class="text-red-600 ml-2 mr-2 text-[20px] md:text-5xl">
+              {" "}
+              Personal{" "}
+            </span>{" "}
             email ?{" "}
           </div>
 
@@ -461,16 +491,14 @@ function Fill1(props) {
             setHid(3);
           }} > <img src={Abtn} class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr" /> </button> */}
 
-          
-            <button
-              onClick={() => {
-                resendMail();
-              }}
-              class="border-2 px-6 py-1  border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
-            >
-              Resend Mail
-            </button>
-          
+          <button
+            onClick={() => {
+              resendMail();
+            }}
+            class="border-2 px-6 py-1  border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
+          >
+            Resend Mail
+          </button>
         </div>
       </div>
       <ToastContainer />

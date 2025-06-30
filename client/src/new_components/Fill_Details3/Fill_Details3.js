@@ -9,6 +9,7 @@ import Abtn from "./image.png";
 import Bbtn from "./back-arrow.png";
 import emailimg from "./email.png";
 import grad from "./graduated.png";
+import Cookies from "js-cookie";
 
 //for notification
 import { ToastContainer, toast } from "react-toastify";
@@ -134,7 +135,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         profile_img: imageUrl,
         question_1: userData.question_1,
         question_2: userData.question_2,
-      })
+      }, {
+              headers: {
+                Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
+              },
+              })
       .then((res) => {
         // if (res.data.message === "Roll No. should be in Digits") {
         if (res.data.message !== "Sent an OTP to your contact number.") {
@@ -196,7 +201,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         axios
           .post(process.env.REACT_APP_API_URL + "/verify", {
             userId: user.email,
-          })
+          }, {
+                  headers: {
+                    Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
+                  },
+                  })
           .then((res) => {
             if (
               res.data.message ===
@@ -308,7 +317,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         axios
           .post(process.env.REACT_APP_API_URL + "/verify", {
             userId: user.email,
-          })
+          }, {
+                  headers: {
+                    Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
+                  },
+                  })
           .then((res) => {
             if (
               res.data.message ===

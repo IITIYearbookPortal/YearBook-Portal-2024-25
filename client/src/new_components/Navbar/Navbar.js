@@ -13,8 +13,8 @@ const Navbar = () => {
 
   // Fetch the current user
   let user = {};
-  if (window.localStorage.getItem("token") !== null) {
-    user = jwt_decode(window.localStorage.getItem("token"));
+  if (window.sessionStorage.getItem("google-token") !== null) {
+    user = jwt_decode(window.sessionStorage.getItem("google-token"));
   }
 
   // Theme state and toggle logic

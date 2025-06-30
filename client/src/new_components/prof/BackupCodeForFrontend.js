@@ -141,7 +141,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
     }
   }, [profile]);
 
-  const token = window.localStorage.getItem("token");
+  const token = window.sessionStorage.getItem("google-token");
 
   // useEffect(() => {
   //   const fetchProfile = async () => {

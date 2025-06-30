@@ -23,7 +23,7 @@ const Nongrad = () => {
   const [comments, setComments] = useState([]);
   const navigate = useNavigate();
 
-  const token = jwtDecode(window.sessionStorage.getItem("token"));
+  const token = jwtDecode(window.sessionStorage.getItem("google-token"));
 
   useEffect(() => {
     if (!loading && !loggedin) {

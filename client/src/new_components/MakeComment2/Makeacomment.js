@@ -55,7 +55,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
 
   useEffect(() => {
     // Retrieve the token from localStorage
-    const token = window.sessionStorage.getItem("token");
+    const token = window.sessionStorage.getItem("google-token");
 
     // Check if token exists
     if (token) {

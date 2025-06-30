@@ -282,7 +282,7 @@ const verify = async (req, res) => {
 
   //Check if we have an id
   if (!token) {
-    return res.status(200).json({ message: 'Missing token' })
+    return res.status(400).json({ message: 'Missing token' })
   }
 
   //Verify the token from the URL
