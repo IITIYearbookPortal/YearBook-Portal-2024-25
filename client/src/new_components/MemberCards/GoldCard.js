@@ -8,8 +8,8 @@ function GoldCard() {
 
   const {profile, loggedin, loading} = useContext(LoginContext)
   let userDetails;
-  if(window.localStorage.getItem("token")!==null){
-    userDetails = jwt_decode(window.localStorage.getItem("token"))
+  if(window.sessionStorage.getItem("google-token")!==null){
+    userDetails = jwt_decode(window.sessionStorage.getItem("google-token"))
   }
 
   if (!loading && !loggedin) {

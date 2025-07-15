@@ -5,7 +5,7 @@ const Memories = require('../models/memories')
 
 //Memories_Image
 const memory_img = asyncHandler(async (req, res) => {
-    const user_email = req.body.user_email
+    const user_email = req.tokenEmail
     const name = req.body.name
     const memory_img = req.body.memory_img
     console.log(memory_img)
@@ -18,7 +18,7 @@ const memory_img = asyncHandler(async (req, res) => {
           { $push: { memory_img: memory_img } },
         )
   
-        return res.send({ message: 'Image Uploaded Successfully.' })
+        return res.status(200).json({ message: 'Image Uploaded Successfully.' })
       }
       try {
         const addImage = await Memories.findOneAndUpdate(
@@ -29,7 +29,7 @@ const memory_img = asyncHandler(async (req, res) => {
         console.log(err)
       }
   
-      return res.send({ message: 'Image Upload Successfully.' })
+      return res.status(200).json({ message: 'Image Upload Successfully.' })
     } catch (err) {
       console.log(err)
     }

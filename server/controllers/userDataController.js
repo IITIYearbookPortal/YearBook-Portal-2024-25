@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const nodemailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
 const Users = require('../models/userModel')
-
+const jwtutil = require("../utils/token.util");
 // adding environment variable ****************
 const gmailUser = process.env.GMAIL_USER
 const gmailPass = process.env.GMAIL_PASS
@@ -30,7 +30,7 @@ const getUsersData = asyncHandler(async (req, res) => {
 
   //If no usersData
   if (!User?.length) {
-    return res.send({ message: 'No userData found' })
+    return res.status(404).json({ message: 'No userData found' })
   }
   // Map over each user to extract only the necessary data
   const userData = User.map(user => ({
@@ -44,14 +44,20 @@ const getUsersData = asyncHandler(async (req, res) => {
 
   }))
 
-  return res.send(userData)
+  return res.status(200).json(userData)
 })
 
 const getUsersDatanew = asyncHandler(async (req, res) => {
   //Get all usersData from MongoDb
+  const tokenEmail = req.tokenEmail; // Email from middleware
   const email = req.body.email
   // const personal_email_id = req.body.personal_email_id
   // const contact_details = req.body.contact_details
+
+  // Authorization check - users can only access their own data
+  if (tokenEmail !== email) {
+    return res.status(403).json({ message: 'You are not authorized to access this user data' });
+  }
 
   const User = await Users.findOne({email : email})
 
@@ -60,11 +66,11 @@ const getUsersDatanew = asyncHandler(async (req, res) => {
 
   //If no usersData
   if (!User?.length) {
-    return res.send({ message: 'No userData found' })
+    return res.status(404).json({ message: 'No userData found' })
   }
   // Map over each user to extract only the necessary data
 
-  return res.send(User)
+  return res.status(200).json(User)
 })
 
 const userDataNew = asyncHandler(async (req, res) => {
@@ -74,6 +80,10 @@ const userDataNew = asyncHandler(async (req, res) => {
   const contact_details = req.body.contact_details
 
   console.log(req.body)
+
+  if (email !== req.tokenEmail) {
+    return res.status(403).json({ message: 'You are not authorized to update this user data' });
+  }
 
   const User = await Users.findOneAndUpdate({email : email}, {$set: {personal_email_id: personal_email_id , contact_details:contact_details}})
 
@@ -87,14 +97,19 @@ const userDataNew = asyncHandler(async (req, res) => {
   // Map over each user to extract only the necessary data
   
 
-  return res.send(User)
+  return res.status(200).json(User)
 })
 
 const userDataNewemail = asyncHandler(async (req, res) => {
   //Get all usersData from MongoDb
+  const tokenEmail = req.tokenEmail; // Email from middleware
   const email = req.body.email
   const personal_email_id = req.body.personal_email_id
   
+  // Authorization check - users can only update their own data
+  if (tokenEmail !== email) {
+    return res.status(403).json({ message: 'You are not authorized to update this user data' });
+  }
 
   const User = await Users.findOneAndUpdate({email : email}, {$set: {personal_email_id: personal_email_id }})
 
@@ -108,7 +123,7 @@ const userDataNewemail = asyncHandler(async (req, res) => {
   // Map over each user to extract only the necessary data
   
 
-  return res.send(User)
+  return res.status(200).json(User)
 })
 
 //Add a New User
@@ -149,6 +164,10 @@ const createUsersData = asyncHandler(async (req, res) => {
     !question_2
   ) {
     return res.send({ message: 'All fields are required.' })
+  }
+
+  if (email !== req.tokenEmail) {
+    return res.status(403).json({ message: 'You are not authorized to create this user.' });
   }
 
   // Check if email is in use
@@ -199,7 +218,7 @@ const createUsersData = asyncHandler(async (req, res) => {
   if (usersData) {
     //created
     console.log("created")
-    return res.send({message:"Sent an OTP to your contact number."})
+    return res.status(200).json({message:"Sent an OTP to your contact number."})
     
   } else {
     return res.send({ message: 'Invalid Userdata Recieved' })
@@ -211,10 +230,12 @@ const createUsersData = asyncHandler(async (req, res) => {
 const verifyPhoneOtp = async (req, res, next) => {
   try {
     const userId = req.body.userId
-
+    if (req.tokenEmail !== userId) {
+      return res.status(403).json({ message: 'You are not authorized to verify this user' });
+    }
     const user = await Users.findOne({ email: userId }).exec()
     if (!user) {
-      res.send({ message: 'User not found' })
+      res.status(404).json({ message: 'User not found' })
       return
     }
 
@@ -244,7 +265,7 @@ const verifyPhoneOtp = async (req, res, next) => {
       Indian Institute of Technology Indore</p>`,
       })
 
-      return res.send({
+      return res.status(200).json({
         message: `Sent a verification email to your personal email_id`, user
       })
     } catch (err) {
@@ -261,7 +282,7 @@ const verify = async (req, res) => {
 
   //Check if we have an id
   if (!token) {
-    return res.send({ message: 'Missing token' })
+    return res.status(400).json({ message: 'Missing token' })
   }
 
   //Verify the token from the URL
@@ -277,7 +298,7 @@ const verify = async (req, res) => {
     const user = await Users.findOne({ _id: payload.ID }).exec()
 
     if (!user) {
-      return res.send({ message: 'User does not exist' })
+      return res.status(200).json({ message: 'User does not exist' })
     }
 
     //Update user verification status to true
@@ -295,9 +316,12 @@ const resendMail = asyncHandler(async (req, res) => {
   //Generate a veification token with th user's ID
   const userId = req.body.userId
   const personalMailId = req.body.personalMailId
+  if (req.tokenEmail !== userId) {
+    return res.status(403).json({ message: 'You are not authorized to resend mail for this user' });
+  }
   const user = await Users.findOne({ email: userId }).exec()
   if (!user) {
-    res.send({ message: 'User not found' })
+    res.status(404).json({ message: 'User not found' })
     return
   }
 
@@ -326,7 +350,7 @@ const resendMail = asyncHandler(async (req, res) => {
     Indian Institute of Technology Indore</p>`,
     })
 
-    return res.send({
+    return res.status(200).json({
       message: `Sent a verification email to your personal email_id`,
     })
   } catch (err) {
@@ -336,6 +360,8 @@ const resendMail = asyncHandler(async (req, res) => {
 
 //Upadte users data
 const updateUser = asyncHandler(async (req, res) => {
+  const tokenEmail = req.tokenEmail; // Email from middleware
+  
   const {
     email,
     name,
@@ -368,7 +394,9 @@ const updateUser = asyncHandler(async (req, res) => {
   ) {
     return res.send({ message: 'All fields are required' })
   }
-
+  if (tokenEmail !== email) {
+    return res.status(403).json({ message: 'You are not authorized to update this user' })
+  }
   // check if roll no. is a number or not
   if (isNaN(roll_no)) {
     return res.send({ message: 'Roll No. should be in Digits' })
@@ -399,8 +427,8 @@ const updateUser = asyncHandler(async (req, res) => {
 
 //find a user who logged in in user's data
 const findAUser = asyncHandler(async (req, res) => {
-  const email = req.body.email
-
+  const email = req.tokenEmail; // Email from middleware
+  
   const User = await Users.find({ email: email }).exec()
 
   const User2 = User.map(user => ({
@@ -416,22 +444,22 @@ const findAUser = asyncHandler(async (req, res) => {
   })) 
 
   if (!User.length) {
-    res.send({ message: 'No user Found' })
+    return res.status(404).json({ message: 'No user Found' })
   } else {
-    res.send({ message: 'User Found', User2})
+    return res.status(200).json({ message: 'User Found', User2})
   }
 })
 
 //Get Users data who has logged in to be displayed on the profile page
 const getProfileData = asyncHandler(async (req, res) => {
-  const { email } = req.body
+  const email = req.tokenEmail; // Email from middleware
 
   const User = await Users.find({ email: email }).exec()
 
   if (!User.length) {
-    res.send({ message: 'No User Found' })
+    res.status(404).json({ message: 'No User Found' })
   } else {
-    res.send({ message: 'User Found', User: User })
+    res.status(200).json({ message: 'User Found', User: User })
   }
 })
 

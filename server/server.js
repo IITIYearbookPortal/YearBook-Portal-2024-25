@@ -122,6 +122,7 @@ const noStore = (req, res, next) => {
   );
   next();
 };
+
 app.use(adminBro.options.rootPath, noStore, adminAuth, adminRouter);
 
 app.use(bodyParser.urlencoded({ extended: true }));

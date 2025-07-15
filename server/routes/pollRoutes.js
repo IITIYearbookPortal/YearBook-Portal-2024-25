@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { checkToken } = require('../middlewares/authMiddleware');
 const {
   createPoll,
   votePoll,
@@ -11,17 +12,17 @@ const {
 } = require('../controllers/pollsController');
 
 // Route to fetch all polls
-router.get('/polls', getPollById);
-router.get("/polls/:id", getPoll);
+router.get('/polls', checkToken, getPollById);
+router.get("/polls/:id", checkToken, getPoll);
 // Route to create a new poll
-router.post('/createPoll', createPoll);
+router.post('/createPoll', checkToken, createPoll);
 
 
 // Route to vote on a poll
-router.post('/votePoll', votePoll);
-router.delete('/polls/:id', deletePoll); 
+router.post('/votePoll', checkToken, votePoll);
+router.delete('/polls/:id', checkToken, deletePoll); 
 
-router.get("/polls/results/:id", getPollResults);
+router.get("/polls/results/:id", checkToken, getPollResults);
 
 
 module.exports = router;
