@@ -5,7 +5,7 @@ import { LoginContext } from "../../helpers/Context";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import alumniData from "../Navbar/akumniData.json";
@@ -56,11 +56,7 @@ export function Editacomment({ isDarkMode, setIsDarkMode }) {
               // comment_reciever_id_edit: comment_reciever_id_edit,
               comment_id_edit: comment_id_edit,
               isStudent: isStudent,
-            }, {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-            },
-          }
+            }
           );
 
           const data = response.data;
@@ -126,11 +122,7 @@ export function Editacomment({ isDarkMode, setIsDarkMode }) {
             {
               comment_reciever_id_edit: comment_reciever_id_edit,
               comment_id_edit: comment_id_edit,
-            }, {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-            },
-          }
+            }
           );
 
           const data = response.data;
@@ -172,11 +164,7 @@ export function Editacomment({ isDarkMode, setIsDarkMode }) {
               comment: editComments,
               comment_reciever_id_edit: comment_reciever_id_edit,
               comment_id_edit: comment_id_edit,
-            }, {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-            },
-          }
+            }
           );
 
           toast("Comment Edited Successfully!", {
@@ -204,11 +192,7 @@ export function Editacomment({ isDarkMode, setIsDarkMode }) {
         .post(process.env.REACT_APP_API_URL + "/getRecieversComments2", {
           comment_reciever_roll_number: comment_reciever_id_edit,
           // isStudent:isStudent
-        }, {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-            },
-          })
+        })
         .then((res) => {
           if (res.data.message === "No users found") {
             setMessage2(res.data.message);

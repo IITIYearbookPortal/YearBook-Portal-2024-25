@@ -253,7 +253,6 @@
 // --------------------------------------------------------------------------------------------------------------
 
 const asyncHandler = require("express-async-handler");
-const jwtutil = require("../utils/token.util");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const Users = require("../models/userModel");
@@ -262,15 +261,14 @@ const auth = require("../models/authModel");
 
 //Adding the comment
 const comments = asyncHandler(async (req, res) => {
-  const email = req.tokenEmail; // Email from middleware
-  const comment_sender_email_id = email;
+  const comment_sender_email_id = req.body.comment_sender_email;
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
   const status = req.body.status;
   const isStudent = req.body.isStudent;
 
-  if (comment === "") {
-    return res.status(406).json({ statusmessage: "Comment cannot be empty" });
+  if(comment === ""){
+    return res.status(406).send({ statusmessage: "Comment cannot be empty" });
   }
   //finding id of receiver
   const receiver = await Users.findOne({
@@ -333,12 +331,10 @@ const comments = asyncHandler(async (req, res) => {
 });
 
 const getComments = asyncHandler(async (req, res) => {
-  const email = req.tokenEmail; // Email from middleware
-
-  // let comment_receiver_roll_no = req.body.comment_reciever_roll_no;
+  let comment_receiver_roll_no = req.body.comment_reciever_roll_no;
 
   const usersId = await Users.findOne({
-    email: email,
+    roll_no: comment_receiver_roll_no,
   });
   const comment_reciever_id = usersId._id.toString();
   // const users = await Comments.aggregate([{
@@ -399,10 +395,10 @@ const getComments = asyncHandler(async (req, res) => {
   });
 
   if (allComments.length === 0) {
-    return res.status(200).json({ message: "No comments found" });
+    return res.send({ message: "No comments found" });
   }
 
-  res.status(200).json({ message: "Comments found", User: allComments });
+  res.json({ message: "Comments found", User: allComments });
   // res.json({message: "hello"})
 });
 
@@ -410,9 +406,6 @@ const setApprovedComments = asyncHandler(async (req, res) => {
   // const comment_reciever_email_id = req.body.comment_reciever_email_id
   // const comment_reciever_id = req.body.comment_reciever_id
   // const comment_sender_email_id = req.body.comment_sender_email_id
-
-  const email = req.tokenEmail; // Email from middleware
-
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
   const _id = req.body._id;
@@ -432,13 +425,7 @@ const setApprovedComments = asyncHandler(async (req, res) => {
     // || !user[0].comment_sender ||
     // !user[0].comment_sender_student
   ) {
-    return res.status(404).json({ message: "No user found" });
-  }
-
-  if (email !== usersId.email) {
-    return res
-      .status(403)
-      .json({ message: "You are not authorized to approve this comment" });
+    return res.send({ message: "No user found" });
   }
 
   for (var i = 0; i < user[0].comment_sender.length; i++) {
@@ -484,16 +471,13 @@ const setApprovedComments = asyncHandler(async (req, res) => {
 
   //
 
-  res.status(200).json({ message: "comment added in approved section", user });
+  res.send({ message: "comment added in approved section", user });
 });
 
 const setRejectedComments = asyncHandler(async (req, res) => {
   // const comment_reciever_email_id = req.body.comment_reciever_email_id
   // const comment_reciever_id = req.body.comment_reciever_id
   // const comment_sender_email_id = req.body.comment_sender_email_id
-
-  const email = req.tokenEmail; // Email from middleware
-
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
   const _id = req.body._id;
@@ -521,12 +505,6 @@ const setRejectedComments = asyncHandler(async (req, res) => {
   ) {
     // console.log("it goes inside");
     return res.send({ message: "No user found" });
-  }
-
-  if (email !== usersId.email) {
-    return res
-      .status(403)
-      .json({ message: "You are not authorized to reject this comment" });
   }
 
   for (var i = 0; i < user[0].comment_sender.length; i++) {
@@ -579,7 +557,7 @@ const setRejectedComments = asyncHandler(async (req, res) => {
 
   //
 
-  res.status(200).json({ message: "comment added in rejected section", user });
+  res.send({ message: "comment added in rejected section", user });
 });
 
 // 6582a3be44e2daae019909a8
@@ -633,7 +611,7 @@ const getRecieversComments = asyncHandler(async (req, res) => {
     //If no usersData
     if (!users) {
       // console.log("reached");
-      return res.status(200).json({ message: "No userData found" });
+      return res.send({ message: "No userData found" });
     }
     // console.log("testing")
     // console.log(users.user[0])
@@ -705,7 +683,7 @@ const getRecieversComments = asyncHandler(async (req, res) => {
       order: comment.order,
       // Add more fields as needed
     }));
-    res.status(200).json({
+    res.json({
       approvedComments: responseData,
       user2: responseData2,
       rejectedComments: responseData3,
@@ -726,8 +704,6 @@ const getRecieversComments = asyncHandler(async (req, res) => {
 // })
 
 const getRecieverComments2 = asyncHandler(async (req, res) => {
-  const email = req.tokenEmail; // Email from middleware
-
   try {
     const comment_reciever_roll_no = req.body.comment_reciever_roll_number;
     const isStudent = req.body.isStudent;
@@ -774,7 +750,7 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
     //If no usersData
     if (!users) {
       // console.log("reached");
-      return res.status(200).json({ message: "No userData found", user: user });
+      return res.send({ message: "No userData found", user: user });
     }
 
     const approvedComments = users.comment_sender
@@ -801,7 +777,7 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
     responseData = responseData.sort((a, b) => a.order - b.order);
 
     // console.log(responseData);
-    res.status(200).json({ approvedComments: responseData, user: user });
+    res.json({ approvedComments: responseData, user: user });
   } catch (error) {
     console.error("Error:", error.message);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -809,21 +785,11 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
 });
 
 const updateCommentOrder = asyncHandler(async (req, res) => {
-  const email = req.tokenEmail; // Email from middleware
-
   try {
     const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
     const usersId = await Users.findOne({
       roll_no: comment_reciever_roll_no,
     });
-    if (!usersId) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    if (email !== usersId.email) {
-      return res.status(403).json({
-        message: "You are not authorized to update this comment order",
-      });
-    }
 
     const comment_reciever_id = usersId._id;
 
@@ -903,18 +869,8 @@ const updateCommentOrder = asyncHandler(async (req, res) => {
 });
 
 const removeCommentFromMyComments = asyncHandler(async (req, res) => {
-  const tokenemail = req.tokenEmail; // Email from middleware
-
   const email = req.body.email;
   const comment = req.body.comment;
-
-  if (!email || !comment) {
-    return res.status(400).json({ message: "Email and comment are required" });
-  }
-
-  if (email !== tokenemail) {
-    return res.status(403).json({ message: "You are not authorized to remove this comment" });
-  }
 
   const users = await Comments.find({
     comment_sender: {
@@ -937,14 +893,13 @@ const removeCommentFromMyComments = asyncHandler(async (req, res) => {
     })
   );
 
-  res.status(200).json({ message: "Comment removed successfully" });
+  res.send({ message: "Comment removed successfully" });
 });
 
 const removeCommentFromApprovedComments = asyncHandler(async (req, res) => {
   // const comment_reciever_email_id = req.body.comment_reciever_email_id
   // const comment = req.body.comment
   // const email = req.body.email
-  const email = req.tokenEmail; // Email from middleware
 
   const order = req.body.order;
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
@@ -955,16 +910,6 @@ const removeCommentFromApprovedComments = asyncHandler(async (req, res) => {
   const usersId = await Users.findOne({
     roll_no: comment_reciever_roll_no,
   });
-
-  if (!usersId) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
-  if (email !== usersId.email) {
-    return res.status(403).json({
-      message: "You are not authorized to remove this comment",
-    });
-  }
 
   const comment_reciever_id = usersId._id;
 
@@ -1048,17 +993,15 @@ const removeCommentFromApprovedComments = asyncHandler(async (req, res) => {
   console.log(change);
   if (change > 0) {
     console.log(true);
-    res.status(200).json({ message: "comment added in new section", worked: true, user });
+    res.send({ message: "comment added in new section", worked: true, user });
   }
   console.log(false);
-  res.status(200).json({ message: "comment added in new section", worked: false, user });
+  res.send({ message: "comment added in new section", worked: false, user });
 });
 
 // let sharedEditComment;
 
 const editComment = asyncHandler(async (req, res) => {
-  const email = req.tokenEmail; // Email from middleware
-
   const EditComment = req.body.comment;
   // console.log("comment after edit", EditComment);
   const comment_reciever_id_edit = req.body.comment_reciever_id_edit;
@@ -1093,8 +1036,6 @@ const editComment = asyncHandler(async (req, res) => {
 });
 
 const getEditCommentsInfo = asyncHandler(async (req, res) => {
-  const email = req.tokenEmail; // Email from middleware
-
   try {
     const comment_reciever_id_edit = req.body.comment_reciever_id_edit;
     const comment_id_edit = req.body.comment_id_edit;
@@ -1112,10 +1053,10 @@ const getEditCommentsInfo = asyncHandler(async (req, res) => {
     // console.log("comment after edit2222",sharedEditComment)
 
     if (!user) {
-      return res.status(404).json({ message: "No user found" });
+      return res.send({ message: "No user found" });
     }
 
-    res.status(200).json({ user: user, comment: comment });
+    res.json({ user: user, comment: comment });
   } catch (error) {
     console.error("Error:", error.message);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -1123,9 +1064,7 @@ const getEditCommentsInfo = asyncHandler(async (req, res) => {
 });
 
 const ungradmycomment = asyncHandler(async (req, res) => {
-  const email = req.tokenEmail; // Email from middleware
-
-  const comment_reciever_email = email;
+  const comment_reciever_email = req.body.comment_reciever_email;
 
   const usersEmail = await auth.findOne({
     email: comment_reciever_email,
@@ -1168,12 +1107,12 @@ const ungradmycomment = asyncHandler(async (req, res) => {
   });
 
   if (allComments.length === 0) {
-    return res.status(200).json({ message: "No comments found" });
+    return res.send({ message: "No comments found" });
   }
 
   // console.log("++++++++++++alllllllllllll",allComments)
 
-  res.status(200).json({ message: "Comments found", User: allComments });
+  res.json({ message: "Comments found", User: allComments });
 });
 
 // const protectionProfilePage= asyncHandler(async (req, res) => {
@@ -1254,8 +1193,6 @@ const ungradmycomment = asyncHandler(async (req, res) => {
 // });
 
 const protectionEditComment = asyncHandler(async (req, res) => {
-  const email = req.tokenEmail; // Email from middleware
-  
   const comment_id_edit = req.body.comment_id_edit;
   const isStudent = req.body.isStudent;
   // console.log("----",comment_id_edit)
@@ -1283,7 +1220,7 @@ const protectionEditComment = asyncHandler(async (req, res) => {
     });
     // console.log("users is +++",users)
     if (users == null) {
-      res.status(404).json({ message: "No userData found" });
+      res.json({ message: "No userData found" });
     }
 
     res.json({ message: "User Data found", users: users });
@@ -1300,11 +1237,11 @@ const protectionEditComment = asyncHandler(async (req, res) => {
     });
 
     if (students == null) {
-      res.status(404).json({ message: "No userData found" });
+      res.json({ message: "No userData found" });
     }
 
     // console.log("students++",students.comment_sender_student[0].id)
-    res.status(200).json({ message: "User Data found", students: students });
+    res.json({ message: "User Data found", students: students });
   }
 });
 

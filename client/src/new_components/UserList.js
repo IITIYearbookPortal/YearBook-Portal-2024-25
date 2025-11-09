@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../helpers/Context";
 import alumniData from "./Navbar/akumniData.json";
 import axios from "axios";
-import Cookies from "js-cookie";
 import "./UserList.module.css"; // Import your CSS file for styling
 
 const UserList = () => {
-  const { allUsers, setAllUsers, isStudent, setIsStudent, loggedin, profile, loading } =
+  const { allUsers, isStudent, setIsStudent, loggedin, profile, loading } =
     useContext(LoginContext); // Access allUsers directly from context
-  const token = Cookies.get("yearbook-token");
+
   useEffect(() => {
     if (!loading && !loggedin) {
       window.location.href = "/login";
@@ -20,20 +19,6 @@ const UserList = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [searchRollNo, setSearchRollNo] = useState("");
   const { result, setResult } = useContext(LoginContext);
-
-  useEffect(() => {
-    if (Cookies.get("yearbook-token") !== undefined) {
-      axios
-        .get(process.env.REACT_APP_API_URL + "/getUsersData", {}, {
-          headers: {
-            Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-          },
-        })
-        .then((res) => {
-          setAllUsers(res.data); // Updated variable name
-        })
-        .catch((err) => { });
-    }}, [token, setAllUsers]);
 
   // const location = useLocation();
 

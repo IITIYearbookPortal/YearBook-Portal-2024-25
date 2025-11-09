@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../helpers/Context";
@@ -11,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Add this helper function at the top of your component
 const splitOptionData = (combinedOption) => {
-  const [rollNo, name] = combinedOption.split(" - ");
+  const [rollNo, name] = combinedOption.split(' - ');
   return { rollNo, name };
 };
 
@@ -35,17 +34,10 @@ const PollResultsPage = () => {
     }
   }, [poll]); // Dependency on the poll object
 
+
   const getPollData = () => {
     axios
-      .get(
-        process.env.REACT_APP_API_URL + `/polls/results/${pollId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-          },
-        }
-      )
+      .get(process.env.REACT_APP_API_URL + `/polls/results/${pollId}`)
       .then((res) => {
         setPoll(res.data.poll);
         setLoading(false);
@@ -59,26 +51,15 @@ const PollResultsPage = () => {
   // Modify the fetchUserData function
   const fetchUserData = (options) => {
     if (Array.isArray(poll.options)) {
-      const rollNumbers = options.map(
-        (option) => splitOptionData(option.option).rollNo
-      );
-      axios
-        .get(
-          `${process.env.REACT_APP_API_URL}/getUsersData`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-            },
-          }
-        )
-        .then((response) => {
-          const filteredUsers1 = response.data.filter((user) =>
+      const rollNumbers = options.map(option => splitOptionData(option.option).rollNo);
+      axios.get(`${process.env.REACT_APP_API_URL}/getUsersData`)
+        .then(response => {
+          const filteredUsers1 = response.data.filter(user =>
             rollNumbers.includes(user.roll_no)
           );
           setFilteredUsers(filteredUsers1);
         })
-        .catch((err) => {
+        .catch(err => {
           console.error("Error fetching user data:", err);
         });
     }
@@ -92,19 +73,11 @@ const PollResultsPage = () => {
     }
 
     axios
-      .post(
-        process.env.REACT_APP_API_URL + "/votePoll",
-        {
-          pollId,
-          option: selectedOption,
-          user: profile.email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-          },
-        }
-      )
+      .post(process.env.REACT_APP_API_URL + "/votePoll", {
+        pollId,
+        option: selectedOption,
+        user: profile.email,
+      })
       .then(() => {
         toast.success("Vote submitted successfully!", { autoClose: 2000 });
         setSelectedOption(null);
@@ -117,9 +90,7 @@ const PollResultsPage = () => {
           toast.error(err.response.data.message, { autoClose: 2000 });
           setMessage(err.response.data.message);
         } else {
-          toast.error("Failed to submit your vote. Please try again.", {
-            autoClose: 2000,
-          });
+          toast.error("Failed to submit your vote. Please try again.", { autoClose: 2000 });
           setMessage("Failed to submit your vote. Please try again.");
         }
       });
@@ -146,18 +117,8 @@ const PollResultsPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center bg-[#31363F] rounded-xl shadow-lg p-8 max-w-md w-full"
         >
-          <svg
-            className="w-16 h-16 text-[#76ABAE] mx-auto mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
+          <svg className="w-16 h-16 text-[#76ABAE] mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 20h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p className="text-xl text-[#EEEEEE] mb-4">No poll data available</p>
           <button
@@ -170,6 +131,7 @@ const PollResultsPage = () => {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-[#222831] py-8 px-4 sm:px-6 lg:px-8">
@@ -191,7 +153,7 @@ const PollResultsPage = () => {
           {poll.options.map((option) => {
             const { rollNo, name } = splitOptionData(option.option);
             const user = filteredUsers.find((user) => user.roll_no === rollNo);
-
+            
             return (
               <motion.div
                 key={option._id}
@@ -203,7 +165,7 @@ const PollResultsPage = () => {
                 <PollOptionCard
                   option={{
                     ...option,
-                    displayName: user ? user.name : name, // Use database name if found, otherwise use the name from poll
+                    displayName: user ? user.name : name // Use database name if found, otherwise use the name from poll
                   }}
                   selectedOption={selectedOption}
                   onSelectOption={setSelectedOption}
@@ -219,15 +181,13 @@ const PollResultsPage = () => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className={`w-full max-w-2xl mx-auto block px-8 py-3 rounded-lg text-[#222831] font-medium shadow-md 
-            transition-colors duration-300 ${
-              !selectedOption
-                ? "bg-[#31363F] text-[#EEEEEE]/50 cursor-not-allowed"
-                : "bg-[#76ABAE] hover:bg-[#76ABAE]/90 text-[#222831]"
-            }`}
+            transition-colors duration-300 ${!selectedOption
+              ? 'bg-[#31363F] text-[#EEEEEE]/50 cursor-not-allowed'
+              : 'bg-[#76ABAE] hover:bg-[#76ABAE]/90 text-[#222831]'}`}
           onClick={handleVoteSubmit}
           disabled={!selectedOption}
         >
-          {selectedOption ? "Submit Vote" : "Select an option to vote"}
+          {selectedOption ? 'Submit Vote' : 'Select an option to vote'}
         </motion.button>
 
         {message && (
@@ -244,25 +204,16 @@ const PollResultsPage = () => {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => navigate("/polls")}
+          onClick={() => navigate('/polls')}
           className="w-full max-w-2xl mx-auto mt-8 px-8 py-3 bg-[#31363F] text-[#EEEEEE] rounded-lg font-medium 
             shadow-md hover:bg-[#31363F]/90 transition-colors duration-300 flex items-center justify-center space-x-2"
         >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 19l-7-7m0 0l7-7m-7 7h18"
-            />
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
           <span>Back to Polls</span>
         </motion.button>
+
       </motion.div>
     </div>
   );

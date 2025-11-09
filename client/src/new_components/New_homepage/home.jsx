@@ -110,7 +110,6 @@ const Home = () => {
     navigate("/");
     setLoggedin(false);
     window.localStorage.clear();
-    window.sessionStorage.clear();
     // document.getElementById("google-login").hidden = false;
   };
 

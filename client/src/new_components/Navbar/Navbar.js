@@ -13,8 +13,8 @@ const Navbar = () => {
 
   // Fetch the current user
   let user = {};
-  if (window.sessionStorage.getItem("google-token") !== null) {
-    user = jwt_decode(window.sessionStorage.getItem("google-token"));
+  if (window.localStorage.getItem("token") !== null) {
+    user = jwt_decode(window.localStorage.getItem("token"));
   }
 
   // Theme state and toggle logic
@@ -34,7 +34,7 @@ const Navbar = () => {
 
   // Update links dynamically based on user state
   useEffect(() => {
-    if (!loggedin && !profile) {
+    if (!loggedin && !profile.length) {
       setLinks([
         { name: "Home", path: "/" },
         { name: "Login", path: "/login" },

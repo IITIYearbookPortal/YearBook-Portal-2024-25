@@ -2,14 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../../helpers/Context";
 import "./Edit.scss";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { forbiddenError, unauthorizedError } from "../../utils/authErrors";
 
 function Edit({ isDarkMode, setIsDarkMode, props }) {
-  const { user, setUser, profile, loggedin, setLoggedin, isStudent, loading } =
+  const { user, profile, loggedin, isStudent, loading } =
     useContext(LoginContext);
 
   const [message, setMessage] = useState("");
@@ -63,25 +61,11 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
   useEffect(() => {
     const getUserData = () => {
       axios
-        .post(
-          process.env.REACT_APP_API_URL + "/profile",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-            },
-          }
-        )
+        .post(process.env.REACT_APP_API_URL + "/profile", {
+          email: profile.email,
+        })
         .then((res) => {
-          if (res.status === 404) {
-            window.location.href = "/error";
-          } else if (res.status === 401) {
-            forbiddenError(setLoggedin, setUser);
-          } else if (res.status === 403) {
-            unauthorizedError(setLoggedin, setUser);
-          } else {
-            setUserData(res.data.User[0]);
-          }
+          setUserData(res.data.User[0]);
         })
         .catch((err) => {});
     };
@@ -136,87 +120,72 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
 
   const onUpdate = () => {
     axios
-      .put(
-        process.env.REACT_APP_API_URL + "/updateUser",
-        {
-          email: email,
-          name: userData.name,
-          roll_no: userData.roll_no,
-          academic_program: userData.academic_program,
-          department: userData.department,
-          /* personal_email_id: userData.personal_email_id,
+      .put(process.env.REACT_APP_API_URL + "/updateUser", {
+        email: email,
+        name: userData.name,
+        roll_no: userData.roll_no,
+        academic_program: userData.academic_program,
+        department: userData.department,
+        /* personal_email_id: userData.personal_email_id,
         contact_details: userData.contact_details,
         alternate_contact_details: userData.alternate_contact_details, */
-          address: userData.address,
-          current_company: userData.current_company,
-          designation: userData.designation,
-          about: userData.about,
-          profile_img: imageUrl,
-          question_1: userData.question_1,
-          question_2: userData.question_2,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-          },
-        }
-      )
+        address: userData.address,
+        current_company: userData.current_company,
+        designation: userData.designation,
+        about: userData.about,
+        profile_img: imageUrl,
+        question_1: userData.question_1,
+        question_2: userData.question_2,
+      })
       .then((res) => {
-        if (res.status === 404) {
-          window.location.href = "/error";
-        } else if (res.status === 401) {
-          forbiddenError(setLoggedin, setUser);
-        } else if (res.status === 403) {
-          unauthorizedError(setLoggedin, setUser);
-        } else {
-          toast(res.data.message, {
+        toast(res.data.message, {
+          theme: "dark",
+          autoClose: 1500,
+        });
+        // setMessage(res.data.message);
+        if (res.data.message === "Roll No. should be in Digits") {
+          toast("Roll No. Cannot be digits!", {
             theme: "dark",
-            autoClose: 1500,
+            autoClose: 3000,
           });
-          if (res.data.message === "Roll No. should be in Digits") {
-            toast("Roll No. Cannot be digits!", {
-              theme: "dark",
-              autoClose: 3000,
-            });
-          }
-          if (res.data.message === "All fields are required") {
-            setRollNoisNumber(res.data.message);
-            let timetochangemsg = setTimeout(() => {
-              setRollNoisNumber("");
-            }, 2000); // delay execution by 2 second
+        }
+        if (res.data.message === "All fields are required") {
+          setRollNoisNumber(res.data.message);
+          let timetochangemsg = setTimeout(() => {
+            setRollNoisNumber("");
+          }, 2000); // delay execution by 2 second
 
-            return () => clearTimeout(timetochangemsg);
-          }
-          if (res.data.message === "User data updated successfully") {
-            setVerify(true);
-            setVeriify2(true);
-            window.localStorage.setItem("verified", true);
-            window.localStorage.setItem("profileIcon", true);
-            const newProfile = {
-              email: res.data.user.email,
-              name: res.data.user.name,
-              roll_no: res.data.user.roll_no,
-              academic_program: res.data.user.academic_program,
-              department: res.data.user.department,
-              about: res.data.user.about,
-              profile_img: res.data.user.profile_img,
-              one_step_verified: res.data.user.one_step_verified,
-              two_step_verified: res.data.user.two_step_verified,
-            };
-            // const p = JSON.stringify(newProfile);
-            // window.localStorage.setItem("profile", p);
-            // let updateData = () => {
-            //   profile = newProfile;
-            //   roll = profile.roll_no;
-            //   name = profile.name;
-            // };
-            // updateData();
-            let timetonavigate = setTimeout(() => {
-              window.location.href = `/profile/${newProfile.roll_no}/${newProfile.name}`;
-            }, 2000); // delay execution by 2 second
+          return () => clearTimeout(timetochangemsg);
+        }
+        if (res.data.message === "User data updated successfully") {
+          setVerify(true);
+          setVeriify2(true);
+          window.localStorage.setItem("verified", true);
+          window.localStorage.setItem("profileIcon", true);
+          const newProfile = {
+            email: res.data.user.email,
+            name: res.data.user.name,
+            roll_no: res.data.user.roll_no,
+            academic_program: res.data.user.academic_program,
+            department: res.data.user.department,
+            about: res.data.user.about,
+            profile_img: res.data.user.profile_img,
+            one_step_verified: res.data.user.one_step_verified,
+            two_step_verified: res.data.user.two_step_verified,
+          };
+          // const p = JSON.stringify(newProfile);
+          // window.localStorage.setItem("profile", p);
+          // let updateData = () => {
+          //   profile = newProfile;
+          //   roll = profile.roll_no;
+          //   name = profile.name;
+          // };
+          // updateData();
+          let timetonavigate = setTimeout(() => {
+            window.location.href = `/profile/${newProfile.roll_no}/${newProfile.name}`;
+          }, 2000); // delay execution by 2 second
 
-            return () => clearTimeout(timetonavigate);
-          }
+          return () => clearTimeout(timetonavigate);
         }
       })
       .catch((err) => {});

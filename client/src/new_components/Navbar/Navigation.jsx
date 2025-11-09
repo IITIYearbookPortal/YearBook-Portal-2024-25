@@ -47,8 +47,8 @@ function Navigation({ isOpen, setIsOpen }) {
   const [links, setLinks] = useState([]);
   let user = {};
 
-  if (window.sessionStorage.getItem("google-token") !== null) {
-    user = jwt_decode(window.sessionStorage.getItem("google-token"));
+  if (window.localStorage.getItem("token") !== null) {
+    user = jwt_decode(window.localStorage.getItem("token"));
   }
 
   const { loggedin, profile } = useContext(LoginContext);

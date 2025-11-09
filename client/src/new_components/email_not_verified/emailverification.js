@@ -14,8 +14,6 @@ import "./filldetails.css";
 import Abtn from "./arrowBtn.png";
 import { useParams } from "react-router-dom";
 import jwt_decode from "jwt-decode";
-import Cookies from "js-cookie";
-import { forbiddenError, unauthorizedError } from "../../utils/authErrors";
 
 function Fill1(props) {
   const {
@@ -32,11 +30,11 @@ function Fill1(props) {
   } = useContext(LoginContext);
 
   const jti = useParams();
-
+ 
   let user;
 
-  if (window.sessionStorage.getItem("google-token") !== null) {
-    user = jwt_decode(window.sessionStorage.getItem("google-token"));
+  if (window.localStorage.getItem("token") !== null) {
+    user = jwt_decode(window.localStorage.getItem("token"));
   }
 
   useEffect(() => {
@@ -98,27 +96,13 @@ function Fill1(props) {
       .post(process.env.REACT_APP_API_URL + "/userDataemail", {
         email: user.email,
         personal_email_id: userData.personal_email_id,
-      }, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-        },
-        })
+      })
       .then((res) => {
         axios
           .post(process.env.REACT_APP_API_URL + "/verify", {
             userId: user.email,
-          }, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-        },
-        })
+          })
           .then((res) => {
-            if (res.status === 401) {
-              return forbiddenError(setLoggedin, setUserData, res.message);
-            }
-            if (res.status === 403) {
-              return unauthorizedError(setLoggedin, setUserData, res.message);
-            }
             setMessage(
               "send Sent a verification email to your personal email_id"
             );
@@ -166,36 +150,22 @@ function Fill1(props) {
     setMinutes(0);
     setSeconds(30);
     // setLink(`/emailverification/${user.jti}`);
-    axios
-      .post(
-        process.env.REACT_APP_API_URL + "/verify",
-        {
-          userId: user.email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${Cookies.get("yearbook-token")}`,
-          },
-        }
-      )
-      .then((res) => {
-        if (res.status === 401) {
-          return forbiddenError(setLoggedin, setUserData, res.message);
-        }
-        if (res.status === 403) {
-          return unauthorizedError(setLoggedin, setUserData, res.message);
-        }
-        if (
-          res.data.message ===
-          "Sent a verification email to your personal email_id"
-        ) {
-          // setHid(8);
-          // setFill(true);
-          // setSentOtp(false);
-        }
-        setMessage(res.data.message);
-      })
-      .catch((err) => {});
+        axios
+          .post(process.env.REACT_APP_API_URL + "/verify", {
+            userId: user.email,
+          })
+          .then((res) => {
+            if (
+              res.data.message ===
+              "Sent a verification email to your personal email_id"
+            ) {
+              // setHid(8);
+              // setFill(true);
+              // setSentOtp(false);
+            }
+            setMessage(res.data.message);
+          })
+          .catch((err) => {});
   };
   return (
     <>
@@ -294,14 +264,16 @@ function Fill1(props) {
                        setHid(1);
                     }} > <img src={Abtn}  class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr"/> </button> */}
 
-          <button
-            onClick={() => {
-              resendMail();
-            }}
-            class="border-2 px-6 py-1  border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
-          >
-            Resend Mail
-          </button>
+
+            <button
+              onClick={() => {
+                resendMail();
+              }}
+              class="border-2 px-6 py-1  border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
+            >
+              Resend Mail
+            </button>
+          
         </div>
       </div>
       <ToastContainer />
