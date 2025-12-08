@@ -57,6 +57,7 @@ const Navbar = () => {
       setLinks([
         { name: "Home", path: "/" },
         { name: "Search People", path: "/userlist" },
+        { name: "Previous Year Book", path: "/previous-yrbook" },
         {
           name: "My Profile",
           path: `/profile/nongrad/${user.name}/${user.email}`,
