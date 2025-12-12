@@ -1,0 +1,18 @@
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+
+  color: #111;
+  display: inline-block;
+
+  transition: opacity 0.2s ease;
+}
+
+/* When the input is disabled (peer-disabled) */
+input:disabled + .label,
+.textarea:disabled + .label,
+.select:disabled + .label {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

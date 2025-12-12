@@ -1,0 +1,37 @@
+.textarea {
+  width: 100%;
+  min-height: 80px;
+
+  display: flex;
+
+  background: white;
+  color: #111;
+
+  padding: 8px 12px;
+  font-size: 14px;
+
+  border: 1px solid #d1d5db;  /* input border */
+  border-radius: 6px;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  resize: vertical;
+}
+
+/* Placeholder */
+.textarea::placeholder {
+  color: #9ca3af; /* muted foreground */
+}
+
+/* Focus ring */
+.textarea:focus-visible {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px #bfdbfe;
+}
+
+/* Disabled */
+.textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

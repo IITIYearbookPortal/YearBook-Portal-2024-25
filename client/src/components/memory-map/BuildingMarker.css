@@ -1,0 +1,180 @@
+/* BuildingMarker.css */
+
+/* Base marker */
+.building-marker {
+  position: absolute;
+  transform-origin: center;
+  transition: transform 300ms ease, box-shadow 200ms ease, opacity 200ms ease;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  display: block;
+  overflow: visible;
+}
+
+/* Small scale up when selected */
+.lm-selected {
+  box-shadow: 0 0 0 4px rgba(124,58,237,0.12), 0 6px 18px rgba(0,0,0,0.08);
+  transform: scale(1.05);
+  z-index: 20;
+}
+
+/* Marker when it has memories */
+/* .lm-with-memories { */
+  /* optional highlight (can be customized) */
+  /* you can also use animations for attention */
+/* } */
+
+/* Location color variants */
+.lm-hostel {
+  background: rgba(37,99,235,0.7); /* blue-ish */
+}
+.lm-hostel:hover { background: rgba(37,99,235,0.85); }
+
+.lm-mess {
+  background: rgba(236,72,153,0.7); /* magenta-ish */
+}
+.lm-mess:hover { background: rgba(236,72,153,0.85); }
+
+.lm-lecture {
+  background: rgba(2,6,23,0.6); /* dark/navy */
+}
+.lm-lecture:hover { background: rgba(2,6,23,0.85); }
+
+.lm-sports {
+  background: rgba(16,185,129,0.7); /* emerald */
+}
+.lm-sports:hover { background: rgba(16,185,129,0.85); }
+
+.lm-pod {
+  background: rgba(124,58,237,0.7); /* violet */
+}
+.lm-pod:hover { background: rgba(124,58,237,0.85); }
+
+.lm-landmark {
+  background: rgba(244,63,94,0.7); /* rose */
+}
+.lm-landmark:hover { background: rgba(244,63,94,0.85); }
+
+.lm-default {
+  background: #b7c6d6; /* map-building fallback */
+}
+.lm-default:hover { background: #9fb0c6; }
+
+/* Label that appears above marker */
+.lm-label {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  transform: translate(-50%, -100%);
+  background: rgba(255,255,255,0.95);
+  padding: 6px 8px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 180ms ease;
+  z-index: 30;
+}
+
+/* Show label on hover of marker */
+.building-marker:hover .lm-label,
+.lm-label-selected {
+  opacity: 1;
+}
+
+/* Label text */
+.lm-label-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.lm-label-desc {
+  margin: 2px 0 0;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* Memory count badge */
+.lm-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: #ffedd5; /* marker background */
+  color: #7c2d12; /* accent-foreground */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  z-index: 30;
+  animation: lm-pulse 1500ms infinite;
+}
+
+/* subtle pulse */
+@keyframes lm-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.07); opacity: 0.92; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Icon wrapper inside marker */
+.lm-icon-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 150ms ease;
+}
+
+.building-marker:hover .lm-icon-wrap {
+  opacity: 0.9;
+}
+
+/* SVG icon styling */
+.lm-icon {
+  width: 24px;
+  height: 24px;
+  color: rgba(255,255,255,0.88);
+  display: block;
+}
+
+/* Accessibility: ensure focus ring */
+.building-marker:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.25);
+}
+.memory-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f2b526;      /* Tailwind red-500 */
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+  border: 2px solid white;
+  animation: badgePulse 1.6s infinite;
+}
+
+/* Optional pulse animation */
+@keyframes badgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}

@@ -1,0 +1,110 @@
+/* SeniorSelector.css */
+
+/* Card */
+.ss-card {
+  background: var(--card, #fff);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Header */
+.ss-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.ss-cap-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--primary, #2563eb);
+}
+.ss-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.ss-sub {
+  margin: 0 0 0.75rem;
+  color: var(--muted-foreground, #6b7280);
+  font-size: 0.875rem;
+}
+
+/* List + items */
+.ss-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+/* Shared item styles */
+.ss-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: all 180ms ease;
+  background: var(--background, #fff);
+  cursor: pointer;
+}
+.ss-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(2,6,23,0.04); }
+
+/* Selected vs default */
+.ss-item-selected {
+  background: rgba(37,99,235,0.08);
+  border-color: rgba(37,99,235,0.16);
+}
+.ss-item-default {
+  background: var(--background, #fff);
+}
+
+/* Avatar / initials */
+.ss-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ss-avatar-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--avatar-foreground, #111827);
+}
+
+/* Selected avatar look */
+.ss-avatar-selected {
+  background: var(--primary, #2563eb);
+  color: #fff;
+}
+.ss-avatar-muted {
+  background: var(--muted, #f3f4f6);
+  color: #6b7280;
+}
+
+/* Gradient avatar for seniors */
+.ss-avatar-gradient {
+  background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(236,72,153,0.09));
+  color: rgba(37,99,235,0.9);
+}
+.ss-avatar-secondary {
+  background: linear-gradient(135deg, rgba(156,163,175,0.06), rgba(226,232,240,0.04));
+  color: rgba(63,63,70,0.9);
+}
+
+/* Meta text */
+.ss-meta { flex: 1; text-align: left; }
+.ss-name { margin: 0; font-weight: 600; color: var(--foreground, #0f172a); }
+.ss-note { margin: 0; font-size: 0.8rem; color: var(--muted-foreground, #6b7280); }
+
+/* Check icon */
+.ss-check { width: 18px; height: 18px; color: var(--primary, #2563eb); }
+
+/* Accessibility focus state */
+.ss-item:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
