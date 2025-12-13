@@ -141,11 +141,11 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
   };
 
   return (
-    <div className="fadeInUp h-screen bg-[#1F2937]">
+    <div className="fadeInUp h-screen bg-[#020617]">
       <ToastContainer />
       <div class="main flex flex-row items-center justify-center">
-        <div class="main2 flex justify-center flex-col w-[30%] h-[400px] ml-0 bg-[#111827] rounded-2xl top-[100px]">
-          <div className="mx-auto relative top-[20px] left-10/4">
+        <div class="main2 flex justify-center flex-col w-[30%] h-[450px] ml-0 bg-[#111827] rounded-2xl top-100px]">
+          <div className="mx-auto relative top-[15px] left-10/4">
             <img
               src={user2.profImage}
               class="bg-white rounded-full object-cover border-2 border-black m-4"
@@ -154,17 +154,17 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
             ></img>
           </div>
           <div
-            className={`info block p-0 ${
+            className={`info p-0 flex justify-center items-center ${
               isDarkMode
                 ? "bg-gray-700 text-white border-2 border-white"
                 : "bg-[#1F2937] text-white border-2 border-black"
             }`}
           >
-            <div class="text-center">
+            <div class="text-center w-full px-2">
               {/* Profile Data here from backend */}
-              <p>{user2.name}</p>
+              <p className="font-bold text-lg mt-2">{user2.name}</p>
               <p>{user2.roll_no}</p>
-              <p>{user2.about}</p>
+              <p className="mb-2 text-sm break-words max-h-[120px] overflow-y-auto leading-relaxed text-gray-200">{user2.about}</p>
             </div>
           </div>
         </div>
@@ -185,9 +185,9 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
             maxLength={300}
             rows={15}
             cols={50}
-            className={`txtarea ${
+            className={`txtarea outline-none px-4 py-3 ${
               isDarkMode
-                ? "bg-gray-700 text-white border-2 border-white"
+                ? "bg-red-700 text-white border-2 border-white"
                 : "bg-white text-black border-2 border-black"
             }`}
             placeholder=" Add your Comment (upto 300 characters)"
@@ -198,7 +198,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           </p>
           <button
             onClick={handleSubmit2}
-            className="self-end mr-10 mt-1 w-[190] rounded-2xl border-2 border-dashed border-black bg-white text-black px-6 py-1 font-semibold uppercase   transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:rounded-md hover:shadow-[4px_4px_0px_black] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none"
+            className="self-end mr-10 hover:bg-green-600 mt-1 w-[190] rounded-2xl border-2 border-dashed border-black bg-green-400 text-black px-6 py-1 font-semibold uppercase   transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:rounded-md hover:shadow-[4px_4px_0px_black] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none"
           >
             {" "}
             Post!{" "}
@@ -206,7 +206,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           <>{message}</>
         </div>
       </div>
-      <div className="bg-[#1F2937]">
+      <div className="bg-[#020617]">
         <div class="hed">
           <h2
             class={`text-4xl font-semibold items-center ${
