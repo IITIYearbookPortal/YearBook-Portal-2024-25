@@ -44,7 +44,7 @@ const Nongrad = () => {
             setComments(res.data.User);
           }
         })
-        .catch((err) => {});
+        .catch((err) => { });
     }
   }, []);
 
@@ -53,8 +53,8 @@ const Nongrad = () => {
     // navigate(`/comment/edit/${val.user_comment_reciever_id}-${val.comment_id}-${val.comment}`);
   };
   return (
-    <div className="w-screen h-screen flex flex-col gap-y-4 justify-start items-center text-white bg-[#1F2937]">
-       <div className="flex text-center rounded-2xl border-4 justify center gap-x-4 py-5 lg:gap-x-0 text-[#6ccf59] lg:flex-col lg:relative  lg:top-[50px] border-black w-80 bg-[#111827] border-black ">
+    <div className="w-screen h-screen flex flex-col gap-y-4 justify-start items-center text-white bg-[#020617]">
+      <div className="flex text-center rounded-2xl border-4 justify-center gap-x-4 py-5 lg:gap-x-0 text-[#6ccf59] lg:flex-col lg:relative lg:top-[50px] border-black w-80 bg-[#111827] shadow-[0_2px_5px_white]">
         <div className="name3 ">
           <h3>Name: {token.name}</h3>
         </div>
