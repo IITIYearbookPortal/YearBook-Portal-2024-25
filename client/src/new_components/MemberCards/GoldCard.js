@@ -28,7 +28,7 @@ function GoldCard() {
     <>
       {/* some classes are defined in fill details3 .css such as bgr */}
 
-      <div className=" h-[100vh] w-[100vw]     bg-cover ">
+      <div className=" h-[100vh] w-[100vw]   bg-[#020617]  bg-cover ">
         <div class="h-60 relative top-[30px] flex flex-col items-center lg:top-[70px]  afl ">
           <div class="text-[18px] text-green-400 ml-2 top-10 relative font-bold sm:text-2xl md:text-3xl tracking-wide lg:mr-[100px]">
             Hmm, looks like you are
