@@ -1,0 +1,112 @@
+/* Tooltip.css
+   Styles and animations approximating the original Tailwind utilities.
+   Adjust CSS variables to match your design tokens (colors / radii / shadows).
+*/
+
+/* Core variables (override in your theme as needed) */
+:root {
+  --tp-z: 50;
+  --tp-bg: var(--popover, #111827); /* fallback */
+  --tp-foreground: var(--popover-foreground, #f9fafb);
+  --tp-border: rgba(0,0,0,0.06);
+  --tp-radius: 8px;
+  --tp-padding-x: 12px;
+  --tp-padding-y: 6px;
+  --tp-shadow: 0 10px 30px rgba(2,6,23,0.2);
+  --tp-font-size: 13px;
+}
+
+/* Content box */
+.tp-content {
+  z-index: var(--tp-z);
+  overflow: hidden;
+  border-radius: var(--tp-radius);
+  border: 1px solid var(--tp-border);
+  background: var(--tp-bg);
+  color: var(--tp-foreground);
+  padding: var(--tp-padding-y) var(--tp-padding-x);
+  font-size: var(--tp-font-size);
+  box-shadow: var(--tp-shadow);
+  white-space: nowrap;
+  user-select: none;
+
+  /* initial states for animations */
+  opacity: 0;
+  transform-origin: center;
+  will-change: transform, opacity;
+}
+
+/* Data-state / animation helpers */
+/* Fade / zoom in */
+@keyframes tp-fade-in {
+  from { opacity: 0; transform: scale(.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes tp-fade-out {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(.95); }
+}
+
+/* Slide variants for sides */
+@keyframes tp-slide-in-from-top {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes tp-slide-in-from-bottom {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes tp-slide-in-from-left {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes tp-slide-in-from-right {
+  from { opacity: 0; transform: translateX(6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* When open (Radix adds data-state="open") */
+.tp-content[data-state="open"] {
+  opacity: 1;
+  animation-duration: 160ms;
+  animation-timing-function: cubic-bezier(.16,1,.3,1);
+  animation-fill-mode: forwards;
+  /* default combined animation */
+  animation-name: tp-fade-in;
+}
+
+/* When closed */
+.tp-content[data-state="closed"] {
+  opacity: 0;
+  animation-duration: 120ms;
+  animation-name: tp-fade-out;
+  animation-timing-function: ease;
+  animation-fill-mode: forwards;
+}
+
+/* Side-specific slide-in direction overrides */
+.tp-content[data-side="top"][data-state="open"] {
+  animation-name: tp-slide-in-from-bottom;
+}
+.tp-content[data-side="bottom"][data-state="open"] {
+  animation-name: tp-slide-in-from-top;
+}
+.tp-content[data-side="left"][data-state="open"] {
+  animation-name: tp-slide-in-from-right;
+}
+.tp-content[data-side="right"][data-state="open"] {
+  animation-name: tp-slide-in-from-left;
+}
+
+/* Small visual polish */
+.tp-content:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+}
+
+/* Optional: small responsive text sizing */
+@media (max-width: 640px) {
+  .tp-content {
+    font-size: 12px;
+  }
+}

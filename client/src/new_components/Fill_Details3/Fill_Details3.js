@@ -5,6 +5,7 @@ import "./filldetails.module.css";
 import phoneimg from "./telephone-call.png";
 // import Abtn from "./arrowBtn.png";
 import Abtn from "./image.png";
+//import arrow6 from "./arrow8.png";
 import Bbtn from "./back-arrow.png";
 import emailimg from "./email.png";
 import grad from "./graduated.png";
@@ -70,6 +71,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
   const [sentOtp, setSentOtp] = useState(false);
   const [sub, setSub] = useState(false);
   const [wait, setWait] = useState(false);
+  const [len, setlen] = useState(0)
 
   const [hid, setHid] = useState(1);
 
@@ -104,6 +106,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
   // });
 
   const auth = getAuth();
+
+  const handleInputChange = (event) => {
+    let inputstr = event.target.value;
+    setlen(inputstr.length);
+  };
 
   const onSubmit = () => {
     setState(true);
@@ -250,7 +257,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
     setWait(true);
     axios
-      .post("https://api-eu.cloudinary.com/v1_1/dnqlvxfuc/upload", formData)
+      .post("https://api-eu.cloudinary.com/v1_1/dd5ixerth/upload", formData)
       .then((res) => {
         setWait(false);
         setImageUrl(res.data.url);
@@ -716,7 +723,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                   borderColor: "white",
                   paddingRight: "10px",
                   paddingLeft: "10px",
-                  borderRadius: "10px"
+                  borderRadius: "10px",
+                  backgroundColor: "white",
                 },
               }}
             />
@@ -772,10 +780,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-44 left-4 absolute text-3xl  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center afd text-[#EEEEEE]">
+          <div class="h-12 w-full top-44 left-4 absolute text-3xl flex-wrap  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center afd text-[#EEEEEE]">
             {" "}
             And your{" "}
-            <span class="text-red-600 ml-2 mr-2 text-5xl"> Personal </span>{" "}
+            <span class="text-red-600 flex-wrap ml-2 mr-2 text-5xl"> Personal </span>{" "}
             email ?{" "}
           </div>
 
@@ -785,7 +793,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
+              class="h-[32px] w-[200px] max-w-xs lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
+
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -820,11 +829,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             />{" "}
           </button>
 
-          <div class=" afu w-full">
+          <div class=" afu w-full flex sm:block justify-center items-center">
             <img
               src={emailimg}
               alt="phone"
-              class=" h-[90px] w-[90px] lg:h-40 lg:w-40 ml-48"
+              class="h-[90px] w-[90px] lg:h-40 lg:w-40 mx-auto sm:ml-48 sm:mx-0"
             />
           </div>
         </div>
@@ -838,26 +847,28 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-36 left-8 absolute text-3xl  md:text-3xl md:top-40 lg:text-[35px] xl:text-3xl lg:top-48 lg:left-28 xl:left-80 xl:top-48 abl">
+          <div class="h-12 w-full top-[30px] left-8 absolute text-[20px]  md:text-3xl md:top-40 lg:text-[35px] xl:text-3xl lg:top-48 lg:left-28 xl:left-80 xl:top-48 abl">
             {" "}
-            We wanna <span class="text-red-600 ml-2 mr-2 text-5xl">
+            We wanna <span class="text-red-600 ml-2 mr-2 text:[20px] sm:text-5xl">
               SEE{" "}
             </span>{" "}
             you! please?
           </div>
 
-          <div class=" h-10 w-full top-[205px] left-8 absolute text-[18px] md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[24px] lg:left-32 xl:left-80 abl">
+          <div class=" h-10 w-full top-[90px] left-8 absolute text-[18px] md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[24px] lg:left-32 xl:left-80 abl">
             {" "}
             (we assure you, we are not creepy) 🙂{" "}
           </div>
 
-          <div class="w-[110px] h-[110px] md:w-60 md:h-60 border-2 border-gray-400 absolute right-2 top-64 md:right-28 md:top-20 rounded-full overflow-hidden flex justify-center items-center xl:top-30 xl:right-80 abl">
+          <div class="w-[110px] h-[110px] top-[200px] border-2 border-gray-400 absolute  rounded-full overflow-hidden flex justify-center items-center 
+    sm:top-[700px] md:w-60 md:h-60 md:right-28 sm:right-10 md:top-[300px] 
+    lg:top-20 xl:top-[120px] xl:right-80  ">
             <img src={imageUrl} class=" w-fit "></img>
           </div>
 
           <img
             src={arrow}
-            class="w-[95px] h-[62px] top-[372px] right-[115px] md:w-48 md:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl text-white  filter invert"
+            class="hidden lg:block w-[95px] right-[115px] lg:w-48 lg:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl text-white filter invert"
           ></img>
 
           <input
@@ -870,11 +881,12 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 setisSelected(true);
               }
             }}
-            class="border-2 border-black h-9 w-60 bottom-12 left-[30px] top-[424px] absolute md:right-[430px]   leading-none text-center rounded-3xl md:mt-2 md:w-60 md:h-10 lg:top-96 lg:ml-6 xl:left-[270px] xl:top-[400px] btnh border-dashed p-[6px] px-10 afu"
+            class="border-2 border-black h-9 w-60 bottom-12 left-[30px] top-[150px] absolute md:right-[430px]   leading-none text-center rounded-3xl w-[150px] h-[30px] md:mt-2 md:w-60 md:h-10 lg:top-96 lg:ml-6 xl:left-[270px] xl:top-[400px] sm:top-[380px] btnh border-dashed p-[6px] px-10 afu"
+          style={{ zIndex: 1}}
           ></input>
           {/* <button onClick={() => {}} class="border-2 border-black h-9 w-32 bottom-12 left-[30px] top-[424px] md:bottom-36 absolute md:right-[322px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-40 xl:left-[420px] xl:top-[400px] btnh border-dashed afu"> Choose File </button> */}
 
-          <button
+         <button
             onClick={() => {
               if (isSelected) {
                 {
@@ -887,11 +899,16 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 });
               }
             }}
-            class="border-2 border-black bg-white text-black h-9 w-32 bottom-12 top-[485px] md:bottom-36 absolute md:right-[322px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-80 xl:left-[580px] xl:top-[400px] btnh border-dashed afu"
+            class=" border-2 border-black top-[320px] bg-white text-black h-9 w-32  md:bottom-36 absolute md:right-[322px] sm:top-[300px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-80 xl:left-[580px] xl:top-[400px] btnh border-dashed afu"
           >
             {" "}
             Upload Photo{" "}
           </button>
+          <img
+            src={arrow}
+            class="hidden xl:block left-[400px] w-[80px] right-[115px] md:w-48 md:h-32 lg:top-[400px] lg:right-[22rem] absolute xl:right-[38rem] abl  "
+            style={{  transform: 'rotate(30deg)', filter: 'invert(1)', transition: 'none' }}
+          ></img>
 
           <div class="mt-52 md:mt-36 lg:mt-80 lg:mr-[450px] xl:mt-80 xl:mr-[350px]">
             {upload && (
@@ -914,7 +931,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 });
               }
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 top-[555px]  flex items-center justify-center absolute lg:left-[443px] lg:top-[470px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-44   md:w-32 md:h-10  lg:mt-16   xl:left-[710px] btnh border-dashed afd"
+            class="border-2 border-black bg-white text-black h-8 w-32 top-[370px]  flex items-center justify-center absolute lg:left-[443px] lg:top-[470px] p-0 text-base leading-none text-center  rounded-3xl md:top-[400px] md:mt-44 sm:top-[350px]  md:w-32 md:h-10  lg:mt-16   xl:left-[710px] btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -927,8 +944,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           >
             {" "}
             <img
-              src={Abtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 filter invert afr ${
+              src={Bbtn}
+              class={`hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
                 isDarkMode ? "bg-gray-400" : ""
               }`}
             />{" "}
@@ -940,16 +957,16 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 6
-              ? " h-[218vh]  md:h-[105vh]  w-screen   flex flex-row md:justify-center md:items-center text-1xl relative  border-b-2 bg-[#222831] text-white  "
+              ? " h-screen  md:h-[105vh]  w-screen   flex flex-row md:justify-center md:items-center text-1xl relative  border-b-2 bg-[#222831] text-white  "
               : "hidden"
           }
         >
-          <div class="h-12 w-full text-3xl top-[122px] left-[42px] md:left-4 absolute md:text-4xl md:top-28 lg:text-[42px] xl:text-4xl flex lg:left-[23rem] asr">
+          <div class="h-12 w-full text-[20px] top-[30px] left-[42px] md:left-4 absolute md:text-4xl md:top-28 lg:text-[42px] xl:text-4xl flex lg:left-[23rem] asr">
             {" "}
             Maybe, also fill these as well ?{" "}
           </div>
 
-          <div class="h-10 w-full top-[166px] left-[17px] absolute md:text-3xl md:top-44 md:w-100 md:left-14 lg:mt-0 lg:text-[24px] lg:left-10 flex justify-center asr">
+          <div class="h-10 w-full top-[70px] left-[17px] absolute md:text-3xl md:top-44 md:w-100 md:left-14 lg:mt-0 lg:text-[24px] lg:left-10 flex justify-center asr">
             {" "}
             (Our design team was out on vacation at this, so we couldn't create
             individual pages for this) 😅{" "}
@@ -957,10 +974,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
           {/* 1st col  */}
 
-          <div class="h-14 w-54  absolute top-[280px] left-[77px] md:top-[260px] flex justify-center items-center flex-row lg:text-xl md:left-28 xl:left-60 af ">
+          <div class="h-14 w-54  absolute top-[130px] left-[40px] md:top-[260px] flex justify-center items-center flex-row lg:text-xl md:left-28 xl:left-60 af ">
             <input
               type="text"
-              class=" font-bold h-[39px] w-[225px] md:h-10 md:w-[210px]  mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
+              class=" font-bold h-[30px] w-[225px] md:h-10 md:w-[210px]  mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
               placeholder="Alternate Contact Number"
               name="alternate_contact_details"
               value={userData.alternate_contact_details}
@@ -971,10 +988,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             ></input>
           </div>
 
-          <div class="h-14 w-54  absolute top-[360px] left-[77px] md:top-[320px]  flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
+          <div class="h-14 w-54  absolute top-[165px] left-[40px] md:top-[320px]  flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
             <input
               type="text"
-              class="font-bold h-[39px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
+              class="font-bold h-[30px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
               placeholder="Address"
               name="address"
               value={userData.address}
@@ -985,10 +1002,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             ></input>
           </div>
 
-          <div class="h-14 w-54  absolute top-[440px] left-[77px] md:top-[400px] flex justify-center items-center flex-row md:mt-0 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
+          <div class="h-14 w-54  absolute top-[200px] left-[40px] md:top-[400px] flex justify-center items-center flex-row md:mt-0 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
             <input
               type="text"
-              class="font-bold h-[39px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
+              class="font-bold h-[30px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
               placeholder="Current company (if any)"
               name="current_company"
               value={userData.current_company}
@@ -999,10 +1016,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             ></input>
           </div>
 
-          <div class="h-14 w-54  absolute top-[520px] left-[77px] md:top-[480px] flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
+          <div class="h-14 w-54  absolute top-[235px] left-[40px] md:top-[480px] flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
             <input
               type="text"
-              class="font-bold h-[39px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
+              class="font-bold h-[30px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
               placeholder="Designation (if any)"
               name="designation"
               value={userData.designation}
@@ -1015,10 +1032,12 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
           {/* 2nd col */}
 
-          <div class=" h-48 w-36 md:h-80 w-70 absolute top-[600px] left-[60px] md:top-[220px] mt-12 md:mt-8 lg:mt-[10rem] lg:text-xl md:left-[400px] xl:left-[570px] xl:top-[215px] xl:mt-0 af">
+          <div class=" h-48 w-36 md:h-80 w-70 absolute top-[250px] left-[40px] md:top-[220px] mt-12 md:mt-8 lg:mt-[10rem] lg:text-xl md:left-[400px] xl:left-[570px] xl:top-[215px] xl:mt-0 af">
             <textarea
               type="text"
-              class="rounded-xl bg-white text-black font-bold  h-[17rem] w-[16rem] md:h-80 max-h-[17rem] md:w-[270px] lg:mt-[-8rem] xl:mt-12 border-2 border-black   text-base text-start p-2"
+              onInput={handleInputChange}
+              maxLength={300}
+              class="rounded-xl bg-white text-black font-bold  h-[13rem] w-[16rem] md:h-80 max-h-[17rem] md:w-[270px] lg:mt-[-8rem] xl:mt-12 border-2 border-black   text-base text-start p-2"
               placeholder="    About Me (50 - 60 words)"
               name="about"
               value={userData.about}
@@ -1027,14 +1046,17 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 setabout(e.target.value);
               }}
             ></textarea>
+            <p class="absolute bottom-2 left-44 text-sm text-gray-600 bg-white px-2 py-1 rounded-md">
+            {300 - len}/300
+          </p>
           </div>
 
           {/* 3rd col */}
 
-          <div class="h-40 w-70  absolute top-[950px] left-[60px]  mt-4  md:top-[40px] md:mt-8 lg:mt-[13rem] lg:text-xl md:left-[720px] xl:left-[930px] xl:mt-10 xl:top-[220px] af">
+          <div class="h-40 w-70  absolute top-[495px] left-[40px]  mt-4  md:top-[40px] md:mt-8 lg:mt-[13rem] lg:text-xl md:left-[720px] xl:left-[930px] xl:mt-10 xl:top-[220px] af">
             <textarea
               type="text"
-              class="rounded-xl bg-white text-black font-bold h-[12rem] max-h-[12rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
+              class="rounded-xl bg-white text-black font-bold h-[8rem] max-h-[12rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
               placeholder=" what wil you miss the most after   graduating"
               name="question_1"
               value={userData.question_1}
@@ -1045,10 +1067,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             ></textarea>
           </div>
 
-          <div class="h-40 w-70  absolute top-[1180px] left-[60px]  mt-4  md:top-[40px] md:mt-8 lg:mt-[22rem] lg:text-xl md:left-[720px] xl:left-[930px] xl:mt-12 xl:top-[360px] af">
+          <div class="h-40 w-70  absolute top-[630px] left-[40px]  mt-4  md:top-[40px] md:mt-8 lg:mt-[22rem] lg:text-xl md:left-[720px] xl:left-[930px] xl:mt-12 xl:top-[360px] af">
             <textarea
               type="text"
-              class="rounded-xl bg-white text-black font-bold h-[13rem] max-h-[13rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
+              class="rounded-xl bg-white text-black font-bold h-[6rem] max-h-[13rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
               placeholder=" If you had power to implement a change in college what would it be?"
               name="question_2"
               value={userData.question_2}
@@ -1081,7 +1103,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 }
               }
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 bottom-[2rem]  left-32 flex items-center justify-center absolute lg:left-[469px] lg:bottom-8  p-0 text-base leading-none text-center  rounded-3xl md:bottom-[7rem] md:mt-32 md:w-32 md:h-10  lg:mt-8 xl:bottom-10  xl:left-[648px] btnh border-dashed afd"
+            class="border-2 border-black bg-white text-black h-8 w-32 bottom-[2rem] left-32 flex items-center justify-center absolute lg:left-[469px] lg:bottom-8  p-0 text-base leading-none text-center  rounded-3xl md:bottom-[7rem] md:mt-32 md:w-32 md:h-10  lg:mt-8 xl:bottom-10  xl:left-[648px] btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -1094,8 +1116,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           >
             {" "}
             <img
-              src={Abtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert ${
+              src={Bbtn}
+              class={`hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
                 isDarkMode ? "bg-gray-400" : ""
               }`}
             />{" "}
@@ -1110,21 +1132,21 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-44 left-4 absolute text-[23px]  md:text-3xl md:top-40 lg:text-[34px] xl:text-4xl lg:top-48 flex justify-center items-center asr ">
+          <div class="h-12 w-full top-[30px] left-4 absolute text-[23px]  md:text-3xl md:top-40 lg:text-[34px] xl:text-4xl lg:top-48 flex justify-center items-center asr ">
             {" "}
             Don't take it personally "Corporate" wants to verify your phone
             number{" "}
           </div>
 
-          <div class=" h-10 w-full top-[250px] left-0 absolute  md:top-64 md:w-100 lg:mt-4 md:text-[18px] flex justify-center asr">
+          <div class=" h-10 w-full top-[150px] left-0 absolute  md:top-64 md:w-100 lg:mt-4 md:text-[18px] flex justify-center asr">
             {" "}
             (Enter the OTP you recieved on your phone){" "}
           </div>
 
-          <div class="h-14 w-48  absolute top-80 flex justify-center items-center flex-row md:mt-0 lg:mt-10 lg:text-xl afu">
+          <div class="h-14 w-48  absolute top-[180px] sm:top-80 flex justify-center items-center flex-row md:mt-0 lg:mt-10 lg:text-xl afu">
             <input
               type="text"
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 rounded-2xl text-center border-black  "
+              class="h-[32px] w-[200px] lg:h-10 lg:w-64 text-black lg:mt-12 border-2 rounded-2xl text-center border-black  "
               maxLength={6}
               onChange={(e) => {
                 setOtp1(e.target.value);
@@ -1145,13 +1167,13 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             onClick={() => {
               resendOTP();
             }}
-            class="hover:underline  underline-offset-2 flex items-center justify-center mt-80  h-8 w-32 left-8 absolute p-0 text-xl leading-none md:ml-52 md:top-96 md:mt-28 md:w-32 md:h-10 lg:mt-36  lg:left-40 xl:left-64 afu"
+            class="hover:underline  underline-offset-2 flex  items-center justify-center mt-20  h-8 w-32 absolute p-0 text-xl leading-none md:ml-52 md:top-96 md:mt-40 md:w-32 md:h-10 lg:mt-36  lg:left-40 xl:left-64 afu"
           >
             {" "}
             Resend Otp{" "}
           </button>
           {/* </a> */}
-          <div class="flex mt-64 left-12 absolute  md:top-52 md:ml-52 md:h-10 md:text-[20px] lg:mt-72 lg:left-40 xl:left-64 afu ">
+          <div class="flex  md:mt-60  absolute  md:top-52 md:ml-52 md:h-10 md:text-[20px] md:mt-72 lg:left-40 xl:left-64 afu ">
             {seconds > 0 || minutes > 0 ? (
               <p>
                 Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:
@@ -1171,7 +1193,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               }
             }}
             disabled={isButtonDisabled}
-            class="h-8 w-32 flex items-center justify-center mt-64 border-2 border-black bg-white text-black absolute right-8  p-0 text-base leading-none text-center  rounded-3xl md:mr-32 md:top-96 md:mt-20 md:w-32 md:h-10 lg:right-52 xl:right-[350px]  lg:mt-28 btnh border-dashed afu"
+            class="h-8 w-32 flex items-center justify-center sm:right-auto border-2 border-black bg-white text-black absolute    p-0 text-base leading-none text-center  rounded-3xl md:mr-28 top-[250px] md:top-96 md:mt-15 md:w-32 sm:top-90 md:h-10  lg:right-52 xl:right-[350px]  lg:mt-28 btnh border-dashed afu"
           >
             {" "}
             Continue{" "}
@@ -1205,7 +1227,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           </div>
 
           <div class="h-12 w-full top-56 left-4 absolute text-2xl  md:text-[20px] md:top-52 lg:text-[22px] lg:top-64 flex justify-center items-center afu">
-            (You may now close this window){" "}
+            (Check spam folder as well and close this window){" "}
           </div>
 
           {/* <button

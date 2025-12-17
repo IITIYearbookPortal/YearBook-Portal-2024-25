@@ -94,6 +94,7 @@
     align-items: flex-start;
   }
   .pollQuestion {
+    color:#EEEEEE;
     font-size: 1.2rem;
     margin-bottom: 10px;
   }

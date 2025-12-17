@@ -1,11 +1,13 @@
 
-.info{
+.info2{
   min-height: 20vh;
   margin: 20px 36px !important;
+  /* border: 2px solid black !important; */
   border-radius: 14px !important;
   box-shadow: 2px 2px 4px #49474a !important;
+  /* background-color: white !important; */
   word-wrap: break-word !important;
-  padding: 5px !important;
+  padding: 10px !important;
 
 }
 
@@ -24,16 +26,23 @@
   height: 65vh;
   width: 50vw;
 }
-.txtarea{
-  width:40vw;
+.txtarea {
+  width:50vw;
+  height: 30vh;
   resize: vertical;
-  /* border: 1px solid black;
-  background-color: white; */
   border-radius: 10px;
   padding: 5px;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 1rem;
+  background: #111827;
+  color: white;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 .hed{
   height: fit-content;
+  text-align: center;
   margin: 12px; 
   position: relative;
   left: 20px;
@@ -45,7 +54,7 @@ h2{
 
 .box{
   border: 2px solid black;
-  width: 40vw;
+  width: 70vw;
   height: 20vh;
   margin: 10px;
 }
@@ -75,7 +84,7 @@ h2{
   .main2{
     width: fit-content;
     justify-content: center;
-
+    
   }
   .info{
     width: 80vw;

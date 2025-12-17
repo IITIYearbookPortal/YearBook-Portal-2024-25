@@ -81,7 +81,7 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
 
     setWait(true);
     axios
-      .post("https://api-eu.cloudinary.com/v1_1/dnqlvxfuc/upload", formData)
+      .post("https://api-eu.cloudinary.com/v1_1/dd5ixerth/upload", formData)
       .then((res) => {
         setWait(false);
         setImageUrl(res.data.url);
@@ -203,7 +203,7 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
             className={`leftprt ${
               isDarkMode
                 ? "bg-gray-700 border-2 border-white"
-                : "bg-white border-2 border-black"
+                : " bg-[#111827] border-2 border-black"
             }`}
           >
             <h2> </h2>
@@ -418,7 +418,7 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
             <input
               className="inped mb-2"
               type="text"
-              maxLength={350}
+              maxLength={300}
               placeholder="About Me (50-60 words)"
               size="60"
               name="about"
@@ -539,7 +539,7 @@ function Edit({ isDarkMode, setIsDarkMode, props }) {
             </button>
 
             {upload && (
-              <h3 class={`${isDarkMode ? "text-white" : "text-black"}`}>
+              <h3 class={`${isDarkMode ? "text-white" : "text-white"}`}>
                 {wait && "Wait... while image is uploading"}
                 {imageUploaded && "Image Uploaded"}
               </h3>

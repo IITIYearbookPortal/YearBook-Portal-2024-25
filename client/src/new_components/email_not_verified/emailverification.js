@@ -17,7 +17,6 @@ import jwt_decode from "jwt-decode";
 
 function Fill1(props) {
   const {
-    user,
     loading,
     userData,
     setUserData,
@@ -31,10 +30,11 @@ function Fill1(props) {
   } = useContext(LoginContext);
 
   const jti = useParams();
-  let token;
+ 
+  let user;
 
   if (window.localStorage.getItem("token") !== null) {
-    token = jwt_decode(window.localStorage.getItem("token"));
+    user = jwt_decode(window.localStorage.getItem("token"));
   }
 
   useEffect(() => {
@@ -43,7 +43,7 @@ function Fill1(props) {
         window.location.href = "/login";
       }
 
-      if (isStudent || token.jti !== jti.userId) {
+      if (isStudent || user.jti !== jti.userId) {
         window.location.href = "/error";
       }
     }
@@ -232,7 +232,7 @@ function Fill1(props) {
             {" "}
             <img
               src={Abtn}
-              class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert"
+              class="h-[50px] w-[50px] sm:h-[60px] sm:w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert"
             />{" "}
           </button>
         </div>
@@ -257,7 +257,7 @@ function Fill1(props) {
           </div>
 
           <div class="h-12 w-full top-56 left-4 absolute text-2xl  md:text-[20px] md:top-52 lg:text-[22px] lg:top-64 flex justify-center items-center afu">
-            (You may now close this window){" "}
+            (Check spam folder as well and close this window){" "}
           </div>
 
           {/* <button onClick={() => {

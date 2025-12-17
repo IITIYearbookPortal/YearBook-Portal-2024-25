@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { LoginContext } from "../../helpers/Context";
 import alumniData from "./akumniData.json";
 import jwt_decode from "jwt-decode";
-import logo from "./lo.jpeg"
-
+import logo from "./lo.jpeg";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -45,11 +44,12 @@ const Navbar = () => {
       setLinks([
         { name: "Home", path: "/" },
         { name: "Search People", path: "/userlist" },
+        { name: "Polls", path: "/polls" },
         {
           name: "My Profile",
           path: `/profile/${profile.roll_no}/${profile.name}`,
         },
-        { name: "My Black Card", path: "/blackcard" },
+        { name: "Black Card", path: "/blackcard" },
         { name: "More Links", path: "/footer" },
         { name: "Logout", path: "/logout" },
       ]);
@@ -67,48 +67,40 @@ const Navbar = () => {
       ]);
     }
   }, [loggedin, profile, user.email]);
- 
-
-// currently navbar is not sticky 
-
 
   return (
-    <nav className=" top-0 z-50 py-3 bg-darkbg backdrop-blur-xl border-b border-neutral-700/80 text-white">
-      <div className="container px-4 mx-auto relative lg:text-sm">
-        <div className="flex justify-between items-center">
+    <nav className=" text-white z-50 sticky bg-black bg-opacity-50">
+      <div className="container px-4 mx-auto relative lg:text-sm ">
+        <div className="flex justify-between items-center py-3">
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
-          <img src={logo} alt="logo" className="h-10 w-10 mr-2"/>
-
+            <img src={logo} alt="logo" className="h-10 w-10 mr-2" />
             <span className="text-xl tracking-tight">YearBook' 2025</span>
           </div>
 
           {/* Centered Links (Desktop View) */}
-          <ul className="absolute left-1/2 transform -translate-x-1/2 hidden lg:flex space-x-12 text-xl">
+          <ul className="absolute left-1/2 font-bold transform -translate-x-1/2 hidden lg:flex space-x-12 text-base">
             {links.map((link, index) => (
               <li key={index}>
-                <a href={link.path} className="hover:text-lightgreen">
+                <a
+                  href={link.path}
+                  className={`hover:text-lightgreen ${loggedin ? "text-sm" : "text-base"}`}
+                >
                   {link.name}
                 </a>
               </li>
             ))}
-            <li>
-              <button
-                onClick={toggleTheme}
-                className="hover:text-lightgreen cursor-pointer"
-              >
-                Change Theme
-              </button>
-            </li>
+            
           </ul>
 
           {/* Sign In Button */}
-          <div className="hidden lg:flex justify-end space-x-12 items-center etxt-xl">
+          <div className="hidden lg:flex justify-end space-x-12 items-center bg-green-400 rounded-md">
             <a
               href={loggedin ? "/logout" : "/login"}
-              className="bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded"
+              className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${loggedin ? "text-sm" : "text-base"
+                }`}
             >
-              {loggedin ? "Logout" : "Sign In"}
+              {loggedin ? "Logout" : "Sign Up"}
             </a>
           </div>
 
@@ -122,39 +114,42 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="fixed right-0 z-20 bg-neutral-900 w-full p-8 flex flex-col justify-center items-center lg:hidden">
+          <div className="absolute top-16 w-full p-8 flex flex-col justify-center items-center lg:hidden backdrop-blur-sm">
             <ul className="flex flex-col space-y-6 items-center">
               {links.map((link, index) => (
                 <li key={index}>
                   <a
                     href={link.path}
-                    className="hover:text-lightgreen text-center"
+                    className={`hover:text-lightgreen text-center ${loggedin ? "text-sm" : "text-base"
+                      }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {link.name}
                   </a>
                 </li>
               ))}
-              <li>
+              {/* <li>
                 <button
                   onClick={() => {
                     toggleTheme();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="hover:text-lightgreen text-center"
+                  className={`hover:text-lightgreen text-center ${loggedin ? "text-sm" : "text-base"
+                    }`}
                 >
                   Change Theme
                 </button>
-              </li>
+              </li> */}
             </ul>
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <a
                 href={loggedin ? "/logout" : "/login"}
-                className="bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded"
+                className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${loggedin ? "text-sm" : "text-base"
+                  }`}
               >
                 {loggedin ? "Logout" : "Sign In"}
               </a>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

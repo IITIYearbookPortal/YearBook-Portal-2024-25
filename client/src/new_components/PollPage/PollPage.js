@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom"; // Used for navigation
 import axios from "axios";
 import { useState, useContext, useEffect } from "react";
@@ -10,27 +9,32 @@ import styles from "./PollPage.module.css"; // Import CSS Module
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import { Plus } from 'lucide-react';
+import alumniEmails from "../../new_components/Navbar/akumniData.json";
 
 const PollPage = () => {
   const [polls, setPolls] = useState([]); // Set to an empty array initially
   const { loggedin, profile, loading } = useContext(LoginContext);
   const [selectedPollOption, setSelectedPollOption] = useState(null);
-  const [newPoll, setNewPoll] = useState({ question: "", options: ["", ""] });
+  const [newPoll, setNewPoll] = useState({ 
+    question: "", 
+    options: [{ rollNo: "", name: "" }, { rollNo: "", name: "" }] 
+  });
   const [message, setMessage] = useState("");
   const [failedPollId, setFailedPollId] = useState(null);
   const navigate = useNavigate();
+
+ 
+
+  // Check if the current user is an alumni
+  const isAlumni = profile && alumniEmails.includes(profile.email);
 
 
   const adminUsers = process.env.REACT_APP_ADMIN_USERS
     ? process.env.REACT_APP_ADMIN_USERS.split(",")
     : [];
   const isAdmin = profile && adminUsers.includes(profile.email);
-  console.log("isAdmin",adminUsers);
-  if(profile){
-    console.log("profile",profile.email);
-    console.log("profil1111e",process.env.REACT_APP_ADMIN_USERS);
-    console.log("profil1111e",process.env.REACT_APP_CLIENT_ID);
-  }
+  // const isAdmin =true;
+ 
  
 
   
@@ -41,6 +45,12 @@ const PollPage = () => {
       window.location.href = "/login";
     }
   });
+  useEffect(() => {
+    // Redirect non-alumni users to home
+    if (!loading && profile && !isAlumni) {
+      navigate("/");
+    }
+  }, [loading, profile, isAlumni, navigate]);
 
   useEffect(() => {
     // Fetch polls from backend
@@ -82,27 +92,35 @@ const PollPage = () => {
   }
   const handlePollSubmit = (e) => {
     e.preventDefault();
-    if (!newPoll.question || newPoll.options.filter(Boolean).length < 2) {
-      // setMessage("Please provide a valid poll question and at least two options.");
-      toast.error("Please provide a valid poll question and at least two options.", { autoClose: 2000 });
+
+    // Validate inputs
+    if (!newPoll.question || newPoll.options.filter(opt => opt.rollNo && opt.name).length < 2) {
+      toast.error("Please provide a valid poll question and at least two options with both roll number and name.", { autoClose: 2000 });
       return;
     }
+
+    // Combine roll numbers and names into single strings
+    const processedOptions = newPoll.options
+      .filter(opt => opt.rollNo && opt.name)
+      .map(opt => `${opt.rollNo} - ${opt.name}`);
 
     axios
       .post(process.env.REACT_APP_API_URL + "/createPoll", {
         question: newPoll.question,
-        options: newPoll.options.filter(Boolean),
+        options: processedOptions,
         createdBy: profile.email,
       })
       .then((res) => {
         toast.success("Poll created successfully!", { autoClose: 2000 });
         setPolls([...polls, res.data.poll]);
-        setNewPoll({ question: "", options: ["", ""] });
-        setMessage("");
+        setNewPoll({ 
+          question: "", 
+          options: [{ rollNo: "", name: "" }, { rollNo: "", name: "" }] 
+        });
       })
       .catch((err) => {
         console.error("Error creating poll:", err);
-        setMessage("Failed to create poll. Please try again.");
+        toast.error("Failed to create poll. Please try again.");
       });
   };
 
@@ -121,17 +139,19 @@ const PollPage = () => {
       });
   };
 
+
+
   return (
-    <>
+    <div className="bg-gray-800">
       <ToastContainer />
       <div className={styles.container}>
       <div className={styles.description}>
-        <h1 className="text-3xl font-bold text-center text-blue-800 mb-4" style={{ fontSize: "2.5rem" }}>
+        <div className="text-[2.5rem] font-bold text-center text-green-400 mb-4">
           Welcome to the Polling Portal!
-        </h1>
-        <p className="text-gray-700 text-center max-w-2xl mx-auto mb-6" style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
-          Participate in engaging polls created by the community! Your opinion matters. Browse through the polls below and cast your vote. Poll results are updated in real-time, so check back to see how others voted.
-        </p>
+        </div>
+        <div className="text-gray-300 text-center max-w-2xl mx-auto mb-6" style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
+          Participate in engaging polls created by the community! Your opinion matters. Browse through the polls below and cast your vote. 
+        </div>
       </div>
 
         {isAdmin && (
@@ -146,24 +166,46 @@ const PollPage = () => {
                 className={styles.input}
               />
               {newPoll.options.map((option, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  placeholder={`Option ${index + 1}`}
-                  value={option}
-                  onChange={(e) =>
-                    setNewPoll({
-                      ...newPoll,
-                      options: newPoll.options.map((opt, i) => (i === index ? e.target.value : opt)),
-                    })
-                  }
-                  className={styles.input}
-                />
+                <div key={index} className="flex gap-4 items-center">
+                  <div className="flex-1 flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Roll No"
+                      value={option.rollNo}
+                      onChange={(e) =>
+                        setNewPoll({
+                          ...newPoll,
+                          options: newPoll.options.map((opt, i) =>
+                            i === index ? { ...opt, rollNo: e.target.value } : opt
+                          ),
+                        })
+                      }
+                      className={`${styles.input} w-1/2`}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={option.name}
+                      onChange={(e) =>
+                        setNewPoll({
+                          ...newPoll,
+                          options: newPoll.options.map((opt, i) =>
+                            i === index ? { ...opt, name: e.target.value } : opt
+                          ),
+                        })
+                      }
+                      className={`${styles.input} w-1/2`}
+                    />
+                  </div>
+                </div>
               ))}
               <div className="flex gap-5" >
                 <button
                   type="button"
-                  onClick={() => setNewPoll({ ...newPoll, options: [...newPoll.options, ""] })}
+                  onClick={() => setNewPoll({ 
+                    ...newPoll, 
+                    options: [...newPoll.options, { rollNo: "", name: "" }] 
+                  })}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors text-black "
                 >
                   <Plus className="h-5 w-5" /> Add Option
@@ -178,11 +220,11 @@ const PollPage = () => {
         <div className="space-y-4 mt-4">
 
           {polls.map((poll) => (
-            <div key={poll._id} className={styles.pollCard}>
+            <div key={poll._id} className="bg-gray-900 p-5 mb-[15px] rounded-lg shadow-md flex flex-col items-start">
               <h2 className={styles.pollQuestion}>{poll.question}</h2>
               <div className={styles.buttonGroup}>
                 <Link to={`/polls/results/${poll._id}`}>
-                  <button className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 animate-pulse">Do Polling</button>
+                  <button className="px-4 py-2 bg-green-500 text-[#EEEEEE] font-semibold rounded-lg shadow-md hover:bg-green-600 animate-pulse">Do Polling</button>
                 </Link>
                 {isAdmin && (
                   <button class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 hover:opacity-80 hover:scale-95 transform transition-all duration-300 ease-in-out"
@@ -199,7 +241,7 @@ const PollPage = () => {
         </div>
       </div>
 
-    </>
+    </div>
   );
 };
 

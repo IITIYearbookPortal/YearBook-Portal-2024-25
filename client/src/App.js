@@ -34,7 +34,20 @@ import DevP from "./new_components/developers_page/devp.js";
 import PollPage from './new_components/PollPage/PollPage.js';
 import PollResultsPage from "./new_components/PollPage/PollResultsPage";
 
+import { Toaster } from "./components/ui/toaster";
+import { Toaster as Sonner } from "./components/ui/sonner";
+import { TooltipProvider } from "./components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter} from "react-router-dom";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
 const App = ({ location }) => {
+
+  const navigate = useNavigate();
+
   const [user, setUser] = useState({});
   const [loggedin, setLoggedin] = useState(false);
   const [result, setResult] = useState({});
@@ -62,8 +75,7 @@ const App = ({ location }) => {
     question_2: "",
   });
 
-  const navigate = useNavigate();
-
+  
   const alumniEmail = alumniData;
 
   // Get all users' name branch and email id
@@ -83,6 +95,7 @@ const App = ({ location }) => {
       google.accounts.id.initialize({
         client_id: process.env.REACT_APP_CLIENT_ID,
         callback: handleCallbackResponse,
+        // hosted_domain: "iiti.ac.in",
       });
       google.accounts.id.renderButton(document.getElementById("google-login"), {
         theme: "dark",
@@ -100,14 +113,17 @@ const App = ({ location }) => {
     window.localStorage.setItem("token", response.credential);
 
     // setLoggedin(true)
+    const email = userObject.email;
+    // if (!email.endsWith('@iiti.ac.in')) {
+    // // Handle unauthorized access
+    // console.error('Unauthorized domain');
+    // alert('Please use your IITI email address to login');
+    // return;
+    // }
 
     await axios
       .post(process.env.REACT_APP_API_URL + "/checkAuth", {
         email: userObject.email,
-      }, {
-        headers:{
-          'Origin':process.env.REACT_APP_ALLOWED_ORIGIN
-        }
       })
       .then((res) => {
         // If the user already exists in the auth model
@@ -270,6 +286,11 @@ const App = ({ location }) => {
           // window.location.pathname !== "/goldcard" &&
           // window.location.pathname !== "/blackcard" &&
           window.location.pathname !== "*" && <Navbar />}
+
+          <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
         <Routes>
           {/* Homepage */}
           {/* <Route exact path="/oldHomepage" element={<Homepage />} /> */}
@@ -389,7 +410,16 @@ const App = ({ location }) => {
           {/* Balck and Gold Cards */}
           <Route exact path="/Newp1" element={<BlackCard />} />
           <Route exact path="/Newp2" element={<GoldCard />} />
+
+
+          {/* Extra Pages */}
+          <Route path="/memory" element={<Index />} />
+          <Route path="*" element={<NotFound />} />
+
         </Routes>
+        </TooltipProvider>
+    </QueryClientProvider>
+        
 
         {/* {!loading && <Footer />} */}
       </div>
