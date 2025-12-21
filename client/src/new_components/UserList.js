@@ -97,7 +97,7 @@ const UserList = () => {
   ];
 
   return (<>
-    <div className="p-16 bg-[#000000]  min-h-screen ">
+    <div className="p-16  min-h-screen ">
       <div className="flex flex-col lg:flex-row mb-4 lg:mb-8 font-custom">
         <div className="mb-4 lg:mb-0 lg:mr-4 lg:w-full">
           <input
@@ -105,18 +105,19 @@ const UserList = () => {
             placeholder="Search by name"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
-            className="p-2 border border-gray-400 w-full rounded-md search-input hover:bg-[#222831] bg-[rgba(255,255,255,0.04)] placeholder-[#9CA3AF] text-[#F9FAFB] focus:ring-2 focus:ring-[#FACC15]"
+            className="p-2 border w-full rounded-md search-input hover:bg-[#222831] bg-[#31363F] placeholder-[#EEEEEE] text-white "
           />
         </div>
         <div className="mb-4 lg:mb-0 lg:mr-4 lg:w-full">
           <select
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="p-2 border border-gray-400 w-full rounded-md bg-[rgba(255,255,255,0.04)] placeholder-[#9CA3AF] text-[#9CA3AF] focus:ring-2 focus:ring-[#FACC15] hover:bg-[#222831]"
+            className="p-2 border w-full rounded-md bg-[#EEEEEE] hover:bg-[#222831] hover:text-white"
+            style={{ backgroundColor: "EEEEEE" }}
           >
-            <option className="bg-[#222831]" value="">Select Department</option>
+            <option value="">Select Department</option>
             {departments.map((department) => (
-              <option className="bg-[#222831]" key={department} value={department}>
+              <option key={department} value={department}>
                 {department}
               </option>
             ))}
@@ -129,52 +130,52 @@ const UserList = () => {
             placeholder="Search by roll number"
             value={searchRollNo}
             onChange={(e) => setSearchRollNo(e.target.value)}
-            className="p-2 border border-gray-400 w-full rounded-md appearance-none search-input hover:bg-[#222831] bg-[rgba(255,255,255,0.04)] placeholder-[#9CA3AF] text-[#F9FAFB] focus:ring-2 focus:ring-[#FACC15]"
+            className="p-2 border w-full rounded-md appearance-none search-input hover:bg-[#222831] bg-[#31363F] text-white placeholder-[#EEEEEE]"
           />
         </div>
       </div>
 
-        <table className="w-full lg:w-full table-auto  border-collapse font-custom bg-[#0B0B0B] rounded-lg overflow-hidden">
-          <thead>
-            <tr>
-              <th className="border-gray-400 w-1/3 border-2 p-2 text-center font-bold text-[#bfd7ef]">
-                Name
-              </th>
-              <th className="border-gray-400 w-1/3 border-2 p-2 text-center font-bold text-[#bfd7ef]">
-                Department
-              </th>
-              <th className="border-gray-400 w-1/3 border-2 p-2 text-center font-bold text-[#bfd7ef]">
-                Roll No
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentUsers.map((user, index) => (
-              <tr
+      <table className="w-full lg:w-full table-auto  border-collapse font-custom bg-[#212121]">
+        <thead>
+          <tr>
+            <th className="w-1/3 border-4 p-2 text-center font-bold text-[#76ABAE]">
+              Name
+            </th>
+            <th className="w-1/3 border-4 p-2 text-center font-bold text-[#76ABAE]">
+              Department
+            </th>
+            <th className="w-1/3 border-4 p-2 text-center font-bold text-[#76ABAE]">
+              Roll No
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {currentUsers.map((user, index) => (
+            <tr
               key={user.id}
-              className="bg-[#222831] hover:bg-[#1a1f25] transition-all cursor-pointer text-[#EEEEEE]"
+              className="bg-slate-950 hover:bg-[#222831] transition-all cursor-pointer text-[#EEEEEE]"
               onClick={(e) => {
                 e.preventDefault();
                 window.localStorage.removeItem("searchedAlumni");
                 axios
-                .post(process.env.REACT_APP_API_URL + "/searchword", {
-                  searchword: user.email,
-                })
-                .then((res) => {
-                  setResult(res.data);
-                  window.localStorage.setItem(
-                    "searchedAlumni",
-                    JSON.stringify(res.data)
-                  );
-                })
-                .catch((err) => {});
+                  .post(process.env.REACT_APP_API_URL + "/searchword", {
+                    searchword: user.email,
+                  })
+                  .then((res) => {
+                    setResult(res.data);
+                    window.localStorage.setItem(
+                      "searchedAlumni",
+                      JSON.stringify(res.data)
+                    );
+                  })
+                  .catch((err) => {});
                 const isCurrentUser = !isStudent
-                ? user.email === profile.email
-                : false;
-                
+                  ? user.email === profile.email
+                  : false;
+
                 const profileLink = isCurrentUser
-                ? `/profile/${profile.roll_no}/${profile.name}`
-                : `/userlist/profile/${user.roll_no}/${user.name}`;
+                  ? `/profile/${profile.roll_no}/${profile.name}`
+                  : `/userlist/profile/${user.roll_no}/${user.name}`;
                 if (isCurrentUser) {
                   window.open(profileLink, '_blank');
                   // navigate(profileLink);
@@ -183,21 +184,20 @@ const UserList = () => {
                   navigate(`/comment/${user.name}/${user.roll_no}`);
                 }
               }}
-              >
-                <td className="border-gray-400 w-1/3 border-2 p-4 subpixel-antialiased text-[#c0cee7] ">
-                  {user.name}
-                </td>
-                <td className="border-gray-400 w-1/3 border-2 p-4 text-center text-[#c0cee7]">
-                  {user.department}
-                </td>
-                <td className="border-gray-400 w-1/3 border-2 p-4 text-center text-[#c0cee7]">
-                  {user.roll_no}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        
+            >
+              <td className="w-1/3 border-4 p-4 bg-[#222831] subpixel-antialiased text-[#EEEEEE] ">
+                {user.name}
+              </td>
+              <td className="w-1/3 border-4 p-4 bg-[#222831] text-center text-[#EEEEEE]">
+                {user.department}
+              </td>
+              <td className="w-1/3 border-4 p-4 bg-[#222831] text-center text-[#EEEEEE]">
+                {user.roll_no}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <div className="flex justify-center items-center mt-4">
         <button
           className={`p-2 border bg-gray-800 text-white rounded ${
