@@ -1,10 +1,10 @@
-const Seniors = require('../models/previousYrBook.js');
+const previousSeniors = require('../models/previousYrBook.js');
 
 const getSeniors = async (req, res) => {
     console.log("hi")
     try {
         // Only return required fields
-        const seniors = await Seniors.find({}, "full_name roll_no department");
+        const seniors = await previousSeniors.find({}, "full_name roll_no department");
 
         res.status(200).json({
             success: true,
@@ -24,7 +24,7 @@ const getSenior = async (req, res) => {
   const roll_no = req.params.roll_no;
 
   try {
-    const senior = await Seniors.findOne({ roll_no });
+    const senior = await previousSeniors.findOne({ roll_no });
 
     if (!senior) {
       return res.status(404).json({

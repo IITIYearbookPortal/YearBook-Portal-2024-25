@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
-const SeniorsSchema = new mongoose.Schema({
+const previousSeniorsSchema = new mongoose.Schema({
   full_name: {
     type: String,
     required: true,
   },
 
   roll_no: {
-    type: String,
+    type: Number,
     required: true,
   },
 
@@ -36,7 +36,11 @@ const SeniorsSchema = new mongoose.Schema({
   testimonial_count: {
     type: Number,
     default: 0,
+  },
+
+  page_type:{
+    type: String,
   }
 });
 
-module.exports = mongoose.model("Seniors", SeniorsSchema);
+module.exports = mongoose.model("previous_seniors", previousSeniorsSchema);

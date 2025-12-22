@@ -44,7 +44,7 @@ const PreviousYrBook = () => {
       (user) =>
         user.full_name.toLowerCase().includes(searchName.toLowerCase()) &&
         user.department.toLowerCase().includes(selectedDepartment.toLowerCase()) &&
-        user.roll_no.toLowerCase().includes(searchRollNo.toLowerCase())
+        user.roll_no
     );
   };
 
