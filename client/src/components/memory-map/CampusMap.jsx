@@ -1,10 +1,12 @@
 // CampusMap.jsx
 import React from 'react';
-import { campusLocations, getMemoryCountForLocation } from '../../data/CampusData';
+import { campusLocations} from '../../data/CampusData';
+import { useCampusData } from './memoryMapContext';
 import BuildingMarker from './BuildingMarker';
 import './CampusMap.css';
 
 function CampusMap({ selectedSeniorId, onLocationClick, selectedLocationId }) {
+  const { getMemoryCountForLocation } = useCampusData(); 
   return (
     <div className="cm-map relative w-full cm-aspect bg-map-grass rounded-2xl overflow-hidden shadow-elevated">
       {/* Decorative campus elements */}

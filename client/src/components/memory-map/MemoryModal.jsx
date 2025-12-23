@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from '../../components/ui/button';
-import { getMemoriesForLocation } from '../../data/CampusData';
+import { useCampusData } from './memoryMapContext';
 import MemoryCard from './MemoryCard';
 import AddMemoryForm from './AddMemoryForm';
 import { Plus, MapPin, X } from 'lucide-react';
 import './MemoryModal.css';
 
-function MemoryModal({ location, senior, isOpen, onClose, onAddMemory }) {
+function MemoryModal({location, senior, isOpen, onClose, onAddMemory }) {
   const [isAddingMemory, setIsAddingMemory] = useState(false);
-
+  const { getMemoriesForLocation } = useCampusData();
   // Keep local scroll lock while modal open
   useEffect(() => {
     if (isOpen) {
@@ -82,8 +82,6 @@ function MemoryModal({ location, senior, isOpen, onClose, onAddMemory }) {
               <AddMemoryForm
                 onSubmit={handleAddMemory}
                 onCancel={() => setIsAddingMemory(false)}
-                locationName={location?.name}
-                seniorName={senior?.name}
               />
             </div>
           ) : (

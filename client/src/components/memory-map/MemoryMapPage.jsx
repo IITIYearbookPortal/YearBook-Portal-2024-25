@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { mockSeniors, mockMemories } from '../../data/CampusData';
+import { useState, useContext, useMemo, useEffect } from 'react';
 import CampusMap from './CampusMap';
 import SeniorSelector from './SeniorSelector';
 import MemoryModal from './MemoryModal';
@@ -7,33 +6,93 @@ import PrintSummary from './PrintSummary';
 import { Button } from '../../components/ui/button';
 import { Printer, MapPin, Heart } from 'lucide-react';
 import { toast } from '../../hooks/use-toast';
+import axios from 'axios';
 import './MemoryMapPage.css';
+import { LoginContext } from '../../helpers/Context';
+import jwt_decode from "jwt-decode";
+import { CampusDataProvider } from './memoryMapContext';
 
 function MemoryMapPage() {
   const [selectedSenior, setSelectedSenior] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [memories, setMemories] = useState(mockMemories);
+  const [memories, setMemories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  let user = {};
+  if (window.localStorage.getItem("token") !== null) {
+      user = jwt_decode(window.localStorage.getItem("token"));
+  }
+  const { allUsers } = useContext(LoginContext);
+  const seniors = useMemo(() => {
+    if (!allUsers) return [];
+    return allUsers.map((u) => ({
+      id: u.email,
+      name: u.name,
+      department: u.department,
+      avatar: u.profile_img,
+      graduationYear: 2025,
+    }));
+  }, [allUsers]);
+  if (Object.keys(user).length === 0) {
+    window.location.href = "/";
+  }
+  const authorName = user?.name;
   const handleLocationClick = (location) => {
     setSelectedLocation(location);
     setIsModalOpen(true);
-    console.log('Location clicked:', location)
   };
 
-  const handleAddMemory = (newMemory) => {
-    const memory = {
-      ...newMemory,
-      id: `mem-${Date.now()}`,
-      createdAt: new Date().toISOString(),
+  useEffect(() => {
+    if (!selectedSenior) {
+      setMemories([]);
+      return;
+    }
+
+    const fetchMemories = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/memories/senior/${selectedSenior.id}`
+        );
+        console.log(res.data)
+        setMemories(res.data);
+      } catch (err) {
+        console.error(err);
+      }
     };
-    setMemories((prev) => [...prev, memory]);
+    fetchMemories();
+  }, [selectedSenior]);
+
+  const handleAddMemory = async (memoryData) => {
+  try {
+    const payload = {
+      ...memoryData,
+      authorName
+    };
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/create-memory`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    setMemories((prev) => [...prev, res.data]);
 
     toast({
-      title: 'Memory added! 💫',
-      description: 'Your memory has been saved to the map.',
+      title: 'Memory added 💫',
+      description: 'Your memory has been saved.',
     });
-  };
+  } catch (err) {
+    console.error(err);
+    toast({
+      title: 'Error',
+      description: 'Failed to save memory',
+      variant: 'destructive',
+    });
+  }
+};
 
   const handlePrint = () => {
     if (!selectedSenior) {
@@ -52,9 +111,10 @@ function MemoryMapPage() {
     : memories;
 
   return (
+    <CampusDataProvider seniors={seniors} memories={memories}>
     <div className="mm-page min-h-screen">
       {/* Header */}
-      {/* <header className="mm-header no-print">
+      <header className="mm-header no-print">
         <div className="mm-container">
           <div className="mm-header-inner">
             <div className="mm-brand">
@@ -73,7 +133,7 @@ function MemoryMapPage() {
             </Button>
           </div>
         </div>
-      </header> */}
+      </header>
 
       {/* Main content */}
       <main className="mm-main mm-container no-print">
@@ -90,11 +150,11 @@ function MemoryMapPage() {
           {/* Sidebar */}
           <aside className="mm-aside">
             <div className="mm-sticky">
-              {/* <SeniorSelector
-                seniors={mockSeniors}
+              <SeniorSelector
+                seniors={seniors}
                 selectedSenior={selectedSenior}
                 onSelect={setSelectedSenior}
-              /> */}
+              />
 
               <div className="mm-stats-card">
                 <div className="mm-stats-header">
@@ -157,6 +217,7 @@ function MemoryMapPage() {
         <PrintSummary senior={selectedSenior} memories={seniorMemories} />
       )}
     </div>
+    </CampusDataProvider>
   );
 }
 
