@@ -1,0 +1,125 @@
+/* MemoryModal.css - self-contained natural modal styles */
+
+/* Portal wrapper covers entire viewport */
+.mmodal-portal {
+  position: fixed;
+  inset: 0;
+  z-index: 120000; /* high above page */
+  display: block;
+  pointer-events: auto;
+  font-family: inherit;
+}
+
+/* Overlay/backdrop */
+.mmodal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 120000;
+}
+
+/* Panel (centered) */
+.mmodal-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 120001;
+  width: min(92%, 820px);
+  max-width: 820px;
+  max-height: 88vh;
+  /* background: var(--background, #ffffff); */
+  background: #ffffff !important;   /* force solid white */
+  backdrop-filter: none !important; /* remove any blur inheritance */
+  opacity: 1 !important;            /* ensure full opacity */
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(2,6,23,0.25);
+  border: 1px solid rgba(15,23,42,0.06);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: mmodal-zoom 200ms cubic-bezier(.2,.8,.2,1);
+}
+
+/* Close button */
+.mmodal-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-foreground, #6b7280);
+}
+.mmodal-close:hover { background: rgba(0,0,0,0.04); color: var(--foreground, #0f172a); }
+
+/* Header */
+.mmodal-header {
+  padding: 1.0rem 1.25rem;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+.mmodal-header-inner { display: flex; gap: 1rem; align-items: flex-start; }
+.mmodal-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--foreground, #0f172a);
+}
+.mmodal-sub { display:flex; gap:0.5rem; align-items:center; margin-top:0.25rem; color:var(--muted-foreground,#6b7280); font-size:0.95rem; }
+.mmodal-pin { width:16px; height:16px; color:var(--muted-foreground,#9ca3af); }
+.mmodal-desc { font-size: 0.95rem; }
+
+/* Senior line */
+.mmodal-senior { margin-top: 0.5rem; color: var(--primary, #2563eb); font-size: 0.95rem; }
+.mmodal-senior-name { font-weight: 600; color: var(--foreground, #0f172a); }
+
+/* Body (scrollable) */
+.mmodal-body {
+  padding: 1rem 1.25rem;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Empty / list states */
+.mmodal-empty { text-align: center; padding: 2.25rem 1rem; }
+.mmodal-empty-icon { width:64px; height:64px; margin:0 auto 0.75rem; border-radius:9999px; background:var(--muted,#f3f4f6); display:flex; align-items:center; justify-content:center; }
+.mmodal-empty-title { margin:0 0 0.5rem; font-size:1.05rem; font-weight:700; color:var(--foreground,#0f172a); }
+.mmodal-empty-text { margin:0 0 1rem; color:var(--muted-foreground,#6b7280); max-width:40rem; margin-left:auto; margin-right:auto; }
+
+.mmodal-list { display:flex; flex-direction:column; gap:0.75rem; }
+.mmodal-list-item { animation: mmodal-slide-up 240ms ease both; }
+
+/* Footer */
+.mmodal-footer {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0;
+  display:flex;
+  gap:0.75rem;
+}
+
+/* Buttons */
+.mmodal-btn-primary { background: var(--primary,#2563eb); color:#fff; border:none; padding:0.6rem 0.85rem; border-radius:8px; display:inline-flex; align-items:center; cursor:pointer; }
+.mmodal-btn-primary.full { width:100%; }
+
+/* Animations */
+@keyframes mmodal-zoom { from { transform: translate(-50%, -48%) scale(.985); opacity: 0 } to { transform: translate(-50%, -50%) scale(1); opacity: 1 } }
+@keyframes mmodal-slide-up { from { opacity:0; transform: translateY(8px) } to { opacity:1; transform: translateY(0) } }
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .mmodal-panel { width: calc(100% - 32px); border-radius: 10px; }
+  .mmodal-header { padding: 0.8rem 1rem; }
+  .mmodal-body { padding: 0.8rem 1rem; }
+}
