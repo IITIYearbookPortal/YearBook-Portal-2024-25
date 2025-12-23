@@ -1,10 +1,11 @@
 import React from 'react';
 import { format } from 'date-fns';
-import { getLocationById } from '../../data/CampusData';
+import { useCampusData } from './memoryMapContext';
 import './PrintSummary.css';
 
 function PrintSummary({ senior, memories }) {
   // Group memories by location
+  const {getLocationById }= useCampusData();
   const memoriesByLocation = memories.reduce((acc, memory) => {
     const locationId = memory.locationId;
     if (!acc[locationId]) acc[locationId] = [];
