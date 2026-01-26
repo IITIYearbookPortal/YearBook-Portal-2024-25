@@ -5,8 +5,10 @@ const {
   createMemory,
   memory_img,
   getMemoriesBySenior,
+  getPendingRequests,
 } = require('../controllers/memoriesController')
 //(filter by locationId / seniorId)
+router.get('/memories/get-pending-request',getPendingRequests);
 router.get('/memories/senior/:seniorId', getMemoriesBySenior)
 
 //(user must be authenticated before)

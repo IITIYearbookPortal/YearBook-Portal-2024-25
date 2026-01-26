@@ -43,6 +43,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter} from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import VerifyMemories from "./pages/VerifyMemories.jsx";
 
 const queryClient = new QueryClient();
 
@@ -419,7 +420,7 @@ const App = ({ location }) => {
           {/* Extra Pages */}
           <Route path="/memory" element={<Index />} />
           <Route path="*" element={<NotFound />} />
-
+          <Route exact path="/verifyMemories" element={<VerifyMemories />} />
 
         </Routes>
         </TooltipProvider>

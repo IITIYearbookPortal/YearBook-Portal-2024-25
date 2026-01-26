@@ -21,6 +21,26 @@ const getMemoriesBySenior = asyncHandler(async (req, res) => {
   res.json(response);
 });
 
+const getPendingRequests = asyncHandler(async (req, res) => {
+  const filter = { isVerified: false };
+
+  console.log('ji');
+
+  const memories = await Memory.find(filter).sort({ createdAt: -1 });
+
+  const response = memories.map((m) => ({
+    id: m.id,
+    locationId: m.locationId,
+    seniorId: m.seniorId,
+    authorName: m.authorName,
+    content: m.content,
+    images: m.images,
+    createdAt: m.createdAt,
+  }));
+
+  res.json(response);
+});
+
 const createMemory = asyncHandler(async (req, res) => {
   const { locationId, seniorId, content, authorName } = req.body;
 
@@ -80,4 +100,5 @@ module.exports = {
   getMemoriesBySenior,
   createMemory,
   memory_img,
+  getPendingRequests,
 }
