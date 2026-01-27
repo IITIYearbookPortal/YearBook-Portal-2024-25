@@ -1,88 +1,134 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
+
+const API_BASE = process.env.REACT_APP_API_URL;
+const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL;
 
 const VerifyMemories = () => {
   const [memories, setMemories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
-  const fetchPending = async () => {
-    const res = await axios.get(
-      "/memories/get-pending-request",
-      {
+  const user = useMemo(() => {
+    if (!token) return null;
+    try {
+      return jwt_decode(token);
+    } catch (err) {
+      console.error("Invalid token:", err);
+      return null;
+    }
+  }, [token]);
+
+  let isAdmin = user?.email === ADMIN_EMAIL;
+  // uncomment the below line to acces the page without been logged in as admin
+  // isAdmin = true;
+  const fetchPending = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${API_BASE}/memories/get-pending-request`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
-      }
-    );
-    setMemories(res.data);
-  };
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch pending memories");
+
+      const data = await res.json();
+      setMemories(data);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
 
   useEffect(() => {
-    fetchPending();
-  }, []);
+    if (!token || !isAdmin) {
+      navigate("/login", { replace: true });
+    } else {
+      fetchPending();
+    }
+  }, [token, isAdmin, navigate, fetchPending]);
 
   const acceptMemory = async (id) => {
-    await axios.patch(
-      `/memories/accept/${id}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    fetchPending();
+    try {
+      const res = await fetch(`${API_BASE}/memories/accept/${id}`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) fetchPending();
+    } catch (err) {
+      console.error("Error accepting memory:", err);
+    }
   };
 
   const deleteMemory = async (id) => {
-    await axios.delete(
-      `/memories/delete/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    fetchPending();
+    try {
+      const res = await fetch(`${API_BASE}/memories/delete/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) fetchPending();
+    } catch (err) {
+      console.error("Error deleting memory:", err);
+    }
   };
+
+  if (!token || !isAdmin) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-6 py-8 text-white">
       <h1 className="text-2xl font-bold mb-6">Pending Memory Requests</h1>
 
-      {memories.length === 0 && (
-        <p className="text-gray-300">No pending requests</p>
-      )}
-
-      {memories.map((m) => (
-        <div
-          key={m.id}
-          className="border border-gray-600 rounded-lg p-4 mb-6 bg-black bg-opacity-40"
-        >
-          <p className="font-semibold">{m.authorName}</p>
-          <p className="mt-2">{m.content}</p>
-
-          <div className="flex flex-wrap gap-3 mt-4">
-            {m.images.map((img, i) => (
-              <img key={i} src={img} alt="" className="h-32 rounded" />
-            ))}
-          </div>
-
-          <div className="flex gap-4 mt-4">
-            <button
-              onClick={() => acceptMemory(m.id)}
-              className="px-4 py-2 bg-green-600 rounded"
-            >
-              Accept
-            </button>
-            <button
-              onClick={() => deleteMemory(m.id)}
-              className="px-4 py-2 bg-red-600 rounded"
-            >
-              Reject
-            </button>
-          </div>
+      {loading ? (
+        <div className="flex justify-center py-10">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-white"></div>
         </div>
-      ))}
+      ) : memories.length === 0 ? (
+        <p className="text-gray-300">No pending requests</p>
+      ) : (
+        <div className="grid gap-6">
+          {memories.map((m) => (
+            <div
+              key={m.id}
+              className="border border-gray-600 rounded-lg p-4 bg-black bg-opacity-40"
+            >
+              <p className="font-semibold text-blue-400">{m.authorName}</p>
+              <p className="mt-2 text-gray-200">{m.content}</p>
+
+              <div className="flex flex-wrap gap-3 mt-4">
+                {m.images?.map((img, i) => (
+                  <img 
+                    key={i} 
+                    src={img} 
+                    alt="Memory" 
+                    className="h-32 w-auto object-cover rounded shadow-md border border-gray-700" 
+                  />
+                ))}
+              </div>
+
+              <div className="flex gap-4 mt-6">
+                <button
+                  onClick={() => acceptMemory(m.id)}
+                  className="px-6 py-2 bg-green-600 hover:bg-green-700 transition-colors rounded font-medium"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => deleteMemory(m.id)}
+                  className="px-6 py-2 bg-red-600 hover:bg-red-700 transition-colors rounded font-medium"
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
