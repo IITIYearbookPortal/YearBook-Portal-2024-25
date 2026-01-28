@@ -5,7 +5,11 @@ const {
   createMemory,
   memory_img,
   getMemoriesBySenior,
+  getPendingRequests,
+  approveRequest,
+  deleteRequest,
 } = require('../controllers/memoriesController')
+
 //(filter by locationId / seniorId)
 router.get('/memories/senior/:seniorId', getMemoriesBySenior)
 
@@ -14,5 +18,10 @@ router.post('/create-memory', createMemory)
 
 // ADD image to a memory
 router.post('/memories_image', memory_img)
+
+router.get('/memories/get-pending-request',getPendingRequests);
+router.patch('/memories/accept/:memoryId',approveRequest);
+router.delete('/memories/delete/:memoryId',deleteRequest);
+
 
 module.exports = router

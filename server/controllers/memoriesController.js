@@ -3,7 +3,7 @@ const Memory = require('../models/memories');
 
 const getMemoriesBySenior = asyncHandler(async (req, res) => {
   const { seniorId } = req.params;
-  const filter = { isDeleted: false };
+  const filter = { isDeleted: false, isVerified:true };
   if (seniorId) filter.seniorId = seniorId;
 
   const memories = await Memory.find(filter).sort({ createdAt: -1 });
@@ -20,6 +20,61 @@ const getMemoriesBySenior = asyncHandler(async (req, res) => {
 
   res.json(response);
 });
+
+const getPendingRequests = asyncHandler(async (req, res) => {
+  const filter = { isVerified: false };
+
+  const memories = await Memory.find(filter).sort({ createdAt: -1 });
+
+  const response = memories.map((m) => ({
+    id: m.id,
+    locationId: m.locationId,
+    seniorId: m.seniorId,
+    authorName: m.authorName,
+    content: m.content,
+    images: m.images,
+    createdAt: m.createdAt,
+  }));
+
+  res.json(response);
+});
+
+const approveRequest = asyncHandler(async (req, res) => {
+  const { memoryId } = req.params;
+
+  const memory = await Memory.findById(memoryId);
+
+  if (!memory) {
+    res.status(404);
+    throw new Error("Memory not found");
+  }
+
+  memory.isVerified = true;
+  await memory.save();
+
+  res.status(200).json({
+    message: "Memory approved successfully",
+  });
+});
+
+
+const deleteRequest = asyncHandler(async (req, res) => {
+  const { memoryId } = req.params;
+
+  const memory = await Memory.findByIdAndDelete(memoryId);
+
+  console.log('hi')
+
+  if (!memory) {
+    res.status(404);
+    throw new Error("Memory not found");
+  }
+
+  res.status(200).json({
+    message: "Memory request deleted successfully",
+  });
+});
+
 
 const createMemory = asyncHandler(async (req, res) => {
   const { locationId, seniorId, content, authorName } = req.body;
@@ -80,4 +135,7 @@ module.exports = {
   getMemoriesBySenior,
   createMemory,
   memory_img,
+  getPendingRequests,
+  approveRequest,
+  deleteRequest,
 }

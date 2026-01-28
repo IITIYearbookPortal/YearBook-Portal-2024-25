@@ -36,7 +36,7 @@ clientLink = process.env.CLIENT_LINK;
 app.use(
   cors({
     origin: [clientLink],
-    methods: ["GET", "POST", "UPDATE", "PUT","DELETE", "OPTIONS"],
+    methods: ["GET", "POST","PATCH", "UPDATE", "PUT","DELETE", "OPTIONS"],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   })
@@ -135,7 +135,11 @@ app.use(commentRoutes);
 app.use(pollRoutes);
 app.use(previousYrBookRoute);
 
+app.use('/check', (req, res) => {
+  res.send('hi');
+});
 // page not found error handling  middleware
+
 
 app.use("*", (req, res, next) => {
   const error = {
