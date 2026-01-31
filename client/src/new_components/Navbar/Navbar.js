@@ -77,7 +77,7 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
             <img src={logo} alt="logo" className="h-10 w-10 mr-2" />
-            <span className="text-xl tracking-tight">YearBook' 2025</span>
+            <span className="text-xl tracking-tight">YearBook' 2026</span>
           </div>
 
           {/* Centered Links (Desktop View) */}
