@@ -178,3 +178,9 @@
   50% { transform: scale(1.12); }
   100% { transform: scale(1); }
 }
+.bm-label {
+  font-size: clamp(9px, 1vw, 12px);
+  line-height: 1.1;
+  text-align: center;
+  padding: 2px;
+}
