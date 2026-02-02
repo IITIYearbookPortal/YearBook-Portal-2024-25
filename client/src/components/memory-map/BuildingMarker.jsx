@@ -52,8 +52,11 @@ const BuildingMarker = ({ location, memoryCount = 0, isSelected = false, onClick
       style={{
         left: `${location.x}%`,
         top: `${location.y}%`,
-        width: `${location.width}%`,
-        height: `${location.height}%`,
+        // width: `${location.width}%`,
+        // height: `${location.height}%`,
+
+         width: `max(${location.width}%, 28px)`,
+  height: `max(${location.height}%, 28px)`,
       }}
       aria-label={`${location.name}${hasMemories ? ` - ${memoryCount} memories` : ''}`}
     >
@@ -85,7 +88,7 @@ const BuildingMarker = ({ location, memoryCount = 0, isSelected = false, onClick
 
       {/* Building name on the building */}
       <div className="absolute inset-0 flex items-center justify-center p-1">
-        <span className="text-white text-xs font-semibold text-center leading-tight drop-shadow-md">
+        <span className="text-white text-xs font-semibold text-center leading-tight drop-shadow-md bm-label">
           {location.name}
         </span>
       </div>

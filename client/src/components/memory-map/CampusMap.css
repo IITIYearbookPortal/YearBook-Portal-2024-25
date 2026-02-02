@@ -71,3 +71,12 @@
   --primary: #2563eb;
   --muted-foreground: rgba(15,23,42,0.5);
 }
+.cm-aspect {
+  padding-top: 75%;
+}
+
+@media (max-width: 640px) {
+  .cm-aspect {
+    padding-top: 100%; /* taller map on phones */
+  }
+}
