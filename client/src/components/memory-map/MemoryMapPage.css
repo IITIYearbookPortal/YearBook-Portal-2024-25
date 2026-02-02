@@ -28,8 +28,8 @@
 }
 
 /* Sidebar/sticky */
-.mm-aside { order: 2; }
-@media(min-width:1024px) { .mm-aside { order: 1; } }
+.mm-aside { order: 1; }
+@media(min-width:1024px) { .mm-aside { order: 2; } }
 .mm-sticky { position: sticky; top: 6rem; }
 
 /* Stats card */

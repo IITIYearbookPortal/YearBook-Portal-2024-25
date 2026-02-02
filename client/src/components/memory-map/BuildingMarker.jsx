@@ -88,7 +88,7 @@ const BuildingMarker = ({ location, memoryCount = 0, isSelected = false, onClick
 
       {/* Building name on the building */}
       <div className="absolute inset-0 flex items-center justify-center p-1">
-        <span className="text-white text-xs font-semibold text-center leading-tight drop-shadow-md bm-label">
+        <span className="bm-label">
           {location.name}
         </span>
       </div>

@@ -184,3 +184,43 @@
   text-align: center;
   padding: 2px;
 }
+/* Default (desktop & tablet) */
+.bm-label {
+  color: white;
+  font-size: clamp(9px, 1vw, 12px);
+  font-weight: 600;          /* semi-bold */
+  line-height: 1.15;
+  text-align: center;
+  padding: 2px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .bm-label {
+    font-size: 9.5px;
+    font-weight: 400;        /* ✅ thin but readable */
+    line-height: 1.1;
+    letter-spacing: 0.15px;
+    opacity: 0.9;            /* subtle lightness */
+  }
+}
+
+@media (max-width: 500px) {
+  .bm-label {
+    font-size: 7.5px;
+    font-weight: 400;        /* ✅ thin but readable */
+    line-height: 1.1;
+    letter-spacing: 0.15px;
+    opacity: 0.9;            /* subtle lightness */
+  }
+}
+@media (max-width: 350px) {
+  .bm-label {
+    font-size: 6.5px;
+    font-weight: 400;        /* ✅ thin but readable */
+    line-height: 1.1;
+    letter-spacing: 0.15px;
+    opacity: 0.9;            /* subtle lightness */
+  }
+}
