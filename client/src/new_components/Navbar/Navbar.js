@@ -12,10 +12,26 @@ const Navbar = () => {
   const { loggedin, profile } = useContext(LoginContext);
 
   // Fetch the current user
-  let user = {};
-  if (window.localStorage.getItem("token") !== null) {
-    user = jwt_decode(window.localStorage.getItem("token"));
+const [user, setUser] = useState(null);
+
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    setUser(null);
+    return;
   }
+
+  try {
+    const decoded = jwt_decode(token);
+    setUser(decoded);
+  } catch (err) {
+    console.error("Invalid or expired token", err);
+    localStorage.removeItem("token");
+    setUser(null);
+  }
+}, []);
+
 
   // Theme state and toggle logic
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -68,7 +84,7 @@ const Navbar = () => {
         { name: "Logout", path: "/logout" },
       ]);
     }
-  }, [loggedin, profile, user.email]);
+  }, [loggedin, profile, user]);
 
   return (
     <nav className=" text-white z-50 sticky bg-black bg-opacity-50">
