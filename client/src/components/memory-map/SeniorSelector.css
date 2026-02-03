@@ -108,3 +108,21 @@
   outline: none;
   box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
 }
+
+@media (max-width: 640px) {
+  .ss-card {
+    padding: 1rem;
+  }
+
+  .ss-item {
+    padding: 0.5rem;
+  }
+
+  .ss-name {
+    font-size: 0.9rem;
+  }
+
+  .ss-note {
+    font-size: 0.75rem;
+  }
+}

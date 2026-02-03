@@ -93,3 +93,24 @@
   height: 32px;
   color: var(--primary, #2563eb);
 }
+.mc-card {
+  padding: 1rem;
+}
+
+@media (max-width: 640px) {
+  .mc-header {
+    gap: 0.5rem;
+  }
+
+  .mc-author {
+    font-size: 0.9rem;
+  }
+
+  .mc-content {
+    font-size: 0.9rem;
+  }
+
+  .mc-image-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -16,6 +16,7 @@ const Comments = require("./models/comments");
 const memoryRoutes = require("./routes/memoriesRoutes");
 const commentRoutes = require("./routes/commentsRoutes");
 const pollRoutes = require("./routes/pollRoutes");
+const previousYrBookRoute = require("./routes/previousYrBook")
 
 // Add this middleware to use the routes
 
@@ -35,7 +36,7 @@ clientLink = process.env.CLIENT_LINK;
 app.use(
   cors({
     origin: [clientLink],
-    methods: ["GET", "POST", "UPDATE", "PUT","DELETE", "OPTIONS"],
+    methods: ["GET", "POST","PATCH", "UPDATE", "PUT","DELETE", "OPTIONS"],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   })
@@ -71,6 +72,7 @@ app.use(cookieParser());
 // log in development environment
 
 const morgan = require("morgan");
+// const { default: PreviousYrBook } = require("../client/src/pages/previousYrBook");
 app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
@@ -94,7 +96,7 @@ app.use(
 mongoose
   .connect(mongodbLink)
   .then(() => {
-    console.log("Connected to MongoDB successfully.");
+    console.log(`Connected to MongoDB successfully. And Running on PORT:${port}`,);
   })
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
@@ -131,8 +133,13 @@ app.use(userDataRoutes);
 app.use(memoryRoutes);
 app.use(commentRoutes);
 app.use(pollRoutes);
+app.use(previousYrBookRoute);
 
+app.use('/check', (req, res) => {
+  res.send('hi');
+});
 // page not found error handling  middleware
+
 
 app.use("*", (req, res, next) => {
   const error = {

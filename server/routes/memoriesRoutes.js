@@ -1,7 +1,27 @@
 const express = require('express')
 const router = express.Router()
-const memoriesController = require('../controllers/memoriesController')
 
-router.post('/memories_image', memoriesController.memory_img)
+const {
+  createMemory,
+  memory_img,
+  getMemoriesBySenior,
+  getPendingRequests,
+  approveRequest,
+  deleteRequest,
+} = require('../controllers/memoriesController')
 
-module.exports = router;
+//(filter by locationId / seniorId)
+router.get('/memories/senior/:seniorId', getMemoriesBySenior)
+
+//(user must be authenticated before)
+router.post('/create-memory', createMemory)
+
+// ADD image to a memory
+router.post('/memories_image', memory_img)
+
+router.get('/memories/get-pending-request',getPendingRequests);
+router.patch('/memories/accept/:memoryId',approveRequest);
+router.delete('/memories/delete/:memoryId',deleteRequest);
+
+
+module.exports = router

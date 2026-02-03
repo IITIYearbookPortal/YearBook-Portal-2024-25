@@ -1181,7 +1181,7 @@ const Home = () => {
             >
               In{" "}
               <span className="text-5xl">
-                20<span className="text-[#d94d3c]">25</span>
+                20<span className="text-[#d94d3c]">26</span>
               </span>
               , we
             </motion.h1>

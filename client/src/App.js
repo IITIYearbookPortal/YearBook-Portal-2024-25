@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
+import PreviousYrBook from "./pages/PreviousYrBook.jsx"
 import Navbar from "./new_components/Navbar/Navbar";
 // import Cards from "./components/team/Cards.jsx";
 // import MakeAComment from "./components/Make_a_Comment/MakeAComment";
@@ -33,6 +34,7 @@ import About from "./new_components/About/about.jsx";
 import DevP from "./new_components/developers_page/devp.js";
 import PollPage from './new_components/PollPage/PollPage.js';
 import PollResultsPage from "./new_components/PollPage/PollResultsPage";
+import PreviousYrBookSenior from "./pages/PreviousYrBookSenior.jsx";
 
 import { Toaster } from "./components/ui/toaster";
 import { Toaster as Sonner } from "./components/ui/sonner";
@@ -41,6 +43,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter} from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import VerifyMemories from "./pages/VerifyMemories.jsx";
 
 const queryClient = new QueryClient();
 
@@ -85,7 +88,7 @@ const App = ({ location }) => {
       .then((res) => {
         setAllUsers(res.data); // Updated variable name
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }, []);
 
   // Google authentication for IITI students
@@ -195,10 +198,10 @@ const App = ({ location }) => {
                 navigate("/goldcard");
               }
             })
-            .catch((err) => {});
+            .catch((err) => { });
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }
 
   //on reloading check if credentials exist in the localstorage if does exit check if student then set loggedin true
@@ -270,9 +273,8 @@ const App = ({ location }) => {
     >
       <div
         id="root2"
-        className={`App overflow-x-hidden bg-cover ${
-          isDarkMode ? "bg-bg-dark text-white" : "bg-bg-white text-black"
-        }`}
+        className={`App overflow-x-hidden bg-cover ${isDarkMode ? "bg-bg-dark text-white" : "bg-bg-white text-black"
+          }`}
       >
         {!/^\/fill\/.+$/.test(window.location.pathname) &&
           !/^\/otpVerificationnew\/.+$/.test(window.location.pathname) &&
@@ -309,7 +311,7 @@ const App = ({ location }) => {
           <Route exact path="/login" element={<Homepage2 />} />
           <Route exact path="/footer" element={<Homepage2 />} />
           <Route exact path="/logout" element={<Homepage2 />} />
-          
+
           <Route path="/polls" element={<PollPage isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
 
           {/* Registration Page */}
@@ -355,7 +357,7 @@ const App = ({ location }) => {
               />
             }
           />
-           <Route path="/polls/results/:pollId" element={<PollResultsPage />} /> {/* Poll results route */}
+          <Route path="/polls/results/:pollId" element={<PollResultsPage />} /> {/* Poll results route */}
           {/* Profile Page */}
           {/* <Route exact path="/profile/:roll/:name/old" element={<SecondLogin />} /> */}
           <Route
@@ -411,15 +413,21 @@ const App = ({ location }) => {
           <Route exact path="/Newp1" element={<BlackCard />} />
           <Route exact path="/Newp2" element={<GoldCard />} />
 
+          <Route exact path="/previous-yrbook" element={<PreviousYrBook />} />
+          <Route exact path="/previous-yrbook/getSenior/:roll_no" element={<PreviousYrBookSenior />} />
+
 
           {/* Extra Pages */}
           <Route path="/memory" element={<Index />} />
           <Route path="*" element={<NotFound />} />
+          <Route exact path="/verifyMemories" element={<VerifyMemories />} />
 
         </Routes>
         </TooltipProvider>
     </QueryClientProvider>
         
+
+
 
         {/* {!loading && <Footer />} */}
       </div>
