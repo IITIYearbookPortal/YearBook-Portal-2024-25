@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from '../../components/ui/button';
 import { useCampusData } from './memoryMapContext';
@@ -7,10 +7,14 @@ import AddMemoryForm from './AddMemoryForm';
 import { Plus, MapPin, X } from 'lucide-react';
 import './MemoryModal.css';
 
-function MemoryModal({location, senior, isOpen, onClose, onAddMemory }) {
+function MemoryModal({ location, seniors, isOpen, onClose, onAddMemory }) {
   const [isAddingMemory, setIsAddingMemory] = useState(false);
   const { getMemoriesForLocation } = useCampusData();
-  // Keep local scroll lock while modal open
+  const seniorIds = useMemo(
+    () => seniors.map((s) => s.id),
+    [seniors]
+  ); // CHANGED
+
   useEffect(() => {
     if (isOpen) {
       const prev = document.body.style.overflow;
@@ -21,33 +25,50 @@ function MemoryModal({location, senior, isOpen, onClose, onAddMemory }) {
     }
   }, [isOpen]);
 
-  // Only render when open (or when adding/loading)
   if (!isOpen) return null;
 
-  const memories = location ? getMemoriesForLocation(location.id, senior?.id) : [];
+  const memories = location
+    ? getMemoriesForLocation(location.id, seniorIds)
+    : [];
 
   const handleAddMemory = (data) => {
-    onAddMemory({
-      locationId: location?.id || '',
-      seniorId: senior?.id || '',
-      ...data,
+    const targets = seniorIds.length === 0 ? [null] : seniorIds;
+
+    targets.forEach((seniorId) => {
+      onAddMemory({
+        locationId: location?.id || '',
+        seniorId,
+        ...data,
+      });
     });
+
     setIsAddingMemory(false);
   };
+
+  const headerText =
+    seniorIds.length === 0
+      ? 'All Seniors'
+      : seniorIds.length === 1
+      ? seniors[0]?.name
+      : `${seniorIds.length} Seniors`; // CHANGED
 
   const content = (
     <div className="mmodal-portal">
       <div
         className="mmodal-overlay"
         onMouseDown={(e) => {
-          // close when clicking overlay (but not when clicking inside the panel)
           if (e.target === e.currentTarget) {
             setIsAddingMemory(false);
             onClose();
           }
         }}
       />
-      <div className="mmodal-panel" role="dialog" aria-modal="true" aria-label={location?.name || 'Memory modal'}>
+      <div
+        className="mmodal-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-label={location?.name || 'Memory modal'}
+      >
         <button
           className="mmodal-close"
           aria-label="Close"
@@ -67,9 +88,10 @@ function MemoryModal({location, senior, isOpen, onClose, onAddMemory }) {
                 <MapPin className="mmodal-pin" />
                 <span className="mmodal-desc">{location?.description}</span>
               </div>
-              {senior && location && (
+              {location && (
                 <p className="mmodal-senior">
-                  Memories for <span className="mmodal-senior-name">{senior.name}</span>
+                  Memories for{' '}
+                  <span className="mmodal-senior-name">{headerText}</span>
                 </p>
               )}
             </div>
@@ -93,9 +115,13 @@ function MemoryModal({location, senior, isOpen, onClose, onAddMemory }) {
                   </div>
                   <h3 className="mmodal-empty-title">No memories here yet</h3>
                   <p className="mmodal-empty-text">
-                    Be the first to share a memory about {senior?.name || 'this senior'} at {location?.name || 'this location'}!
+                    Be the first to share a memory at{' '}
+                    {location?.name || 'this location'}!
                   </p>
-                  <Button onClick={() => setIsAddingMemory(true)} className="mmodal-btn-primary">
+                  <Button
+                    onClick={() => setIsAddingMemory(true)}
+                    className="mmodal-btn-primary"
+                  >
                     <Plus className="w-4 h-4 mr-2" />
                     Add First Memory
                   </Button>
@@ -119,7 +145,10 @@ function MemoryModal({location, senior, isOpen, onClose, onAddMemory }) {
 
         {!isAddingMemory && memories.length > 0 && (
           <div className="mmodal-footer">
-            <Button onClick={() => setIsAddingMemory(true)} className="mmodal-btn-primary full">
+            <Button
+              onClick={() => setIsAddingMemory(true)}
+              className="mmodal-btn-primary full"
+            >
               <Plus className="w-4 h-4 mr-2" />
               Add Your Memory
             </Button>
@@ -129,8 +158,9 @@ function MemoryModal({location, senior, isOpen, onClose, onAddMemory }) {
     </div>
   );
 
-  // Render portal into document.body
-  return typeof document !== 'undefined' ? ReactDOM.createPortal(content, document.body) : null;
+  return typeof document !== 'undefined'
+    ? ReactDOM.createPortal(content, document.body)
+    : null;
 }
 
 export default MemoryModal;
