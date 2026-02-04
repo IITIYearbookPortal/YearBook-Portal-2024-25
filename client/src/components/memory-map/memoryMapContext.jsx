@@ -11,12 +11,17 @@ export function CampusDataProvider({ seniors, memories, children }) {
     const getLocationById = (id) => locationMap.get(id) || null;
     const getSeniorById = (id) => seniorMap.get(id) || null;
 
-    const getMemoriesForLocation = (locationId, seniorIds = []) =>
-      memories.filter(
-        m =>
-          m.locationId === locationId &&
-          (seniorIds.length === 0 || seniorIds.includes(m.seniorId))
-      );
+    const getMemoriesForLocation = (locationId, seniorIds = []) => {
+      const seenGroups = new Map();
+      for (const m of memories) {
+        if (m.locationId !== locationId) continue;
+        if (seniorIds.length > 0 && !seniorIds.includes(m.seniorId)) continue;
+        if (!seenGroups.has(m.groupId)) {
+          seenGroups.set(m.groupId, m);
+        }
+      }
+      return Array.from(seenGroups.values());
+    };
 
     const getMemoryCountForLocation = (locationId, seniorIds = []) =>
       getMemoriesForLocation(locationId, seniorIds).length;

@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Memory = require('../models/memories');
+const { randomUUID } = require('crypto');
 
 const getMemories = asyncHandler(async (req, res) => {
   const { seniorId, seniorIds } = req.query;
@@ -28,6 +29,47 @@ const getMemories = asyncHandler(async (req, res) => {
 
   res.json(response);
 });
+
+const createMemory = asyncHandler(async (req, res) => {
+  const { locationId, seniorIds, content, authorName, images = [] } = req.body;
+
+  if (
+    !locationId ||
+    !Array.isArray(seniorIds) ||
+    seniorIds.length === 0 ||
+    !content ||
+    !authorName
+  ) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const groupId = randomUUID();
+
+  const docs = seniorIds.map((seniorId) => ({
+    locationId,
+    seniorId,
+    content,
+    authorName,
+    images,
+    groupId,
+  }));
+
+  const memories = await Memory.insertMany(docs);
+
+  const formattedMemories = memories.map((memory) => ({
+    id: memory.id,
+    locationId: memory.locationId,
+    seniorId: memory.seniorId,
+    authorName: memory.authorName,
+    content: memory.content,
+    images: memory.images,
+    createdAt: memory.createdAt,
+    groupId: memory.groupId,
+  }));
+
+  res.status(201).json(formattedMemories);
+});
+
 
 const getPendingRequests = asyncHandler(async (req, res) => {
   const filter = { isVerified: false };
@@ -65,7 +107,6 @@ const approveRequest = asyncHandler(async (req, res) => {
   });
 });
 
-
 const deleteRequest = asyncHandler(async (req, res) => {
   const { memoryId } = req.params;
 
@@ -80,31 +121,6 @@ const deleteRequest = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     message: "Memory request deleted successfully",
-  });
-});
-
-
-const createMemory = asyncHandler(async (req, res) => {
-  const { locationId, seniorId, content, authorName } = req.body;
-
-  if (!locationId || !seniorId || !content || !authorName) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  const memory = await Memory.create({
-    locationId,
-    seniorId,
-    content,
-    authorName,
-  });
-  res.status(201).json({
-    id: memory.id,
-    locationId: memory.locationId,
-    seniorId: memory.seniorId,
-    authorName: memory.authorName,
-    content: memory.content,
-    images: memory.images,
-    createdAt: memory.createdAt,
   });
 });
 

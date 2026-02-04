@@ -30,7 +30,9 @@ const MemorySchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-
+    groupId: {
+      type: String,
+    },
     isDeleted: {
       type: Boolean,
       default: false,

@@ -33,15 +33,12 @@ function MemoryModal({ location, seniors, isOpen, onClose, onAddMemory }) {
 
   const handleAddMemory = (data) => {
     const targets = seniorIds.length === 0 ? [null] : seniorIds;
-
-    targets.forEach((seniorId) => {
-      onAddMemory({
-        locationId: location?.id || '',
-        seniorId,
-        ...data,
-      });
+    if(seniorIds.length==0) return;
+    onAddMemory({
+      locationId: location?.id || '',
+      seniorIds,
+      ...data,
     });
-
     setIsAddingMemory(false);
   };
 
