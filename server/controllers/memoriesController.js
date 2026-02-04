@@ -1,10 +1,18 @@
 const asyncHandler = require('express-async-handler');
 const Memory = require('../models/memories');
 
-const getMemoriesBySenior = asyncHandler(async (req, res) => {
-  const { seniorId } = req.params;
-  const filter = { isDeleted: false, isVerified:true };
-  if (seniorId) filter.seniorId = seniorId;
+const getMemories = asyncHandler(async (req, res) => {
+  const { seniorId, seniorIds } = req.query;
+
+  const filter = { isDeleted: false };
+
+  if (seniorId) {
+    filter.seniorId = seniorId;
+  }
+
+  if (seniorIds) {
+    filter.seniorId = { $in: seniorIds.split(',') };
+  }
 
   const memories = await Memory.find(filter).sort({ createdAt: -1 });
 
@@ -132,7 +140,7 @@ const memory_img = asyncHandler(async (req, res) => {
   })
 
 module.exports = {
-  getMemoriesBySenior,
+  getMemories,
   createMemory,
   memory_img,
   getPendingRequests,

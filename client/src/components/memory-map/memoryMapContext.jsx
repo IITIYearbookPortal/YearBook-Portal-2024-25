@@ -9,18 +9,17 @@ export function CampusDataProvider({ seniors, memories, children }) {
     const seniorMap = new Map(seniors.map(s => [s.id, s]));
 
     const getLocationById = (id) => locationMap.get(id) || null;
-
     const getSeniorById = (id) => seniorMap.get(id) || null;
 
-    const getMemoriesForLocation = (locationId, seniorId) =>
+    const getMemoriesForLocation = (locationId, seniorIds = []) =>
       memories.filter(
         m =>
           m.locationId === locationId &&
-          (!seniorId || m.seniorId === seniorId)
+          (seniorIds.length === 0 || seniorIds.includes(m.seniorId))
       );
 
-    const getMemoryCountForLocation = (locationId, seniorId) =>
-      getMemoriesForLocation(locationId, seniorId).length;
+    const getMemoryCountForLocation = (locationId, seniorIds = []) =>
+      getMemoriesForLocation(locationId, seniorIds).length;
 
     return {
       locations: campusLocations,
