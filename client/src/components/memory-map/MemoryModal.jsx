@@ -13,7 +13,7 @@ function MemoryModal({ location, seniors, isOpen, onClose, onAddMemory }) {
   const seniorIds = useMemo(
     () => seniors.map((s) => s.id),
     [seniors]
-  ); // CHANGED
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -31,23 +31,22 @@ function MemoryModal({ location, seniors, isOpen, onClose, onAddMemory }) {
     ? getMemoriesForLocation(location.id, seniorIds)
     : [];
 
-  const handleAddMemory = (data) => {
-    const targets = seniorIds.length === 0 ? [null] : seniorIds;
-    if(seniorIds.length==0) return;
-    onAddMemory({
-      locationId: location?.id || '',
-      seniorIds,
-      ...data,
-    });
-    setIsAddingMemory(false);
-  };
+  const handleAddMemory = async (formData) => {
+  if (seniorIds.length === 0) return;
+
+  formData.append('locationId', location?.id || '');
+  formData.append('seniorIds', JSON.stringify(seniorIds));
+
+  await onAddMemory(formData);
+  setIsAddingMemory(false);
+};
 
   const headerText =
     seniorIds.length === 0
       ? 'All Seniors'
       : seniorIds.length === 1
       ? seniors[0]?.name
-      : `${seniorIds.length} Seniors`; // CHANGED
+      : `${seniorIds.length} Seniors`;
 
   const content = (
     <div className="mmodal-portal">

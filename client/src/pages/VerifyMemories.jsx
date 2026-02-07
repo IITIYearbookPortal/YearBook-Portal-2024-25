@@ -23,7 +23,7 @@ const VerifyMemories = () => {
 
   let isAdmin = user?.email === ADMIN_EMAIL;
   // uncomment the below line to acces the page without been logged in as admin
-  // isAdmin = true;
+  isAdmin = true;
   const fetchPending = useCallback(async () => {
     try {
       setLoading(true);

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Button } from '../../components/ui/button';
 import { Textarea } from '../../components/ui/textarea';
 import { Label } from '../../components/ui/label';
@@ -11,14 +10,42 @@ function AddMemoryForm({ onSubmit, onCancel }) {
   const [images, setImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleImageSelect = (e) => {
+    const files = Array.from(e.target.files);
+
+    if (images.length + files.length > 3) {
+      alert('You can select at most 3 images');
+      return;
+    }
+
+    setImages((prev) => [...prev, ...files]);
+    e.target.value = null;
+  };
+
   const removeImage = (index) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!content.trim()) return;
-    onSubmit({ content: content.trim() });
+
+    setIsSubmitting(true);
+
+    const formData = new FormData();
+    formData.append('content', content.trim());
+
+    images.forEach((img) => {
+      formData.append('images', img);
+    });
+
+    await onSubmit(formData);
+
+    setIsSubmitting(false);
+    setContent('');
+    setImages([]);
   };
+
   return (
     <form onSubmit={handleSubmit} className="amf-space-y-5">
       <div className="amf-field">
@@ -36,9 +63,11 @@ function AddMemoryForm({ onSubmit, onCancel }) {
         <p className="amf-char-count">{content.length}/500 characters</p>
       </div>
 
-      {/* Image upload (UI only for now) */}
       <div className="amf-field">
-        <Label className="amf-label">Add Photos (Optional)</Label>
+        <Label className="amf-label">
+          Add Photos (Max 3)
+        </Label>
+
         <div className="amf-images-wrap">
           {images.map((file, index) => (
             <div key={index} className="amf-image-item">
@@ -57,14 +86,14 @@ function AddMemoryForm({ onSubmit, onCancel }) {
             </div>
           ))}
 
-          {images.length < 4 && (
-            <label className="amf-add-label amf-disabled">
+          {images.length < 3 && (
+            <label className="amf-add-label">
               <ImagePlus />
               <input
                 type="file"
                 accept="image/*"
                 multiple
-                disabled
+                onChange={handleImageSelect}
                 hidden
               />
             </label>
@@ -81,6 +110,7 @@ function AddMemoryForm({ onSubmit, onCancel }) {
         >
           Cancel
         </Button>
+
         <Button
           type="submit"
           disabled={!content.trim() || isSubmitting}

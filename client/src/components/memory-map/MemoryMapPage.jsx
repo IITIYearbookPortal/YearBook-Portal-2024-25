@@ -45,7 +45,7 @@ function MemoryMapPage() {
   const selectedSeniorIds = useMemo(
     () => selectedSeniors.map((s) => s.id),
     [selectedSeniors]
-  ); // CHANGED
+  );
 
   useEffect(() => {
     const fetchMemories = async () => {
@@ -59,46 +59,44 @@ function MemoryMapPage() {
       }
     };
     fetchMemories();
-  }, []); // CHANGED
+  }, []);
 
   const handleLocationClick = (location) => {
     setSelectedLocation(location);
     setIsModalOpen(true);
   };
 
-  const handleAddMemory = async (memoryData) => {
-    try {
-      const payload = {
-        ...memoryData,
-        authorName,
-      };
+  const handleAddMemory = async (formData) => {
+  try {
+    formData.append('authorName', authorName);
 
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/create-memory`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/create-memory`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
 
-      setMemories((prev) => [...prev, res.data]);
+    setMemories((prev) => [...prev, res.data]);
 
-      toast({
-        title: 'Memory added 💫',
-        description: 'Your memory has been saved.',
-      });
-    } catch (err) {
-      console.error(err);
-      toast({
-        title: 'Error',
-        description: 'Failed to save memory',
-        variant: 'destructive',
-      });
-    }
-  };
+    toast({
+      title: 'Memory added 💫',
+      description: 'Your memory has been saved.',
+    });
+  } catch (err) {
+    console.error(err);
+    toast({
+      title: 'Error',
+      description: 'Failed to save memory',
+      variant: 'destructive',
+    });
+  }
+};
+
 
   const handlePrint = () => {
     if (selectedSeniors.length === 0) {
@@ -117,7 +115,7 @@ function MemoryMapPage() {
     return memories.filter((m) =>
       selectedSeniorIds.includes(m.seniorId)
     );
-  }, [memories, selectedSeniorIds]); // CHANGED
+  }, [memories, selectedSeniorIds]);
 
   return (
     <CampusDataProvider seniors={seniors} memories={memories}>
@@ -160,8 +158,8 @@ function MemoryMapPage() {
               <div className="mm-sticky">
                 <SeniorSelector
                   seniors={seniors}
-                  selectedSeniors={selectedSeniors} // CHANGED
-                  onChange={setSelectedSeniors}     // CHANGED
+                  selectedSeniors={selectedSeniors}
+                  onChange={setSelectedSeniors}     
                 />
 
                 <div className="mm-stats-card">
@@ -194,7 +192,7 @@ function MemoryMapPage() {
             <section className="mm-map-area">
               <div className="mm-map-wrapper">
                 <CampusMap
-                  selectedSeniorIds={selectedSeniorIds} // CHANGED
+                  selectedSeniorIds={selectedSeniorIds}
                   onLocationClick={handleLocationClick}
                   selectedLocationId={selectedLocation?.id}
                 />
@@ -213,7 +211,7 @@ function MemoryMapPage() {
 
         <MemoryModal
           location={selectedLocation}
-          seniors={selectedSeniors} // CHANGED
+          seniors={selectedSeniors}
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);
@@ -224,7 +222,7 @@ function MemoryMapPage() {
 
         {/* {selectedSeniors.length > 0 && (
           <PrintSummary
-            seniors={selectedSeniors} // CHANGED
+            seniors={selectedSeniors}
             memories={seniorMemories}
           />
         )} */}
