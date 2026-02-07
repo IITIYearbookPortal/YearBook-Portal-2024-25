@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
-require('dotenv').config()
-const jwt = require('jsonwebtoken')
+const mongoose = require("mongoose");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -11,33 +11,33 @@ const userSchema = new mongoose.Schema({
 
   name: {
     type: String,
-    required: [true, 'Name is Required'],
+    required: [true, "Name is Required"],
   },
 
   roll_no: {
     type: String,
-    required: [true, 'Roll Number is required'],
+    required: [true, "Roll Number is required"],
     // unique: true,
   },
 
   academic_program: {
     type: String,
-    default: 'Bachelor of Technology (BTech)',
+    default: "Bachelor of Technology (BTech)",
   },
 
   department: {
     type: String,
-    required: [true, 'Department is required'],
+    required: [true, "Department is required"],
   },
 
   contact_details: {
     type: String,
-    required: [true, 'Contact_Details is required'],
+    required: [true, "Contact_Details is required"],
   },
 
   alternate_contact_details: {
     type: String,
-    required: [true, 'Alternate Contact Details is required'],
+    required: [true, "Alternate Contact Details is required"],
   },
 
   personal_email_id: {
@@ -64,8 +64,8 @@ const userSchema = new mongoose.Schema({
   },
 
   profile_img: {
-    type: String,
-    // required: [true, "Profile_image is required"],
+    url: { type: String, required: true },
+    public_id: { type: String, required: true },
   },
 
   one_step_verified: {
@@ -91,15 +91,15 @@ const userSchema = new mongoose.Schema({
   },
 
   phoneOTP: String,
-})
+});
 
 userSchema.methods.generateVerificationToken = function () {
-  const user = this
+  const user = this;
   const verificationToken = jwt.sign({ ID: user._id }, process.env.SECRET, {
-    expiresIn: '7d',
-  })
+    expiresIn: "7d",
+  });
 
-  return verificationToken
-}
+  return verificationToken;
+};
 
-module.exports = mongoose.models.Users || mongoose.model('Users', userSchema)
+module.exports = mongoose.models.Users || mongoose.model("Users", userSchema);

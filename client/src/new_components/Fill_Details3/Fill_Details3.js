@@ -71,7 +71,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
   const [sentOtp, setSentOtp] = useState(false);
   const [sub, setSub] = useState(false);
   const [wait, setWait] = useState(false);
-  const [len, setlen] = useState(0)
+  const [len, setlen] = useState(0);
 
   const [hid, setHid] = useState(1);
 
@@ -99,13 +99,22 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
   const [linkOTP, setLinkOTP] = useState(`/`);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  const [profileImage, setProfileImage] = useState(null);
+  const [preview, setPreview] = useState("");
   // const [isDarkMode, setIsDarkMode] = useState(() => {
   //   const storedThemeMode = localStorage.getItem("themeMode");
   //   return storedThemeMode === "dark";
   // });
 
   const auth = getAuth();
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setProfileImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
 
   const handleInputChange = (event) => {
     let inputstr = event.target.value;
@@ -117,23 +126,32 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     setTimeout(() => {
       setState(false);
     }, 6000);
+    const formData = new FormData();
+
+    formData.append("email", user.email);
+    formData.append("name", userData.name);
+    formData.append("roll_no", userData.roll_no);
+    formData.append("academic_program", userData.academic_program);
+    formData.append("department", userData.department);
+    formData.append("personal_email_id", userData.personal_email_id);
+    formData.append("contact_details", userData.contact_details);
+    formData.append(
+      "alternate_contact_details",
+      userData.alternate_contact_details,
+    );
+    formData.append("address", userData.address);
+    formData.append("current_company", userData.current_company);
+    formData.append("designation", userData.designation);
+    formData.append("about", userData.about);
+    formData.append("question_1", userData.question_1);
+    formData.append("question_2", userData.question_2);
+
+    // 🔥 image goes here
+    formData.append("profile_img", profileImage);
+
     axios
-      .post(process.env.REACT_APP_API_URL + "/userData", {
-        email: user.email,
-        name: userData.name,
-        roll_no: userData.roll_no,
-        academic_program: userData.academic_program,
-        department: userData.department,
-        personal_email_id: userData.personal_email_id,
-        contact_details: userData.contact_details,
-        alternate_contact_details: userData.alternate_contact_details,
-        address: userData.address,
-        current_company: userData.current_company,
-        designation: userData.designation,
-        about: userData.about,
-        profile_img: imageUrl,
-        question_1: userData.question_1,
-        question_2: userData.question_2,
+      .post(process.env.REACT_APP_API_URL + "/userData", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
         // if (res.data.message === "Roll No. should be in Digits") {
@@ -155,7 +173,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               size: "invisible",
               callback: (response) => {},
             },
-            auth
+            auth,
           );
           const phoneNumber = userData.contact_details;
 
@@ -234,7 +252,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     signInWithPhoneNumber(
       window.recaptchaVerifier.auth,
       phoneNumber,
-      appVerifier
+      appVerifier,
     )
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
@@ -305,22 +323,22 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     setMinutes(0);
     setSeconds(30);
     // setLink(`/emailverification/${user.jti}`);
-        axios
-          .post(process.env.REACT_APP_API_URL + "/verify", {
-            userId: user.email,
-          })
-          .then((res) => {
-            if (
-              res.data.message ===
-              "Sent a verification email to your personal email_id"
-            ) {
-              // setHid(8);
-              // setFill(true);
-              // setSentOtp(false);
-            }
-            setMessage(res.data.message);
-          })
-          .catch((err) => {});
+    axios
+      .post(process.env.REACT_APP_API_URL + "/verify", {
+        userId: user.email,
+      })
+      .then((res) => {
+        if (
+          res.data.message ===
+          "Sent a verification email to your personal email_id"
+        ) {
+          // setHid(8);
+          // setFill(true);
+          // setSentOtp(false);
+        }
+        setMessage(res.data.message);
+      })
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -389,7 +407,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               HandleEmpty(Name);
               {
                 Name != "" ? setHid(2) : setHid(1);
-              }         
+              }
               // console.log(userData.name);
             }}
             class={`border-2 border-white bg-transparent text-white flex justify-center items-center h-[35px] w-[130px] lg:h-10 lg:w-32 top-[26rem] absolute p-0 mb-1 text-base leading-none text-center afu  rounded-3xl md:top-96 md:mt-14   md:w-32 md:h-10  lg:mt-36 btnh border-dashed `}
@@ -506,7 +524,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 >
                   Doctor of Philosophy
                 </option>
-                <option value="MS-DSM" name="academic_program" class="selct bg-[#222831]">
+                <option
+                  value="MS-DSM"
+                  name="academic_program"
+                  class="selct bg-[#222831]"
+                >
                   MS-DSM
                 </option>
                 onChange=
@@ -517,7 +539,9 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             </div>
 
             <div class="h-12 w-64 flex flex-col mt-4 md:w-56 md:mb-5 md:mt-0 lg:w-80 lg:mt-0 lg:mb-4 items-center">
-              <h1 class=" text-base text-center   lg:text-2xl text-[#EEEEEE]">Department</h1>
+              <h1 class=" text-base text-center   lg:text-2xl text-[#EEEEEE]">
+                Department
+              </h1>
 
               <select
                 name="department"
@@ -586,13 +610,25 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 >
                   Biosciences and Biomedical Engineering
                 </option>
-                <option value="Physics" name="department" class="selct bg-[#222831]">
+                <option
+                  value="Physics"
+                  name="department"
+                  class="selct bg-[#222831]"
+                >
                   Physics
                 </option>
-                <option value="Chemistry" name="department" class="selct bg-[#222831]">
+                <option
+                  value="Chemistry"
+                  name="department"
+                  class="selct bg-[#222831]"
+                >
                   Chemistry
                 </option>
-                <option value="Mathematics" name="department" class="selct bg-[#222831]">
+                <option
+                  value="Mathematics"
+                  name="department"
+                  class="selct bg-[#222831]"
+                >
                   Mathematics
                 </option>
                 <option
@@ -609,7 +645,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 >
                   Electric Vehicle Technology
                 </option>
-                <option value="MS-DSM" name="academic_program" class="selct bg-[#222831]">
+                <option
+                  value="MS-DSM"
+                  name="academic_program"
+                  class="selct bg-[#222831]"
+                >
                   MS-DSM
                 </option>
               </select>
@@ -680,9 +720,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
           <div class=" h-10 text-[25px]  md:text-3xl md:top-64 lg:mt-2 lg:text-4xl flex justify-center items-center afu text-[#EEEEEE]">
             {" "}
-            Do tell us your <span class="text-red-600 ml-4">
-              phone number
-            </span>{" "}
+            Do tell us your{" "}
+            <span class="text-red-600 ml-4">phone number</span>{" "}
           </div>
 
           <div class="flex w-full justify-center items-center h-10 mt-4 md:mt-14  text-[15px]  lg:text-[20px] lg:mt-16  afu text-[#EEEEEE]">
@@ -714,7 +753,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 borderColor: "white",
                 borderRadius: "13px",
                 backgroundColor: "transparent",
-                color: "white"
+                color: "white",
               }}
               countrySelectorStyleProps={{
                 style: {
@@ -783,7 +822,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           <div class="h-12 w-full top-44 left-4 absolute text-3xl flex-wrap  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center afd text-[#EEEEEE]">
             {" "}
             And your{" "}
-            <span class="text-red-600 flex-wrap ml-2 mr-2 text-5xl"> Personal </span>{" "}
+            <span class="text-red-600 flex-wrap ml-2 mr-2 text-5xl">
+              {" "}
+              Personal{" "}
+            </span>{" "}
             email ?{" "}
           </div>
 
@@ -794,7 +836,6 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               name="personal_email_id"
               value={userData.personal_email_id}
               class="h-[32px] w-[200px] max-w-xs lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
-
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -841,97 +882,90 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         {/* seventh page */}
 
         <div
-          class={
+          className={
             hid == 5
               ? " h-screen w-screen  flex justify-center items-center text-1xl relative  border-b-2 bg-[#222831] text-white "
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-[30px] left-8 absolute text-[20px]  md:text-3xl md:top-40 lg:text-[35px] xl:text-3xl lg:top-48 lg:left-28 xl:left-80 xl:top-48 abl">
+          <div className="h-12 w-full top-[30px] left-8 absolute text-[20px]  md:text-3xl md:top-40 lg:text-[35px] xl:text-3xl lg:top-48 lg:left-28 xl:left-80 xl:top-48 abl">
             {" "}
-            We wanna <span class="text-red-600 ml-2 mr-2 text:[20px] sm:text-5xl">
+            We wanna{" "}
+            <span className="text-red-600 ml-2 mr-2 text:[20px] sm:text-5xl">
               SEE{" "}
             </span>{" "}
             you! please?
           </div>
 
-          <div class=" h-10 w-full top-[90px] left-8 absolute text-[18px] md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[24px] lg:left-32 xl:left-80 abl">
+          <div className=" h-10 w-full top-[90px] left-8 absolute text-[18px] md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[24px] lg:left-32 xl:left-80 abl">
             {" "}
             (we assure you, we are not creepy) 🙂{" "}
           </div>
 
-          <div class="w-[110px] h-[110px] top-[200px] border-2 border-gray-400 absolute  rounded-full overflow-hidden flex justify-center items-center 
+          <div
+            className="w-[110px] h-[110px] top-[200px] border-2 border-gray-400 absolute  rounded-full overflow-hidden flex justify-center items-center 
     sm:top-[700px] md:w-60 md:h-60 md:right-28 sm:right-10 md:top-[300px] 
-    lg:top-20 xl:top-[120px] xl:right-80  ">
-            <img src={imageUrl} class=" w-fit "></img>
+    lg:top-20 xl:top-[120px] xl:right-80  "
+          >
+            <img
+              src={preview || profilepic}
+              alt="preview"
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <img
             src={arrow}
-            class="hidden lg:block w-[95px] right-[115px] lg:w-48 lg:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl text-white filter invert"
+            className="hidden lg:block w-[95px] right-[115px] lg:w-48 lg:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl text-white filter invert"
           ></img>
 
-          <input
-            type="file"
-            onChange={(event) => {
-              setImageSelected(event.target.files[0]);
-              if (event.target.files[0] === "") {
-                setisSelected(false);
-              } else {
-                setisSelected(true);
-              }
-            }}
-            class="border-2 border-black h-9 w-60 bottom-12 left-[30px] top-[150px] absolute md:right-[430px]   leading-none text-center rounded-3xl w-[150px] h-[30px] md:mt-2 md:w-60 md:h-10 lg:top-96 lg:ml-6 xl:left-[270px] xl:top-[400px] sm:top-[380px] btnh border-dashed p-[6px] px-10 afu"
-          style={{ zIndex: 1}}
-          ></input>
+          <label className="cursor-pointer mt-6 inline-block text-sm text-blue-400 underline">
+            Choose profile photo
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </label>
+
           {/* <button onClick={() => {}} class="border-2 border-black h-9 w-32 bottom-12 left-[30px] top-[424px] md:bottom-36 absolute md:right-[322px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-40 xl:left-[420px] xl:top-[400px] btnh border-dashed afu"> Choose File </button> */}
 
-         <button
-            onClick={() => {
-              if (isSelected) {
-                {
-                  uploadImage();
-                }
-              } else {
-                toast("Make sure you selected the pic !", {
-                  theme: "dark",
-                  autoClose: 3000,
-                });
-              }
-            }}
-            class=" border-2 border-black top-[320px] bg-white text-black h-9 w-32  md:bottom-36 absolute md:right-[322px] sm:top-[300px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-80 xl:left-[580px] xl:top-[400px] btnh border-dashed afu"
-          >
-            {" "}
-            Upload Photo{" "}
-          </button>
+          <p className="text-sm text-gray-300 mt-2">
+            Image will be uploaded on final submit
+          </p>
+
           <img
             src={arrow}
-            class="hidden xl:block left-[400px] w-[80px] right-[115px] md:w-48 md:h-32 lg:top-[400px] lg:right-[22rem] absolute xl:right-[38rem] abl  "
-            style={{  transform: 'rotate(30deg)', filter: 'invert(1)', transition: 'none' }}
+            className="hidden xl:block left-[400px] w-[80px] right-[115px] md:w-48 md:h-32 lg:top-[400px] lg:right-[22rem] absolute xl:right-[38rem] abl  "
+            style={{
+              transform: "rotate(30deg)",
+              filter: "invert(1)",
+              transition: "none",
+            }}
           ></img>
 
-          <div class="mt-52 md:mt-36 lg:mt-80 lg:mr-[450px] xl:mt-80 xl:mr-[350px]">
+          {/* <div className="mt-52 md:mt-36 lg:mt-80 lg:mr-[450px] xl:mt-80 xl:mr-[350px]">
             {upload && (
               <h3 style={{ color: `${isDarkMode ? "white" : "white"}` }}>
                 {wait && "Wait... while image is uploading"}
                 {imageUploaded && "Image Uploaded"}
               </h3>
             )}
-          </div>
+          </div> */}
 
           <button
             onClick={() => {
-              if (upload) {
+              if (profileImage) {
                 setHid(6);
               } else {
-                setHid(5);
-                toast("Make sure you uploaded the pic !", {
+                toast("Please select a profile picture", {
                   theme: "dark",
                   autoClose: 3000,
                 });
               }
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 top-[370px]  flex items-center justify-center absolute lg:left-[443px] lg:top-[470px] p-0 text-base leading-none text-center  rounded-3xl md:top-[400px] md:mt-44 sm:top-[350px]  md:w-32 md:h-10  lg:mt-16   xl:left-[710px] btnh border-dashed afd"
+            className="border-2 border-black bg-white text-black h-8 w-32 top-[370px]  flex items-center justify-center absolute lg:left-[443px] lg:top-[470px] p-0 text-base leading-none text-center  rounded-3xl md:top-[400px] md:mt-44 sm:top-[350px]  md:w-32 md:h-10  lg:mt-16   xl:left-[710px] btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -945,7 +979,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             {" "}
             <img
               src={Bbtn}
-              class={`hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
+              className={`hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
                 isDarkMode ? "bg-gray-400" : ""
               }`}
             />{" "}
@@ -1047,8 +1081,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               }}
             ></textarea>
             <p class="absolute bottom-2 left-44 text-sm text-gray-600 bg-white px-2 py-1 rounded-md">
-            {300 - len}/300
-          </p>
+              {300 - len}/300
+            </p>
           </div>
 
           {/* 3rd col */}
@@ -1223,7 +1257,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           }
         >
           <div class="h-12 w-full top-44 left-4 absolute text-2xl  md:text-4xl md:top-40 lg:text-4xl xl:text-5xl lg:top-48 flex justify-center items-center atd ">
-            Check your inbox   <span class="ml-2 lg:text-3xl lg:mt-2">   (Personal email)</span> {" "}
+            Check your inbox{" "}
+            <span class="ml-2 lg:text-3xl lg:mt-2"> (Personal email)</span>{" "}
           </div>
 
           <div class="h-12 w-full top-56 left-4 absolute text-2xl  md:text-[20px] md:top-52 lg:text-[22px] lg:top-64 flex justify-center items-center afu">
@@ -1242,16 +1277,14 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             />{" "}
           </button> */}
 
-          
-            <button
-              onClick={() => {
-                resendMail();
-              }}
-              class="border-2 px-6 py-1 border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
-            >
-              Resend Mail
-            </button>
-          
+          <button
+            onClick={() => {
+              resendMail();
+            }}
+            class="border-2 px-6 py-1 border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
+          >
+            Resend Mail
+          </button>
         </div>
       </div>
       <ToastContainer />
