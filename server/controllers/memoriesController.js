@@ -100,12 +100,27 @@ const createMemory = asyncHandler(async (req, res) => {
 
 
 const getPendingRequests = asyncHandler(async (req, res) => {
-  const filter = { isVerified: false };
-
-  const memories = await Memory.find(filter).sort({ createdAt: -1 });
+  const memories = await Memory.aggregate([
+    {
+      $match: { isVerified: false }
+    },
+    {
+      $sort: { createdAt: -1 }
+    },
+    {
+      $group: {
+        _id: "$groupId",
+        doc: { $first: "$$ROOT" }
+      }
+    },
+    {
+      $replaceRoot: { newRoot: "$doc" }
+    }
+  ]);
 
   const response = memories.map((m) => ({
-    id: m.id,
+    id: m._id,
+    groupId: m.groupId,
     locationId: m.locationId,
     seniorId: m.seniorId,
     authorName: m.authorName,
@@ -117,23 +132,26 @@ const getPendingRequests = asyncHandler(async (req, res) => {
   res.json(response);
 });
 
+
 const approveRequest = asyncHandler(async (req, res) => {
-  const { memoryId } = req.params;
+  const { groupId } = req.params;
 
-  const memory = await Memory.findById(memoryId);
+  const result = await Memory.updateMany(
+    { groupId },
+    { $set: { isVerified: true } }
+  );
 
-  if (!memory) {
+  if (result.matchedCount === 0) {
     res.status(404);
-    throw new Error("Memory not found");
+    throw new Error("No memories found for this group");
   }
 
-  memory.isVerified = true;
-  await memory.save();
-
   res.status(200).json({
-    message: "Memory approved successfully",
+    message: "Memories approved successfully",
+    updatedCount: result.modifiedCount,
   });
 });
+
 
 const getPublicIdFromUrl = (url) => {
   const uploadIndex = url.indexOf('/upload/');
@@ -146,30 +164,40 @@ const getPublicIdFromUrl = (url) => {
 
 
 const deleteRequest = asyncHandler(async (req, res) => {
-  const { memoryId } = req.params;
+  const { groupId } = req.params;
 
-  const memory = await Memory.findById(memoryId);
+  const memories = await Memory.find({ groupId });
 
-  if (!memory) {
+  if (!memories || memories.length === 0) {
     res.status(404);
-    throw new Error('Memory not found');
+    throw new Error("Memories not found");
   }
 
-  if (memory.images && memory.images.length > 0) {
-    const deletePromises = memory.images.map((imgUrl) => {
-      const publicId = getPublicIdFromUrl(imgUrl);
-      return cloudinary.uploader.destroy(publicId);
-    });
+  const deletePromises = [];
 
+  memories.forEach((memory) => {
+    if (memory.images && memory.images.length > 0) {
+      memory.images.forEach((imgUrl) => {
+        const publicId = getPublicIdFromUrl(imgUrl);
+        deletePromises.push(
+          cloudinary.uploader.destroy(publicId)
+        );
+      });
+    }
+  });
+
+  if (deletePromises.length > 0) {
     await Promise.all(deletePromises);
   }
 
-  await Memory.findByIdAndDelete(memoryId);
+  await Memory.deleteMany({ groupId });
 
   res.status(200).json({
-    message: 'Memory request and images deleted successfully',
+    message: "Memory requests and images deleted successfully",
+    deletedCount: memories.length,
   });
 });
+
 
 // const memory_img = asyncHandler(async (req, res) => {
 //     const user_email = req.body.user_email

@@ -52,9 +52,10 @@ const VerifyMemories = () => {
     }
   }, [token, isAdmin, navigate, fetchPending]);
 
-  const acceptMemory = async (id) => {
+  const acceptMemory = async (groupId) => {
     try {
-      const res = await fetch(`${API_BASE}/memories/accept/${id}`, {
+      console.log(groupId);
+      const res = await fetch(`${API_BASE}/memories/accept/${groupId}`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -64,9 +65,9 @@ const VerifyMemories = () => {
     }
   };
 
-  const deleteMemory = async (id) => {
+  const deleteMemory = async (groupId) => {
     try {
-      const res = await fetch(`${API_BASE}/memories/delete/${id}`, {
+      const res = await fetch(`${API_BASE}/memories/delete/${groupId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -113,13 +114,13 @@ const VerifyMemories = () => {
 
               <div className="flex gap-4 mt-6">
                 <button
-                  onClick={() => acceptMemory(m.id)}
+                  onClick={() => acceptMemory(m.groupId)}
                   className="px-6 py-2 bg-green-600 hover:bg-green-700 transition-colors rounded font-medium"
                 >
                   Accept
                 </button>
                 <button
-                  onClick={() => deleteMemory(m.id)}
+                  onClick={() => deleteMemory(m.groupId)}
                   className="px-6 py-2 bg-red-600 hover:bg-red-700 transition-colors rounded font-medium"
                 >
                   Reject
