@@ -71,7 +71,7 @@ function Navigation({ isOpen, setIsOpen }) {
               name: "My Profile",
               path: `/profile/${profile.roll_no}/${profile.name}`,
             },
-            { name: "My Black Card", path: "/blackcard" },
+            // { name: "Memory Map", path: "/memory" },
             //  { name: "Change Theme", path: "/changetheme" },
             { name: "More Links", path: "/footer" },
             // { name: "Logout", path: "/logout" },

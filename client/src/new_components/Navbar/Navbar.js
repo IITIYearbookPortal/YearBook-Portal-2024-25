@@ -66,7 +66,7 @@ useEffect(() => {
           path: `/profile/${profile.roll_no}/${profile.name}`,
         },
         { name: "Previous Year Book", path: "/previous-yrbook" },
-        { name: "Black Card", path: "/blackcard" },
+        // { name: "Memory Map", path: "/memory" },
         { name: "More Links", path: "/footer" },
         { name: "Logout", path: "/logout" },
       ]);

@@ -5,6 +5,7 @@ import img2 from './Login.png';
 import img3 from './Login2.png';
 import img4 from './Login3.png';
 import img5 from './poll.jpg';
+import img6 from './memorymap.png';
 
 export default function About() {
   const data = [
@@ -88,6 +89,28 @@ export default function About() {
           </p>
           <div className="flex justify-center">
             <img src={img5} alt="Yearbook awards" className="rounded-lg object-cover w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl shadow-lg" />
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "STEP 6",
+      content: (
+        <div>
+          <p className="text-gray-200 text-sm md:text-lg font-semibold mb-4">
+            "Memory Map"
+          </p>
+
+          <p
+            className="text-neutral-200 text-sm md:text-lg font-normal mb-4">
+            Pin your favorite memories with your friends on the memory map.
+          </p>
+          <p
+            className="text-neutral-200 text-sm md:text-lg font-normal mb-4">
+            Explore the memories shared by your friends and relive those moments.
+          </p>
+          <div className="flex justify-center">
+            <img src={img6} alt="Memory Map" className="rounded-lg object-cover w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl shadow-lg" />
           </div>
         </div>
       ),

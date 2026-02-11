@@ -681,7 +681,7 @@ const Home = () => {
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/12.jpg"
+              src="/images/homepage/connections/12.jpeg"
               alt="Background"
               className="w-1/4 p-1 h-1/3 object-cover"
             />
