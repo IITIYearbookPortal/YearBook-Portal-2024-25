@@ -16,7 +16,6 @@ function Edit({ isDarkMode }) {
   const [imageUrl, setImageUrl] = useState("");       // What <img> displays
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  /* ---------------- SECURITY ---------------- */
   useEffect(() => {
     if (!loading) {
       if (!loggedin) navigate("/login");
@@ -26,7 +25,6 @@ function Edit({ isDarkMode }) {
     }
   }, [loading, loggedin, isStudent, profile, roll, name, navigate]);
 
-  /* ---------------- INIT DATA ---------------- */
   useEffect(() => {
     if (profile && Object.keys(profile).length > 0) {
       setUserData({ ...profile });
@@ -37,7 +35,6 @@ function Edit({ isDarkMode }) {
     }
   }, [profile]);
 
-  /* ---------------- IMAGE PREVIEW ---------------- */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -53,7 +50,6 @@ function Edit({ isDarkMode }) {
     setImageUrl(previewUrl); // Preview immediately
   };
 
-  /* ---------------- CLEANUP ---------------- */
   useEffect(() => {
     return () => {
       if (imageUrl?.startsWith("blob:")) {
@@ -62,7 +58,6 @@ function Edit({ isDarkMode }) {
     };
   }, [imageUrl]);
 
-  /* ---------------- UPDATE ---------------- */
   const onUpdate = async () => {
     setIsSubmitting(true);
 

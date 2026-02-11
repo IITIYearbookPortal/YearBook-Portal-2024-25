@@ -146,7 +146,6 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     formData.append("question_1", userData.question_1);
     formData.append("question_2", userData.question_2);
 
-    // 🔥 image goes here
     formData.append("profile_img", profileImage);
 
     axios
@@ -266,25 +265,25 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     // setLinkOTP(`/otpVerificationnew/${user.jti}`);
   };
 
-  const uploadImage = () => {
-    setUploaded(true);
+  // const uploadImage = () => {
+  //   setUploaded(true);
 
-    const formData = new FormData();
-    formData.append("file", imageSelected);
-    formData.append("upload_preset", "profile_img");
+  //   const formData = new FormData();
+  //   formData.append("file", imageSelected);
+  //   formData.append("upload_preset", "profile_img");
 
-    setWait(true);
-    axios
-      .post("https://api-eu.cloudinary.com/v1_1/djcp8pnh2/upload", formData)
-      .then((res) => {
-        setWait(false);
-        setImageUrl(res.data.url);
-        setImageUploaded(true);
-        setTimeout(() => {
-          setImageUploaded(false);
-        }, 10000);
-      });
-  };
+  //   setWait(true);
+  //   axios
+  //     .post("https://api-eu.cloudinary.com/v1_1/djcp8pnh2/upload", formData)
+  //     .then((res) => {
+  //       setWait(false);
+  //       setImageUrl(res.data.url);
+  //       setImageUploaded(true);
+  //       setTimeout(() => {
+  //         setImageUploaded(false);
+  //       }, 10000);
+  //     });
+  // };
 
   //  function for alerting on empty input
 
@@ -884,106 +883,92 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           className={
             hid == 5
-              ? " h-screen w-screen  flex justify-center items-center text-1xl relative  border-b-2 bg-[#222831] text-white "
+              ? "min-h-screen w-screen flex flex-col justify-center items-center bg-[#222831] text-white p-6 relative overflow-x-hidden"
               : "hidden"
           }
         >
-          <div className="h-12 w-full top-[30px] left-8 absolute text-[20px]  md:text-3xl md:top-40 lg:text-[35px] xl:text-3xl lg:top-48 lg:left-28 xl:left-80 xl:top-48 abl">
-            {" "}
-            We wanna{" "}
-            <span className="text-red-600 ml-2 mr-2 text:[20px] sm:text-5xl">
-              SEE{" "}
-            </span>{" "}
-            you! please?
-          </div>
-
-          <div className=" h-10 w-full top-[90px] left-8 absolute text-[18px] md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[24px] lg:left-32 xl:left-80 abl">
-            {" "}
-            (we assure you, we are not creepy) 🙂{" "}
-          </div>
-
-          <div
-            className="w-[110px] h-[110px] top-[200px] border-2 border-gray-400 absolute  rounded-full overflow-hidden flex justify-center items-center 
-    sm:top-[700px] md:w-60 md:h-60 md:right-28 sm:right-10 md:top-[300px] 
-    lg:top-20 xl:top-[120px] xl:right-80  "
-          >
-            <img
-              src={preview || profilepic}
-              alt="preview"
-              className="w-full h-full object-cover"
-            />
-          </div>
-
-          <img
-            src={arrow}
-            className="hidden lg:block w-[95px] right-[115px] lg:w-48 lg:h-32 lg:top-[18rem] lg:right-[22rem] absolute xl:right-[38rem] abl text-white filter invert"
-          ></img>
-
-          <label className="cursor-pointer mt-6 inline-block text-sm text-blue-400 underline">
-            Choose profile photo
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </label>
-
-          {/* <button onClick={() => {}} class="border-2 border-black h-9 w-32 bottom-12 left-[30px] top-[424px] md:bottom-36 absolute md:right-[322px]  p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-2 lg:left-40 xl:left-[420px] xl:top-[400px] btnh border-dashed afu"> Choose File </button> */}
-
-          <p className="text-sm text-gray-300 mt-2">
-            Image will be uploaded on final submit
-          </p>
-
-          <img
-            src={arrow}
-            className="hidden xl:block left-[400px] w-[80px] right-[115px] md:w-48 md:h-32 lg:top-[400px] lg:right-[22rem] absolute xl:right-[38rem] abl  "
-            style={{
-              transform: "rotate(30deg)",
-              filter: "invert(1)",
-              transition: "none",
-            }}
-          ></img>
-
-          {/* <div className="mt-52 md:mt-36 lg:mt-80 lg:mr-[450px] xl:mt-80 xl:mr-[350px]">
-            {upload && (
-              <h3 style={{ color: `${isDarkMode ? "white" : "white"}` }}>
-                {wait && "Wait... while image is uploading"}
-                {imageUploaded && "Image Uploaded"}
-              </h3>
-            )}
-          </div> */}
-
+          {/* Back Button - Top Right */}
           <button
-            onClick={() => {
-              if (profileImage) {
-                setHid(6);
-              } else {
-                toast("Please select a profile picture", {
-                  theme: "dark",
-                  autoClose: 3000,
-                });
-              }
-            }}
-            className="border-2 border-black bg-white text-black h-8 w-32 top-[370px]  flex items-center justify-center absolute lg:left-[443px] lg:top-[470px] p-0 text-base leading-none text-center  rounded-3xl md:top-[400px] md:mt-44 sm:top-[350px]  md:w-32 md:h-10  lg:mt-16   xl:left-[710px] btnh border-dashed afd"
+            onClick={() => setHid(4)}
+            className="absolute top-6 right-6 z-50 hover:scale-105 transition-transform"
           >
-            {" "}
-            Continue{" "}
-          </button>
-
-          <button
-            onClick={() => {
-              setHid(4);
-            }}
-          >
-            {" "}
             <img
               src={Bbtn}
-              className={`hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : ""
-              }`}
-            />{" "}
+              alt="Back"
+              className={`h-14 w-14 lg:h-20 lg:w-20 rounded-full ${isDarkMode ? "bg-gray-400" : ""}`}
+            />
           </button>
+
+          <div className="max-w-5xl w-full flex flex-col lg:flex-row items-center justify-between gap-12">
+            {/* Text Section */}
+            <div className="text-center lg:text-left space-y-4">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold">
+                We wanna
+                <span className="text-red-600 px-4 animate-pulse">SEE</span>
+                you! please?
+              </h1>
+              <p className="text-lg md:text-2xl text-gray-400 font-light italic">
+                (we assure you, we are not creepy) 🙂
+              </p>
+            </div>
+
+            {/* Image Upload Section */}
+            <div className="relative flex flex-col items-center">
+              {/* Decorative Arrow for Desktop */}
+              <img
+                src={arrow}
+                alt="arrow"
+                className="hidden lg:block absolute -left-32 top-1/2 -translate-y-1/2 w-32 h-24 filter invert opacity-50 -rotate-12"
+              />
+
+              {/* Profile Preview Circle */}
+              <div className="relative group">
+                <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-4 border-dashed border-gray-500 overflow-hidden flex justify-center items-center bg-[#393E46] transition-all group-hover:border-blue-500">
+                  <img
+                    src={preview || profilepic}
+                    alt="preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* File Input Label */}
+                <label className="mt-6 flex flex-col items-center cursor-pointer group">
+                  <span className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full text-sm font-medium transition-colors shadow-lg">
+                    Choose profile photo
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              <p className="text-xs text-gray-500 mt-4 uppercase tracking-widest">
+                Image will be uploaded on final submit
+              </p>
+            </div>
+          </div>
+
+          {/* Action Button */}
+          <div className="mt-16">
+            <button
+              onClick={() => {
+                if (profileImage) {
+                  setHid(6);
+                } else {
+                  toast("Please select a profile picture", {
+                    theme: "dark",
+                    autoClose: 3000,
+                  });
+                }
+              }}
+              className="bg-white text-black px-12 py-3 rounded-full font-bold text-lg hover:bg-gray-200 transition-all active:scale-95 shadow-xl"
+            >
+              Continue
+            </button>
+          </div>
         </div>
 
         {/* eight page */}
