@@ -133,3 +133,49 @@
     margin: 12mm;
   }
 }
+.ps-print-container {
+  display: none;
+}
+
+@media print {
+  body {
+    margin: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .ps-print-container {
+    display: block;
+    padding: 30px;
+  }
+
+  .ps-senior-section {
+    margin-bottom: 50px;
+    page-break-after: always;
+  }
+
+  .ps-location-block {
+    margin-top: 25px;
+  }
+
+  .ps-memory {
+    margin-bottom: 20px;
+  }
+
+  .ps-memory-images {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .ps-memory-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+}

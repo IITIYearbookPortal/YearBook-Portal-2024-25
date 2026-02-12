@@ -66,7 +66,58 @@ import './PrintSummary.css';
 // }
 
 
+// function PrintSummary({ seniors, memories }) {
+
+//   if (!seniors || seniors.length === 0) return null;
+
+//   return (
+//     <div className="ps-print-container">
+//       <header className="ps-header">
+//         <h1 className="ps-title">Memory Map</h1>
+//         <p className="ps-generated">
+//           Generated on {format(new Date(), 'MMMM d, yyyy')}
+//         </p>
+//       </header>
+
+//       {seniors.map((senior) => {
+
+//         const seniorMemories = memories.filter(
+//           (m) => m.seniorId === senior.id
+//         );
+
+//         if (seniorMemories.length === 0) return null;
+
+//         return (
+//           <section key={senior.id} className="ps-senior-section">
+//             <h2 className="ps-senior-name">{senior.name}</h2>
+//             <p className="ps-meta">
+//               {senior.department} • Class of {senior.graduationYear}
+//             </p>
+
+//             {seniorMemories.map((memory) => (
+//               <article key={memory.id} className="ps-memory">
+//                 <div className="ps-memory-head">
+//                   <p className="ps-author">{memory.authorName}</p>
+//                   <p className="ps-date">
+//                     {format(new Date(memory.createdAt), 'MMM d, yyyy')}
+//                   </p>
+//                 </div>
+//                 <p>{memory.content}</p>
+//               </article>
+//             ))}
+//           </section>
+//         );
+//       })}
+
+//       <footer className="ps-footer">
+//         <p>With love from your college family ❤️</p>
+//       </footer>
+//     </div>
+//   );
+// }
+
 function PrintSummary({ seniors, memories }) {
+  const { getLocationById } = useCampusData();
 
   if (!seniors || seniors.length === 0) return null;
 
@@ -80,12 +131,18 @@ function PrintSummary({ seniors, memories }) {
       </header>
 
       {seniors.map((senior) => {
-
         const seniorMemories = memories.filter(
           (m) => m.seniorId === senior.id
         );
 
         if (seniorMemories.length === 0) return null;
+
+        // Group by location
+        const memoriesByLocation = seniorMemories.reduce((acc, memory) => {
+          if (!acc[memory.locationId]) acc[memory.locationId] = [];
+          acc[memory.locationId].push(memory);
+          return acc;
+        }, {});
 
         return (
           <section key={senior.id} className="ps-senior-section">
@@ -94,17 +151,55 @@ function PrintSummary({ seniors, memories }) {
               {senior.department} • Class of {senior.graduationYear}
             </p>
 
-            {seniorMemories.map((memory) => (
-              <article key={memory.id} className="ps-memory">
-                <div className="ps-memory-head">
-                  <p className="ps-author">{memory.authorName}</p>
-                  <p className="ps-date">
-                    {format(new Date(memory.createdAt), 'MMM d, yyyy')}
-                  </p>
-                </div>
-                <p>{memory.content}</p>
-              </article>
-            ))}
+            {Object.entries(memoriesByLocation).map(
+              ([locationId, locationMemories]) => {
+                const location = getLocationById(locationId);
+                if (!location) return null;
+
+                return (
+                  <div key={locationId} className="ps-location-block">
+                    <h3 className="ps-location-name">
+                      📍 {location.name}
+                    </h3>
+
+                    {locationMemories.map((memory) => (
+                      <article key={memory.id} className="ps-memory">
+                        <div className="ps-memory-head">
+                          <p className="ps-author">
+                            {memory.authorName}
+                          </p>
+                          <p className="ps-date">
+                            {format(
+                              new Date(memory.createdAt),
+                              'MMM d, yyyy'
+                            )}
+                          </p>
+                        </div>
+
+                        <p className="ps-memory-content">
+                          {memory.content}
+                        </p>
+
+                        {memory.images &&
+                          memory.images.length > 0 && (
+                            <div className="ps-memory-images">
+                              {memory.images.map((img, index) => (
+                                <img
+                                  key={index}
+                                  src={img}
+                                  alt="memory"
+                                  className="ps-memory-image"
+                                  crossOrigin="anonymous"
+                                />
+                              ))}
+                            </div>
+                          )}
+                      </article>
+                    ))}
+                  </div>
+                );
+              }
+            )}
           </section>
         );
       })}
@@ -115,6 +210,7 @@ function PrintSummary({ seniors, memories }) {
     </div>
   );
 }
+
 
 
 export default PrintSummary;
