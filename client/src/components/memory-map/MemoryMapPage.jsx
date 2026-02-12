@@ -226,6 +226,18 @@ function MemoryMapPage() {
             memories={seniorMemories}
           />
         )} */}
+
+        {/* {selectedSeniors.length > 0 && (
+  <PrintSummary
+    senior={selectedSeniors[0]}
+    memories={seniorMemories}
+  />
+)} */}
+<PrintSummary
+  seniors={seniors}
+  memories={memories}
+/>
+
       </div>
     </CampusDataProvider>
   );
