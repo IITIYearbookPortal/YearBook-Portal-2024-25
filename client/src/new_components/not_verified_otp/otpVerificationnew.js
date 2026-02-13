@@ -88,41 +88,128 @@ function Fill1(props) {
     }
   };
 
-  const sendOTP = () => {
-    axios
-      .post(process.env.REACT_APP_API_URL + "/userDataNew", {
-        email: user.email,
-        personal_email_id: userData.personal_email_id,
-        contact_details: userData.contact_details,
-      })
-      .then((res) => {
-        setMessage("Sent an OTP to your contact number.");
+useEffect(() => {
+  console.log("[reCAPTCHA] useEffect triggered – starting...");
 
-        window.recaptchaVerifier = new RecaptchaVerifier(
-          "recaptcha-container2",
-          {
-            size: "invisible",
-            callback: (response) => {},
-          },
-          auth
-        );
+  const initVerifier = async () => {
+    // Small delay to ensure DOM + reCAPTCHA script loaded
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-        const phoneNumber = userData.contact_details;
-        const appVerifier = window.recaptchaVerifier;
+    if (window.recaptchaVerifier) {
+      console.log("[reCAPTCHA] Verifier exists – trying to render");
+      try {
+        await window.recaptchaVerifier.render();
+        console.log("[reCAPTCHA] Existing verifier ready");
+      } catch (err) {
+        console.error("[reCAPTCHA] Existing render error:", err);
+      }
+      return;
+    }
 
-        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-          .then((confirmationResult) => {
-            window.confirmationResult = confirmationResult;
-            setSentOtp(true);
-            setSub(true);
-          })
-          .catch((error) => {
-            setMessage("Please enter your mobile number with +91");
-          });
-      })
-      .catch((err) => {});
+    try {
+      console.log("[reCAPTCHA] Creating new verifier...");
+      window.recaptchaVerifier = new RecaptchaVerifier(
+  "recaptcha-container2",
+  {
+    size: "invisible",
+    callback: (response) => {
+      console.log("[reCAPTCHA] Solved:", response);
+    },
+    "expired-callback": () => {
+      console.log("[reCAPTCHA] Expired");
+    },
+  },
+  auth
+);
+
+
+      console.log("[reCAPTCHA] Verifier instance created");
+
+      await window.recaptchaVerifier.render();
+      console.log("[reCAPTCHA] Render success – verifier READY");
+    } catch (err) {
+      console.error("[reCAPTCHA] CRITICAL INIT ERROR:", err);
+      console.error("Full error stack:", err.stack);
+      toast.error("reCAPTCHA init failed – check console & refresh");
+    }
   };
 
+  initVerifier();
+
+  return () => {
+    console.log("[reCAPTCHA] Cleanup...");
+    if (window.recaptchaVerifier) {
+      window.recaptchaVerifier.clear?.();
+      window.recaptchaVerifier = null;
+    }
+  };
+}, [auth]);
+
+
+const sendOTP = () => {
+  console.log("[sendOTP] Starting with phone:", userData.contact_details);
+
+  if (!userData.contact_details || !userData.contact_details.startsWith("+")) {
+    toast.error("Phone number must start with +91...");
+    setMessage("Invalid phone format");
+    return;
+  }
+
+  axios
+    .post(process.env.REACT_APP_API_URL + "/userDataNew", {
+      email: user.email,
+      personal_email_id: userData.personal_email_id,
+      contact_details: userData.contact_details,
+    })
+    .then((res) => {
+      console.log("[sendOTP] Backend save successful");
+      setMessage("Sending OTP...");
+
+      // Safety check – most important part
+            // Safety check
+      console.log("[sendOTP] Verifier at call time:", window.recaptchaVerifier); // ← Add this
+      if (!window.recaptchaVerifier) {
+        console.error("[sendOTP] verifier is null!");
+        toast.error("reCAPTCHA not ready. Refresh page.");
+        setMessage("reCAPTCHA failed to load. Please refresh and retry.");
+        return;
+      }
+
+      const phoneNumber = userData.contact_details;
+      const appVerifier = window.recaptchaVerifier;
+
+      console.log("[sendOTP] Calling signInWithPhoneNumber...");
+
+      signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then((confirmationResult) => {
+          console.log("[sendOTP] OTP sent successfully");
+          window.confirmationResult = confirmationResult;
+          setSentOtp(true);
+          setSub(true);
+          toast.success("OTP sent!");
+        })
+        .catch((error) => {
+          console.error("[sendOTP] Firebase error:", error);
+          console.error("Code:", error.code);
+          console.error("Message:", error.message);
+
+          let userMessage = "Failed to send OTP. Please try again.";
+          if (error.code === "auth/invalid-phone-number") {
+            userMessage = "Invalid phone number format";
+          } else if (error.code === "auth/too-many-requests") {
+            userMessage = "Too many attempts. Try again later.";
+          }
+
+          toast.error(userMessage);
+          setMessage(userMessage);
+        });
+    })
+    .catch((err) => {
+      console.error("[sendOTP] Backend error:", err);
+      toast.error("Failed to save your details");
+      setMessage("Something went wrong. Try again.");
+    });
+};
   const onSubmit = () => {
     setState(true);
     setTimeout(() => {
@@ -159,7 +246,10 @@ function Fill1(props) {
             }
             setMessage(res.data.message);
           })
-          .catch((err) => {});
+          .catch((err) => {
+            console.error("Backend /verify failed:", err.response?.data || err.message);
+  toast.error("Verification failed on server. Try again.");
+          });
       })
       .catch((error) => {
         setMessage("Incorrect OTP");
@@ -197,6 +287,8 @@ function Fill1(props) {
   return (
     <>
       <div class=" h-fit w-screen ">
+                  <div id="recaptcha-container2"></div>
+
         {/* first page */}
 
         {/* secound page */}
@@ -327,8 +419,6 @@ function Fill1(props) {
               }}
             ></input>
           </div>
-          <div id="recaptcha-container2"></div>
-
           <button
             onClick={() => {
               HandleEmpty(EmailId);
