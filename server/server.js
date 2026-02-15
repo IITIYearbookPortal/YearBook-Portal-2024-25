@@ -42,24 +42,36 @@ app.use(
   })
 );
 
-// Middleware function to check request origin
+// // Middleware function to check request origin
+// const checkOrigin = (req, res, next) => {
+//   // console.log(process.env.ALLOWED_ORIGIN);
+  
+//   const allowedOrigin = process.env.ALLOWED_ORIGIN; // Specify the allowed origin here
+
+//   const requestOrigin = req.headers.origin;
+//   // console.log(requestOrigin);
+//   // console.log("done")
+  
+
+//   if (requestOrigin === allowedOrigin) {
+//       next(); // Proceed to the next middleware or route handler
+//   } else {
+//     // next();
+//       res.status(401).json({ error: 'Unauthorized Access' });
+//   }
+// };
 const checkOrigin = (req, res, next) => {
-  // console.log(process.env.ALLOWED_ORIGIN);
-  
-  const allowedOrigin = process.env.ALLOWED_ORIGIN; // Specify the allowed origin here
-
+  const allowedOrigin = process.env.ALLOWED_ORIGIN;
   const requestOrigin = req.headers.origin;
-  // console.log(requestOrigin);
-  // console.log("done")
-  
 
-  if (requestOrigin === allowedOrigin) {
-      next(); // Proceed to the next middleware or route handler
+  // Allow direct browser requests (no origin header)
+  if (!requestOrigin || requestOrigin === allowedOrigin) {
+    next();
   } else {
-    // next();
-      res.status(401).json({ error: 'Unauthorized Access' });
+    res.status(401).json({ error: "Unauthorized Access" });
   }
 };
+
 
 app.use((req, res, next) => {
   checkOrigin(req, res, next);

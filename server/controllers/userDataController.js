@@ -300,7 +300,7 @@ const verify = async (req, res) => {
     user.two_step_verified = true;
     await user.save();
 
-    return res.redirect(`${clientLink}/blackcard`);
+    return res.redirect(`${clientLink}/`);
   } catch (err) {
     return res.status(500).send(err);
   }
