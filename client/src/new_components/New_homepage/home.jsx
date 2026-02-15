@@ -375,7 +375,7 @@ const Home = () => {
             initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
             whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
             transition={{ duration: 1, delay: 1 }}
-            src="/images/homepage/23-yearbook.png"
+            src="/images/homepage/25-yearbook.png"
             alt="Yearbook 2023"
             className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-48 lg:h-48 exclude-dark-mode mt-4 sm:mt-0"
           />
@@ -626,22 +626,7 @@ const Home = () => {
             style={{ scale }}
           >
             <img
-              src="/images/homepage/connections/1.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
-              src="/images/homepage/connections/2.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
-              src="/images/homepage/connections/3.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
-              src="/images/homepage/connections/4.jpg"
+              src="/images/homepage/connections/6.jpg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
@@ -651,7 +636,22 @@ const Home = () => {
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/6.jpg"
+              src="/images/homepage/connections/3.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/4.jpeg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/2.jpg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/1.jpeg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
@@ -661,7 +661,7 @@ const Home = () => {
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/8.jpg"
+              src="/images/homepage/connections/8.jpeg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
@@ -671,17 +671,17 @@ const Home = () => {
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
-              src="/images/homepage/connections/10.jpg"
-              alt="Background"
-              className="w-1/4 p-0.5 h-1/3 object-cover"
-            />
-            <img
-              src="/images/homepage/connections/11.jpg"
+              src="/images/homepage/connections/10.jpeg"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />
             <img
               src="/images/homepage/connections/12.jpeg"
+              alt="Background"
+              className="w-1/4 p-0.5 h-1/3 object-cover"
+            />
+            <img
+              src="/images/homepage/connections/11.jpg"
               alt="Background"
               className="w-1/4 p-1 h-1/3 object-cover"
             />

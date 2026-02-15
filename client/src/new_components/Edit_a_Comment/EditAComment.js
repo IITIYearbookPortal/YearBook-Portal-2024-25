@@ -207,7 +207,7 @@ export function Editacomment({ isDarkMode, setIsDarkMode }) {
   }, [comment_reciever_id_edit]);
 
   return (
-    <div className="fadeInUp h-screen">
+    <div className="fadeInUp h-screen bg-gray-800 ">
       <ToastContainer />
       <div class="main flex flex-row items-center justify-center">
         <div class="main2 flex justify-center flex-col w-1/2 h-6/10 ml-0">
@@ -226,10 +226,10 @@ export function Editacomment({ isDarkMode, setIsDarkMode }) {
               className={`info block p-0 ${
                 isDarkMode
                   ? "bg-gray-700 text-white border-2 border-white"
-                  : "bg-white text-black border-2 border-black"
+                  : "bg-gray-900 text-white border-2 border-black"
               }`}
             >
-              <div class="text-center">
+              <div class="text-center ">
                 {/* Profile Data here from backend */}
                 <p>{editCommentsUser.name}</p>
                 <p>Roll No: {editCommentsUser.roll_no}</p>
@@ -248,7 +248,7 @@ export function Editacomment({ isDarkMode, setIsDarkMode }) {
           <div className="hed">
             <h2
               class={`text-4xl font-semibold ${
-                isDarkMode ? "text-white" : "text-black"
+                isDarkMode ? "text-black" : "text-white"
               }`}
             >
               Edit Your Comment
@@ -290,7 +290,7 @@ export function Editacomment({ isDarkMode, setIsDarkMode }) {
         <div class="hed">
           <h2
             class={`text-4xl font-semibold ${
-              isDarkMode ? "text-white" : "text-black"
+              isDarkMode ? "text-white" : "text-white"
             }`}
           >
             Approved Comments
