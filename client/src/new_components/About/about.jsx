@@ -125,12 +125,12 @@ export default function About() {
         <p className="font-medium mb-2">Still facing issues? Contact:</p>
         <div className="space-y-2">
           <div>
-            <p className="font-semibold">Keshvi</p>
-            <p>+91 6263106823</p>
+            <p className="font-semibold">Ayush</p>
+            <p>+91 8218959142</p>
           </div>
           <div>
-            <p className="font-semibold">Anshuman</p>
-            <p>+91 8860271033</p>
+            <p className="font-semibold">Imran</p>
+            <p>+91 9322941353</p>
           </div>
         </div>
 
