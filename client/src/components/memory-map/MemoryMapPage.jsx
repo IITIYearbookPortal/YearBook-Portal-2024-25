@@ -11,6 +11,7 @@ import './MemoryMapPage.css';
 import { LoginContext } from '../../helpers/Context';
 import jwt_decode from 'jwt-decode';
 import { CampusDataProvider } from './memoryMapContext';
+import alumniData from '../../new_components/Navbar/akumniData.json';
 
 function MemoryMapPage() {
   const [selectedSeniors, setSelectedSeniors] = useState([]); // CHANGED
@@ -24,6 +25,10 @@ function MemoryMapPage() {
   }
 
   if (Object.keys(user).length === 0) {
+    window.location.href = '/';
+  }
+
+  if (!alumniData.includes(user.email)) {
     window.location.href = '/';
   }
 
