@@ -3,15 +3,27 @@ import { cn } from '../../lib/utils';
 import { Check, GraduationCap, Search } from 'lucide-react';
 import './SeniorSelector.css';
 
-function SeniorSelector({ seniors, selectedSeniors, onChange }) {
+function SeniorSelector({ seniors = [], selectedSeniors = [], onChange, loggedInUser }) {
   const [query, setQuery] = useState('');
 
   const filteredSeniors = useMemo(() => {
-    if (!query) return seniors;
-    return seniors.filter((s) =>
-      s.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [seniors, query]);
+    if (!seniors.length) return [];
+
+    //Search Senior
+    if (query) {
+      return seniors
+        .filter((s) => s?.name?.toLowerCase().includes(query.toLowerCase()))
+        .slice(0, 4); 
+    }
+
+    const others = seniors
+      .filter((s) => s.id !== loggedInUser?.id)
+      .sort((a, b) => b.createdAt - a.createdAt); 
+
+    const latestThree = others.slice(0, 3);
+
+    return loggedInUser ? [loggedInUser, ...latestThree] : latestThree;
+  }, [seniors, query, loggedInUser]);
 
   const isAllSelected = selectedSeniors.length === 0; // CHANGED
 
@@ -75,7 +87,7 @@ function SeniorSelector({ seniors, selectedSeniors, onChange }) {
         </button>
 
         {/* Individual seniors */}
-        {filteredSeniors.map((senior) => {
+        {filteredSeniors.filter(Boolean).map((senior) => {
           const initials = senior.name
             .split(' ')
             .map((n) => n[0])

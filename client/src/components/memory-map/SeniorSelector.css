@@ -1,15 +1,13 @@
-/* SeniorSelector.css */
-
-/* Card */
+/* ---- Card ---- */
 .ss-card {
-  background: var(--card, #fff);
+  background: #1f2937; /* dark card */
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
-  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
-/* Header */
+/* ---- Header ---- */
 .ss-header {
   display: flex;
   align-items: center;
@@ -19,23 +17,40 @@
 .ss-cap-icon {
   width: 20px;
   height: 20px;
-  color: var(--primary, #2563eb);
+  color: #76ABAE; /* PollPage accent */
 }
 .ss-title {
   margin: 0;
   font-size: 1rem;
   font-weight: 700;
+  color: #f3f4f6;
 }
 .ss-sub {
   margin: 0 0 0.75rem;
-  color: var(--muted-foreground, #6b7280);
+  color: rgba(255,255,255,0.5);
   font-size: 0.875rem;
 }
 
-/* List + items */
-.ss-list { display: flex; flex-direction: column; gap: 0.5rem; }
+/* ---- List + items ---- */
+.ss-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 350px;   
+  overflow-y: auto;   
+  padding-right: 4px;
+}
 
-/* Shared item styles */
+.ss-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ss-list::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+}
+
+/* ---- Items ---- */
 .ss-item {
   width: 100%;
   display: flex;
@@ -43,23 +58,26 @@
   gap: 0.75rem;
   padding: 0.625rem;
   border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   transition: all 180ms ease;
-  background: var(--background, #fff);
+  background: #222831; /* dark background */
   cursor: pointer;
 }
-.ss-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(2,6,23,0.04); }
+.ss-item:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 20px rgba(118,171,174,0.2); 
+}
 
 /* Selected vs default */
 .ss-item-selected {
-  background: rgba(37,99,235,0.08);
-  border-color: rgba(37,99,235,0.16);
+  background: rgba(118,171,174,0.15); /* PollPage primary */
+  border-color: rgba(118,171,174,0.3);
 }
 .ss-item-default {
-  background: var(--background, #fff);
+  background: #222831;
 }
 
-/* Avatar / initials */
+/* ---- Avatar / initials ---- */
 .ss-avatar {
   width: 40px;
   height: 40px;
@@ -68,93 +86,77 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  background: #1f2937;
 }
 .ss-avatar-text {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--avatar-foreground, #111827);
+  color: #f3f4f6;
 }
 
 /* Selected avatar look */
 .ss-avatar-selected {
-  background: var(--primary, #2563eb);
-  color: #fff;
+  background: #76ABAE;
+  color: #222831;
 }
 .ss-avatar-muted {
-  background: var(--muted, #f3f4f6);
-  color: #6b7280;
+  background: #374151;
+  color: rgba(255,255,255,0.5);
 }
 
 /* Gradient avatar for seniors */
 .ss-avatar-gradient {
-  background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(236,72,153,0.09));
-  color: rgba(37,99,235,0.9);
+  background: linear-gradient(135deg, rgba(118,171,174,0.12), rgba(236,72,153,0.09));
+  color: #76ABAE;
 }
 .ss-avatar-secondary {
-  background: linear-gradient(135deg, rgba(156,163,175,0.06), rgba(226,232,240,0.04));
-  color: rgba(63,63,70,0.9);
+  background: linear-gradient(135deg, rgba(107,114,128,0.06), rgba(75,85,99,0.08));
+  color: rgba(255,255,255,0.5);
 }
 
-/* Meta text */
+/* ---- Meta text ---- */
 .ss-meta { flex: 1; text-align: left; }
-.ss-name { margin: 0; font-weight: 600; color: var(--foreground, #0f172a); }
-.ss-note { margin: 0; font-size: 0.8rem; color: var(--muted-foreground, #6b7280); }
+.ss-name { margin: 0; font-weight: 600; color: #f3f4f6; }
+.ss-note { margin: 0; font-size: 0.8rem; color: rgba(255,255,255,0.5); }
 
-/* Check icon */
-.ss-check { width: 18px; height: 18px; color: var(--primary, #2563eb); }
+/* ---- Check icon ---- */
+.ss-check { width: 18px; height: 18px; color: #76ABAE; }
 
-/* Accessibility focus state */
+/* ---- Accessibility focus ---- */
 .ss-item:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+  box-shadow: 0 0 0 3px rgba(118,171,174,0.3);
 }
 
+/* ---- Responsive ---- */
 @media (max-width: 640px) {
-  .ss-card {
-    padding: 1rem;
-  }
-
-  .ss-item {
-    padding: 0.5rem;
-  }
-
-  .ss-name {
-    font-size: 0.9rem;
-  }
-
-  .ss-note {
-    font-size: 0.75rem;
-  }
+  .ss-card { padding: 1rem; }
+  .ss-item { padding: 0.5rem; }
+  .ss-name { font-size: 0.9rem; }
+  .ss-note { font-size: 0.75rem; }
 }
 
-
-
+/* ---- Search ---- */
 .ss-search {
   position: relative;
-  width: 100%;              /* same width as list */
+  width: 100%;
   margin: 12px 0 16px;
 }
-
 .ss-search-input {
   width: 100%;
-  height: 42px;             /* matches ss-item height feel */
-  padding: 0 12px 0 38px;   /* space for icon */
+  height: 42px;
+  padding: 0 12px 0 38px;
   border-radius: 12px;
-  border: 1px solid var(--border);
-  background: var(--background);
-  color: var(--foreground); /* FIX: text invisible */
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #1f2937;
+  color: #f3f4f6;
   font-size: 14px;
   outline: none;
 }
-
 .ss-search-input::placeholder {
-  color: var(--muted-foreground); /* FIX: placeholder visibility */
+  color: rgba(255,255,255,0.5);
 }
-
-.ss-search-input:focus {
-  border-color: var(--primary);
-}
-
+.ss-search-input:focus { border-color: #76ABAE; }
 .ss-search-icon {
   position: absolute;
   left: 12px;
@@ -162,6 +164,6 @@
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  color: var(--muted-foreground); /* aligned + visible */
+  color: rgba(255,255,255,0.5);
   pointer-events: none;
 }

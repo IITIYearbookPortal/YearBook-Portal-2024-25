@@ -134,7 +134,7 @@ function MemoryMapPage() {
                 </div>
                 <div>
                   <h1 className="mm-title">Memory Map</h1>
-                  <p className="mm-sub">College Yearbook • Class of 2025</p>
+                  <p className="mm-sub">College Yearbook • Class of 2026</p>
                 </div>
               </div>
 

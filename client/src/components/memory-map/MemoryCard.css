@@ -1,16 +1,16 @@
 /* ---- CARD CONTAINER ---- */
 .mc-card {
-  background: var(--card, #ffffff);
+  background: #1f2937; /* dark card background */
   border-radius: 1rem;
   padding: 1.25rem;
-  border: 1px solid rgba(0,0,0,0.08);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
   position: relative;
   transition: all 0.3s ease;
 }
 
 .mc-card:hover {
-  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.8);
   transform: translateY(-2px);
 }
 
@@ -27,7 +27,7 @@
   width: 40px;
   height: 40px;
   border-radius: 9999px;
-  background: linear-gradient(to bottom right, rgba(37,99,235,0.18), rgba(236,72,153,0.18));
+  background: linear-gradient(to bottom right, rgba(118,171,174,0.18), rgba(236,72,153,0.18));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,25 +36,25 @@
 .mc-avatar-text {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--primary, #2563eb);
+  color: #76ABAE; /* PollPage accent */
 }
 
 /* Author Name */
 .mc-author {
   margin: 0;
   font-weight: 500;
-  color: var(--foreground, #111827);
+  color: #f3f4f6; /* light text */
 }
 
 /* Timestamp */
 .mc-time {
   font-size: 0.75rem;
-  color: var(--muted-foreground, #6b7280);
+  color: rgba(255,255,255,0.5); /* muted text */
 }
 
 /* ---- CONTENT ---- */
 .mc-content {
-  color: rgba(17, 24, 39, 0.9);
+  color: #e5e7eb; /* light gray text */
   line-height: 1.6;
   margin-bottom: 1rem;
 }
@@ -71,7 +71,7 @@
   aspect-ratio: 16/9;
   overflow: hidden;
   border-radius: 0.5rem;
-  background: var(--muted, #f3f4f6);
+  background: rgba(255,255,255,0.05); /* subtle dark placeholder */
 }
 
 .mc-image {
@@ -91,12 +91,14 @@
 .mc-quote-icon {
   width: 32px;
   height: 32px;
-  color: var(--primary, #2563eb);
+  color: #76ABAE; /* PollPage accent */
 }
+
 .mc-card {
   padding: 1rem;
 }
 
+/* ---- RESPONSIVE ---- */
 @media (max-width: 640px) {
   .mc-header {
     gap: 0.5rem;
