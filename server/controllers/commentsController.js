@@ -120,7 +120,7 @@ const getComments = asyncHandler(async (req, res) => {
             user_comment_reciever_id: user.comment_reciever_id._id,
             comment_reciever_roll_no: user.comment_reciever_id.roll_no,
             order: comment.order,
-            comment_receiver_image: user.comment_reciever_id.profile_img,
+            comment_receiver_image: user.comment_reciever_id.profile_img.url,
           });
         }
       });
@@ -392,7 +392,7 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
       comment: comment.comment,
       name: comment.id ? comment.id.name : "N/A",
       roll_no: comment.id ? comment.roll_no : "N/A",
-      profImage: comment.id ? comment.profile_img : "N/A",
+      profImage: comment.id ? comment.profile_img.url : "N/A",
       email_id: comment.id ? comment.email_id : "N/A",
       order: comment.order,
       // academic_program: comment.id ? comment.id.academic_program : 'N/A',
@@ -702,7 +702,7 @@ const getEditCommentsInfo = asyncHandler(async (req, res) => {
       user: {
         name: receiver.name,
         roll_no: receiver.roll_no,
-        profile_img: receiver.profile_img || "",
+        profile_img: receiver.profile_img.url || "",
         academic_program: receiver.academic_program || "",
         department: receiver.department || "",
         about: receiver.about || "",

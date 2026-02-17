@@ -6,13 +6,11 @@ const jwt = require("jsonwebtoken");
 const Users = require("../models/userModel");
 const cloudinary = require("../config/cloudinary");
 
-// adding environment variable ****************
 const gmailUser = process.env.GMAIL_USER;
 const gmailPass = process.env.GMAIL_PASS;
 const serverLink = process.env.SERVER_LINK;
 const clientLink = process.env.CLIENT_LINK;
 
-//Api to set up sender to send a mail
 const transporter = nodemailer.createTransport({
   service: "Gmail",
   auth: {
@@ -22,7 +20,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-//Geeting all the users data who have created their profile
 const getUsersData = asyncHandler(async (req, res) => {
   //Get all usersData from MongoDb
   const User = await Users.find();
@@ -137,12 +134,10 @@ const createUsersData = asyncHandler(async (req, res) => {
     question_2,
   } = req.body;
 
-  // ✅ Image validation
   if (!req.file) {
     return res.status(400).json({ message: "Profile image is required" });
   }
 
-  // ✅ Field validation
   if (
     !email ||
     !name ||
@@ -160,7 +155,6 @@ const createUsersData = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All fields are required." });
   }
 
-  // ✅ Uniqueness checks
   if (await Users.findOne({ personal_email_id })) {
     return res.json({ message: "Personal Email Id is already in use" });
   }
@@ -177,10 +171,9 @@ const createUsersData = asyncHandler(async (req, res) => {
     return res.json({ message: "Roll_No is already in use" });
   }
 
-  // ✅ Upload image to Cloudinary (UPDATED FOLDER)
   const uploadStream = cloudinary.uploader.upload_stream(
     {
-      folder: "yearbook/signup", // 👈 THIS IS THE CHANGE
+      folder: "yearbook/signup",
       resource_type: "image",
     },
     async (error, result) => {
@@ -221,7 +214,6 @@ const createUsersData = asyncHandler(async (req, res) => {
 
 module.exports = createUsersData;
 
-// ---------------------- verify phone otp -------------------------
 
 const verifyPhoneOtp = async (req, res, next) => {
   try {
@@ -377,7 +369,6 @@ const updateUser = asyncHandler(async (req, res) => {
     question_2,
   } = req.body;
 
-  /* ---------- VALIDATION ---------- */
   if (
     !email ||
     !name ||
@@ -401,9 +392,7 @@ const updateUser = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  /* ---------- IMAGE UPDATE (SAFE) ---------- */
   if (req.file) {
-    // 1️⃣ Upload new image FIRST
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         {
@@ -419,7 +408,6 @@ const updateUser = asyncHandler(async (req, res) => {
       streamifier.createReadStream(req.file.buffer).pipe(stream);
     });
 
-    // 2️⃣ Delete old image ONLY if it exists AND is in same folder
     if (
       user.profile_img?.public_id &&
       user.profile_img.public_id.startsWith("yearbook/signup")
@@ -427,14 +415,12 @@ const updateUser = asyncHandler(async (req, res) => {
       await cloudinary.uploader.destroy(user.profile_img.public_id);
     }
 
-    // 3️⃣ Update DB
     user.profile_img = {
       url: uploadResult.secure_url,
       public_id: uploadResult.public_id,
     };
   }
 
-  /* ---------- TEXT UPDATE ---------- */
   user.name = name;
   user.roll_no = roll_no;
   user.academic_program = academic_program;
