@@ -14,7 +14,6 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
   const [decodedToken, setDecodedToken] = useState(null);
   const { result, isStudent, setIsStudent, user, loggedin, profile, loading } =
     useContext(LoginContext);
-    console.log(profile)
 
   const { name, roll_no } = useParams();
 
