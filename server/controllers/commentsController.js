@@ -708,7 +708,7 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
     const comment_reciever_roll_no = req.body.comment_reciever_roll_number;
     const isStudent = req.body.isStudent;
 
-    console.log("users+++++/8///:", comment_reciever_roll_no);
+
 
     const usersId = await Users.findOne({
       roll_no: comment_reciever_roll_no,
@@ -736,12 +736,11 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
       })
       .exec();
 
-    // console.log("users:", users);
 
     const user = {
       name: usersId.name,
       roll_no: usersId.roll_no,
-      profImage: usersId.profile_img,
+      profImage: usersId.profile_img.url,
       email: usersId.email,
       about: usersId.about,
     };

@@ -14,7 +14,6 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
   const [decodedToken, setDecodedToken] = useState(null);
   const { result, isStudent, setIsStudent, user, loggedin, profile, loading } =
     useContext(LoginContext);
-    console.log(profile)
 
   const { name, roll_no } = useParams();
 
@@ -99,7 +98,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
     } else {
       e.preventDefault();
       const confirmed = window.confirm(
-        "Are you sure you want to post this comment?"
+        "Are you sure you want to post this comment?",
       );
 
       if (confirmed) {
@@ -233,7 +232,6 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
           })}
         </div>
       </div>
-
     </div>
   );
 }
