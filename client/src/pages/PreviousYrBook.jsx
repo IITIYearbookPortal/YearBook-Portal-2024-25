@@ -119,6 +119,7 @@ const PreviousYrBook = () => {
       </div>
 
       {/* TABLE */}
+      <div className="overflow-x-auto">
       <table className="w-full table-auto bg-[#212121] font-custom border-collapse">
         <thead>
           <tr>
@@ -174,7 +175,7 @@ const PreviousYrBook = () => {
           ))}
         </tbody>
       </table>
-
+      </div>
       {/* PAGINATION */}
       <div className="flex justify-center items-center mt-4">
         <button
