@@ -170,7 +170,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             "recaptcha-container",
             {
               size: "invisible",
-              callback: (response) => {},
+              callback: (response) => { },
             },
             auth,
           );
@@ -193,7 +193,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           // },15000)
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   };
 
   const otpVerify = () => {
@@ -225,7 +225,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             }
             setMessage(res.data.message);
           })
-          .catch((err) => {});
+          .catch((err) => { });
       })
       .catch((error) => {
         setMessage("Incorrect OTP");
@@ -337,7 +337,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         }
         setMessage(res.data.message);
       })
-      .catch((err) => {});
+      .catch((err) => { });
   };
 
   useEffect(() => {
@@ -435,7 +435,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             Verify your academic details to continue{" "}
           </div>
 
-          <div class="h-52 w-full  absolute top-64 flex justify-center items-center flex-col md:flex-row md:mt-4 lg:mt-10 lg:text-xl afr">
+          <div class="h-52 w-full mb-10 absolute top-64 flex justify-center items-center flex-col md:flex-row md:mt-4 lg:mt-10 lg:text-xl afr">
             <div class="h-12 w-64 flex flex-col  md:w-56 lg:w-80 mt-1 mb-4 items-center afr">
               <h1 class=" text-base text-center lg:text-2xl text-[#EEEEEE]">
                 Enrollment number
@@ -674,7 +674,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 }
               }
             }}
-            class="border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] h-8 w-32 bottom-[6rem] flex justify-center items-center lg:bottom-20 absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-36 btnh border-dashed afu "
+            class="border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] flex justify-center items-center h-[35px] w-[130px] lg:h-10 lg:w-32 bottom-[5rem] absolute p-0 mb-1 text-base leading-none text-center afu  rounded-3xl md:top-96 md:mt-14   md:w-32 md:h-10  lg:mt-36 btnh border-dashed "
           >
             {" "}
             Continue{" "}
@@ -688,9 +688,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             {" "}
             <img
               src={Bbtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : "bg-[#222831]"
-              }`}
+              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-[#222831]"
+                }`}
             />{" "}
           </button>
 
@@ -802,9 +801,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             {" "}
             <img
               src={Bbtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : "bg-[#222831]"
-              }`}
+              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-[#222831]"
+                }`}
             />{" "}
           </button>
         </div>
@@ -814,7 +812,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           class={
             hid == 4
-              ? " h-screen w-screen   flex justify-center items-center text-1xl relative border-b-2 bg-[#222831]"
+              ? " min-h-screen w-screen overflow-y-auto  flex flex-col lg:flex-row justify-start lg:justify-center items-center text-1xl relative border-b-2 bg-[#222831] "
               : "hidden"
           }
         >
@@ -834,7 +832,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] max-w-xs lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
+              class="h-[32px] w-[200px] mb-10 max-w-xs lg:h-10 lg:w-64 lg:mt-12 border-2 border-white   rounded-2xl text-center bg-[#222831]"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -849,7 +847,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 EmailId != "" ? setHid(5) : setHid(4);
               }
             }}
-            class="border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] h-8 w-32 mt-60 flex items-center justify-center lg:bottom-60 absolute lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
+            class="border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] h-8 w-32 mt-60 flex items-center justify-center lg:bottom-60 absolute bottom-10 lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -863,9 +861,8 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             {" "}
             <img
               src={Bbtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : "bg-[#222831]"
-              }`}
+              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-[#222831]"
+                }`}
             />{" "}
           </button>
 
@@ -972,237 +969,175 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         </div>
 
         {/* eight page */}
-
         <div
           class={
             hid == 6
-              ? " h-screen  md:h-[105vh]  w-screen   flex flex-row md:justify-center md:items-center text-1xl relative  border-b-2 bg-[#222831] text-white  "
+              ? "min-h-screen w-screen relative border-b-2 bg-[#222831] text-white overflow-y-auto"
               : "hidden"
           }
         >
-          <div class="h-12 w-full text-[20px] top-[30px] left-[42px] md:left-4 absolute md:text-4xl md:top-28 lg:text-[42px] xl:text-4xl flex lg:left-[23rem] asr">
-            {" "}
-            Maybe, also fill these as well ?{" "}
+
+          {/* WRAPPER */}
+          <div className="relative min-h-screen pb-32">
+
+            {/* TITLE */}
+            <div class="w-full text-[20px] mt-8 text-center md:text-4xl lg:text-[42px] xl:text-4xl">
+              Maybe, also fill these as well ?
+            </div>
+
+            <div class="w-full mt-4 text-center md:text-2xl px-4">
+              (Our design team was out on vacation at this, so we couldn't create
+              individual pages for this) 😅
+            </div>
+
+            <div class="flex flex-col items-center mt-12 gap-4">
+
+              <input
+                type="text"
+                class="font-bold h-[35px] w-[225px] md:h-10 md:w-[270px] border-2 border-black text-black text-sm rounded-xl px-3"
+                placeholder="Alternate Contact Number"
+                name="alternate_contact_details"
+                value={userData.alternate_contact_details}
+                onChange={(e) =>
+                  setUserData({ ...userData, [e.target.name]: e.target.value })
+                }
+              />
+
+              <input
+                type="text"
+                class="font-bold h-[35px] w-[225px] md:h-10 md:w-[270px] border-2 border-black text-black text-sm rounded-xl px-3"
+                placeholder="Address"
+                name="address"
+                value={userData.address}
+                onChange={(e) =>
+                  setUserData({ ...userData, [e.target.name]: e.target.value })
+                }
+              />
+
+              <input
+                type="text"
+                class="font-bold h-[35px] w-[225px] md:h-10 md:w-[270px] border-2 border-black text-black text-sm rounded-xl px-3"
+                placeholder="Current company (if any)"
+                name="current_company"
+                value={userData.current_company}
+                onChange={(e) =>
+                  setUserData({ ...userData, [e.target.name]: e.target.value })
+                }
+              />
+
+              <input
+                type="text"
+                class="font-bold h-[35px] w-[225px] md:h-10 md:w-[270px] border-2 border-black text-black text-sm rounded-xl px-3"
+                placeholder="Designation (if any)"
+                name="designation"
+                value={userData.designation}
+                onChange={(e) =>
+                  setUserData({ ...userData, [e.target.name]: e.target.value })
+                }
+              />
+
+            </div>
+
+            <div class="flex justify-center mt-10 relative">
+              <textarea
+                maxLength={300}
+                class="rounded-xl bg-white text-black font-bold h-[13rem] w-[16rem] md:h-80 md:w-[300px] border-2 border-black text-base p-2"
+                placeholder="About Me (50 - 60 words)"
+                name="about"
+                value={userData.about}
+                onChange={(e) =>
+                  setUserData({ ...userData, [e.target.name]: e.target.value })
+                }
+              ></textarea>
+            </div>
+
+            <div class="flex justify-center mt-10">
+              <textarea
+                class="rounded-xl bg-white text-black font-bold h-[8rem] w-[16rem] md:h-28 md:w-[300px] border-2 border-black text-base p-2"
+                placeholder="What will you miss the most after graduating?"
+                name="question_1"
+                value={userData.question_1}
+                onChange={(e) =>
+                  setUserData({ ...userData, [e.target.name]: e.target.value })
+                }
+              ></textarea>
+            </div>
+
+            <div class="flex justify-center mt-6">
+              <textarea
+                class="rounded-xl bg-white text-black font-bold h-[6rem] w-[16rem] md:h-28 md:w-[300px] border-2 border-black text-base p-2"
+                placeholder="If you had power to implement a change in college what would it be?"
+                name="question_2"
+                value={userData.question_2}
+                onChange={(e) =>
+                  setUserData({ ...userData, [e.target.name]: e.target.value })
+                }
+              ></textarea>
+            </div>
+
           </div>
 
-          <div class="h-10 w-full top-[70px] left-[17px] absolute md:text-3xl md:top-44 md:w-100 md:left-14 lg:mt-0 lg:text-[24px] lg:left-10 flex justify-center asr">
-            {" "}
-            (Our design team was out on vacation at this, so we couldn't create
-            individual pages for this) 😅{" "}
-          </div>
+          {/*  CONTINUE BUTTON  */}
 
-          {/* 1st col  */}
-
-          <div class="h-14 w-54  absolute top-[130px] left-[40px] md:top-[260px] flex justify-center items-center flex-row lg:text-xl md:left-28 xl:left-60 af ">
-            <input
-              type="text"
-              class=" font-bold h-[30px] w-[225px] md:h-10 md:w-[210px]  mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
-              placeholder="Alternate Contact Number"
-              name="alternate_contact_details"
-              value={userData.alternate_contact_details}
-              onChange={(e) => {
-                setalternate_contact_details(e.target.value);
-                setUserData({ ...userData, [e.target.name]: e.target.value });
-              }}
-            ></input>
-          </div>
-
-          <div class="h-14 w-54  absolute top-[165px] left-[40px] md:top-[320px]  flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
-            <input
-              type="text"
-              class="font-bold h-[30px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
-              placeholder="Address"
-              name="address"
-              value={userData.address}
-              onChange={(e) => {
-                setUserData({ ...userData, [e.target.name]: e.target.value });
-                setaddress(e.target.value);
-              }}
-            ></input>
-          </div>
-
-          <div class="h-14 w-54  absolute top-[200px] left-[40px] md:top-[400px] flex justify-center items-center flex-row md:mt-0 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
-            <input
-              type="text"
-              class="font-bold h-[30px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
-              placeholder="Current company (if any)"
-              name="current_company"
-              value={userData.current_company}
-              onChange={(e) => {
-                setUserData({ ...userData, [e.target.name]: e.target.value });
-                setcurrent_company(e.target.value);
-              }}
-            ></input>
-          </div>
-
-          <div class="h-14 w-54  absolute top-[235px] left-[40px] md:top-[480px] flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl md:left-28 xl:left-60 af">
-            <input
-              type="text"
-              class="font-bold h-[30px] w-[225px] md:h-10 md:w-[210px] mt-0 border-2 border-black text-black  text-sm rounded-xl px-3"
-              placeholder="Designation (if any)"
-              name="designation"
-              value={userData.designation}
-              onChange={(e) => {
-                setUserData({ ...userData, [e.target.name]: e.target.value });
-                setdesignation(e.target.value);
-              }}
-            ></input>
-          </div>
-
-          {/* 2nd col */}
-
-          <div class=" h-48 w-36 md:h-80 w-70 absolute top-[250px] left-[40px] md:top-[220px] mt-12 md:mt-8 lg:mt-[10rem] lg:text-xl md:left-[400px] xl:left-[570px] xl:top-[215px] xl:mt-0 af">
-            <textarea
-              type="text"
-              onInput={handleInputChange}
-              maxLength={300}
-              class="rounded-xl bg-white text-black font-bold  h-[13rem] w-[16rem] md:h-80 max-h-[17rem] md:w-[270px] lg:mt-[-8rem] xl:mt-12 border-2 border-black   text-base text-start p-2"
-              placeholder="    About Me (50 - 60 words)"
-              name="about"
-              value={userData.about}
-              onChange={(e) => {
-                setUserData({ ...userData, [e.target.name]: e.target.value });
-                setabout(e.target.value);
-              }}
-            ></textarea>
-            <p class="absolute bottom-2 left-44 text-sm text-gray-600 bg-white px-2 py-1 rounded-md">
-              {300 - len}/300
-            </p>
-          </div>
-
-          {/* 3rd col */}
-
-          <div class="h-40 w-70  absolute top-[495px] left-[40px]  mt-4   md:mt-20  md:left-[5rem] lg:mt-[13rem] lg:text-xl  xl:left-[930px] xl:mt-10 xl:top-[220px] af">
-            <textarea
-              type="text"
-              class="rounded-xl bg-white text-black font-bold h-[8rem] max-h-[12rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
-              placeholder=" what wil you miss the most after   graduating"
-              name="question_1"
-              value={userData.question_1}
-              onChange={(e) => {
-                setUserData({ ...userData, [e.target.name]: e.target.value });
-                setquestion_1(e.target.value);
-              }}
-            ></textarea>
-          </div>
-
-          <div class="h-40 w-70  absolute top-[630px] left-[40px]  mt-4  md:mt-20 md:left-[5rem]  lg:mt-[22rem] lg:text-xl xl:left-[930px] xl:mt-12 xl:top-[360px] af">
-            <textarea
-              type="text"
-              class="rounded-xl bg-white text-black font-bold h-[6rem] max-h-[13rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
-              placeholder=" If you had power to implement a change in college what would it be?"
-              name="question_2"
-              value={userData.question_2}
-              onChange={(e) => {
-                setUserData({ ...userData, [e.target.name]: e.target.value });
-                setquestion_2(e.target.value);
-              }}
-            ></textarea>
-          </div>
-          <div id="recaptcha-container"></div>
-
-          <button
-            className="submit1"
-            id="sub5"
-            disabled={state}
-            onClick={() => {
-              {
+          <div className="w-full flex justify-center py-8">
+            <button
+              disabled={state}
+              onClick={() => {
                 if (
-                  alternate_contact_details === "" ||
-                  address === "" ||
-                  about === "" ||
-                  question_1 === "" ||
-                  question_2 === ""
+                  !userData.alternate_contact_details ||
+                  !userData.address ||
+                  !userData.about ||
+                  !userData.question_1 ||
+                  !userData.question_2
                 ) {
                   HandleEmpty("");
                 } else {
                   setHid(7);
                   onSubmit();
-                  // resendOTP();
                 }
-              }
-            }}
-            class="border-2 border-black bg-white text-black h-8 w-32 bottom-[2rem] left-32 flex items-center justify-center absolute lg:left-[469px] lg:bottom-8  p-0 text-base leading-none text-center  rounded-3xl md:bottom-[10rem]  md:w-32 md:h-10  lg:mt-8 xl:bottom-10  xl:left-[648px] btnh border-dashed afd"
-          >
-            {" "}
-            Continue{" "}
-          </button>
+              }}
+              class="border-2 border-black bg-white text-black h-10 w-32 
+             flex items-center justify-center text-base 
+             rounded-3xl border-dashed"
+            >
+              Continue
+            </button>
+          </div>
 
-          <button
-            onClick={() => {
-              setHid(5);
-            }}
-          >
-            {" "}
-            <img
-              src={Bbtn}
-              class={`hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${
-                isDarkMode ? "bg-gray-400" : ""
-              }`}
-            />{" "}
-          </button>
         </div>
-        {/* fourth page */}
 
+        {/* fourth page */}
         <div
           class={
             hid == 7
-              ? " h-screen w-screen bg-[#222831] text-white flex justify-center items-center  relative  border-b-2  "
+              ? "h-screen w-screen bg-[#222831] text-white flex flex-col items-center relative border-b-2"
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-[30px] left-4 absolute text-[23px]  md:text-3xl md:top-40 lg:text-[34px] xl:text-4xl lg:top-48 flex justify-center items-center asr ">
-            {" "}
-            Don't take it personally "Corporate" wants to verify your phone
-            number{" "}
+
+          <div class="w-full mt-10 text-[23px] md:text-3xl lg:text-[34px] xl:text-4xl text-center px-6">
+            Don't take it personally "Corporate" wants to verify your phone number
           </div>
 
-          <div class=" h-10 w-full top-[150px] left-0 absolute  md:top-64 md:w-100 lg:mt-4 md:text-[18px] flex justify-center asr">
-            {" "}
-            (Enter the OTP you recieved on your phone){" "}
+          {/*  SUBTEXT  */}
+          <div class="w-full mt-6 md:text-[18px] text-center">
+            (Enter the OTP you recieved on your phone)
           </div>
 
-          <div class="h-14 w-48  absolute top-[180px] sm:top-80 flex justify-center items-center flex-row md:mt-0 lg:mt-10 lg:text-xl afu">
+          {/*  OTP INPUT  */}
+          <div class="mt-8 flex justify-center">
             <input
               type="text"
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 text-black lg:mt-12 border-2 rounded-2xl text-center border-black  "
+              class="h-[32px] w-[200px] lg:h-10 lg:w-64 text-black border-2 rounded-2xl text-center border-black"
               maxLength={6}
               onChange={(e) => {
                 setOtp1(e.target.value);
                 setOtp(e.target.value);
               }}
-            ></input>
+            />
           </div>
 
-          {/* <a href={linkOTP}> */}
-          <button
-            disabled={seconds > 0 || minutes > 0}
-            style={{
-              color:
-                seconds > 0 || minutes > 0
-                  ? `${isDarkMode ? "gray" : "#DFE3E8"}`
-                  : `${isDarkMode ? "#222831" : "white"}`,
-            }}
-            onClick={() => {
-              resendOTP();
-            }}
-            class="hover:underline  underline-offset-2 flex  items-center justify-center mt-20  h-8 w-32 absolute p-0 text-xl leading-none md:ml-52 md:top-96 md:mt-40 md:w-32 md:h-10 lg:mt-36  lg:left-40 xl:left-64 afu"
-          >
-            {" "}
-            Resend Otp{" "}
-          </button>
-          {/* </a> */}
-          <div class="flex  md:mt-60  absolute  md:top-52 md:ml-52 md:h-10 md:text-[20px] md:mt-72 lg:left-40 xl:left-64 afu ">
-            {seconds > 0 || minutes > 0 ? (
-              <p>
-                Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:
-                {seconds < 10 ? `0${seconds}` : seconds}
-              </p>
-            ) : (
-              <p>Didn't recieve code?</p>
-            )}
-          </div>
-
+          {/*  CONTINUE BUTTON */}
           <button
             onClick={() => {
               HandleEmpty(Otp1);
@@ -1212,13 +1147,45 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               }
             }}
             disabled={isButtonDisabled}
-            class="h-8 w-32 flex items-center justify-center sm:right-auto border-2 border-black bg-white text-black absolute    p-0 text-base leading-none text-center  rounded-3xl md:mr-28 top-[250px] md:top-96 md:mt-15 md:w-32 sm:top-90 md:h-10  lg:right-52 xl:right-[350px]  lg:mt-28 btnh border-dashed afu"
+            class="h-10 w-32 mt-6 border-2 border-black bg-white text-black 
+           text-base rounded-3xl border-dashed"
           >
-            {" "}
-            Continue{" "}
+            Continue
           </button>
 
-          {/* <button
+          {/*  BOTTOM SECTION  */}
+          <div className="absolute bottom-10 w-full flex flex-col items-center gap-2">
+
+            <div className="text-center">
+              {seconds > 0 || minutes > 0 ? (
+                <p>
+                  Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:
+                  {seconds < 10 ? `0${seconds}` : seconds}
+                </p>
+              ) : (
+                <p>Didn't recieve code?</p>
+              )}
+            </div>
+
+            <button
+              disabled={seconds > 0 || minutes > 0}
+              style={{
+                color:
+                  seconds > 0 || minutes > 0
+                    ? `${isDarkMode ? "gray" : "#DFE3E8"}`
+                    : `${isDarkMode ? "#222831" : "white"}`,
+              }}
+              onClick={resendOTP}
+              class="hover:underline underline-offset-2 text-xl"
+            >
+              Resend Otp
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* <button
             onClick={() => {
               setHid(6);
             }}
@@ -1231,7 +1198,6 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               }`}
             />{" "}
           </button> */}
-        </div>
         {/* sixth page */}
 
         <div
