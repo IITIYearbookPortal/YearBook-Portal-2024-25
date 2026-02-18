@@ -66,7 +66,7 @@ useEffect(() => {
           path: `/profile/${profile.roll_no}/${profile.name}`,
         },
         { name: "Previous Year Book", path: "/previous-yrbook" },
-        { name: "Memory Map", path: "/memory" },
+        // { name: "Memory Map", path: "/memory" },
         { name: "More Links", path: "/footer" },
         { name: "Logout", path: "/logout" },
       ]);
@@ -97,7 +97,7 @@ useEffect(() => {
           </div>
 
           {/* Centered Links (Desktop View) */}
-          <ul className="absolute left-1/2 font-bold transform -translate-x-1/2 hidden lg:flex space-x-12 text-base">
+          <ul className="absolute left-[55%] font-bold transform -translate-x-1/2 hidden lg:flex space-x-12 text-base ml-2">
             {links.map((link, index) => (
               <li key={index}>
                 <a
@@ -132,7 +132,12 @@ useEffect(() => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="absolute top-16 w-full p-8 flex flex-col justify-center items-center lg:hidden backdrop-blur-sm">
+          
+// {isMobileMenuOpen && (
+//   <div className="absolute top-16 left-0 w-full z-[9999] p-8 flex flex-col justify-center items-center lg:hidden backdrop-blur-sm bg-black/80">
+
+
+          <div className="absolute top-16 w-full z-50 left-0 p-8 flex flex-col justify-center items-center lg:hidden backdrop-blur-sm bg-black/30">
             <ul className="flex flex-col space-y-6 items-center">
               {links.map((link, index) => (
                 <li key={index}>
