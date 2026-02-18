@@ -123,9 +123,8 @@ function Edit({ isDarkMode }) {
       <div className="containre">
         <div className="container2 flex flex-row">
           <div
-            className={`leftprt ${
-              isDarkMode ? "bg-gray-700 border-white" : "bg-[#111827] border-black"
-            } border-2`}
+            className={`leftprt ${isDarkMode ? "bg-gray-700 border-white" : "bg-[#111827] border-black"
+              } border-2`}
           >
             <h1 id="fill">Edit your Profile</h1>
 
@@ -171,9 +170,16 @@ function Edit({ isDarkMode }) {
             <p className="mb-2 text-white">Q2. College change you'd implement?</p>
             <input className="inped" name="question_2" value={userData.question_2 || ""} onChange={handleChange} />
 
-            <button className="sbmit1 mt-5" onClick={onUpdate} disabled={isSubmitting}>
-              {isSubmitting ? "Updating..." : "Update"}
-            </button>
+            <div className="btn-wrapper">
+              <button
+                className="sbmit1 mt-5"
+                onClick={onUpdate}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Updating..." : "Update"}
+              </button>
+            </div>
+
           </div>
 
           <div className="rightprt">
