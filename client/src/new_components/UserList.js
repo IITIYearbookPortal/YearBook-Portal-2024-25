@@ -134,7 +134,8 @@ const UserList = () => {
           />
         </div>
       </div>
-
+              
+    <div className="overflow-x-auto">
       <table className="w-full lg:w-full table-auto  border-collapse font-custom bg-[#212121]">
         <thead>
           <tr>
@@ -198,6 +199,7 @@ const UserList = () => {
           ))}
         </tbody>
       </table>
+    </div>
       <div className="flex justify-center items-center mt-4">
         <button
           className={`p-2 border bg-gray-800 text-white rounded ${
