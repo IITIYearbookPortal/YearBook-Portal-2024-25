@@ -43,7 +43,7 @@ function MemoryMapPage() {
       name: u.name,
       department: u.department,
       avatar: u.profile_img,
-      graduationYear: 2025,
+      graduationYear: 2026,
     }));
   }, [allUsers]);
 
