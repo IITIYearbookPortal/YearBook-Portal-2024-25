@@ -224,6 +224,16 @@
 //     }
 // }
 
+.btn-wrapper {
+  display: flex;
+  justify-content: flex-start; // default (desktop)
+}
+
+@media (max-width: 1200px) {
+  .btn-wrapper {
+    justify-content: center;
+  }
+}
 
 .containre {
     font-size: 1.01rem;
