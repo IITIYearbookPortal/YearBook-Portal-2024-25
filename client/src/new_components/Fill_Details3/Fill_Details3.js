@@ -170,7 +170,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             "recaptcha-container",
             {
               size: "invisible",
-              callback: (response) => { },
+              callback: (response) => {},
             },
             auth,
           );
@@ -193,7 +193,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           // },15000)
         }
       })
-      .catch((err) => { });
+      .catch((err) => {});
   };
 
   const otpVerify = () => {
@@ -225,7 +225,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
             }
             setMessage(res.data.message);
           })
-          .catch((err) => { });
+          .catch((err) => {});
       })
       .catch((error) => {
         setMessage("Incorrect OTP");
@@ -337,7 +337,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         }
         setMessage(res.data.message);
       })
-      .catch((err) => { });
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -977,10 +977,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           }
         >
 
-          {/* WRAPPER */}
           <div className="relative min-h-screen pb-32">
 
-            {/* TITLE */}
+            <div id="recaptcha-container"></div>
+
             <div class="w-full text-[20px] mt-8 text-center md:text-4xl lg:text-[42px] xl:text-4xl">
               Maybe, also fill these as well ?
             </div>
@@ -998,9 +998,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 placeholder="Alternate Contact Number"
                 name="alternate_contact_details"
                 value={userData.alternate_contact_details}
-                onChange={(e) =>
-                  setUserData({ ...userData, [e.target.name]: e.target.value })
-                }
+                onChange={(e) => {
+                  setalternate_contact_details(e.target.value);
+                  setUserData({ ...userData, [e.target.name]: e.target.value });
+                }}
               />
 
               <input
@@ -1009,9 +1010,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 placeholder="Address"
                 name="address"
                 value={userData.address}
-                onChange={(e) =>
-                  setUserData({ ...userData, [e.target.name]: e.target.value })
-                }
+                onChange={(e) => {
+                  setUserData({ ...userData, [e.target.name]: e.target.value });
+                  setaddress(e.target.value);
+                }}
               />
 
               <input
@@ -1020,9 +1022,10 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 placeholder="Current company (if any)"
                 name="current_company"
                 value={userData.current_company}
-                onChange={(e) =>
-                  setUserData({ ...userData, [e.target.name]: e.target.value })
-                }
+                onChange={(e) => {
+                  setUserData({ ...userData, [e.target.name]: e.target.value });
+                  setcurrent_company(e.target.value);
+                }}
               />
 
               <input
@@ -1031,47 +1034,55 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 placeholder="Designation (if any)"
                 name="designation"
                 value={userData.designation}
-                onChange={(e) =>
-                  setUserData({ ...userData, [e.target.name]: e.target.value })
-                }
+                onChange={(e) => {
+                  setUserData({ ...userData, [e.target.name]: e.target.value });
+                  setdesignation(e.target.value);
+                }}
               />
 
             </div>
 
             <div class="flex justify-center mt-10 relative">
               <textarea
+                type="text"
+                onInput={handleInputChange}
                 maxLength={300}
-                class="rounded-xl bg-white text-black font-bold h-[13rem] w-[16rem] md:h-80 md:w-[300px] border-2 border-black text-base p-2"
-                placeholder="About Me (50 - 60 words)"
+                class="rounded-xl bg-white text-black font-bold  h-[13rem] w-[16rem] md:h-80 max-h-[17rem] md:w-[270px] lg:mt-[-8rem] xl:mt-12 border-2 border-black   text-base text-start p-2"
+                placeholder="    About Me (50 - 60 words)"
                 name="about"
                 value={userData.about}
-                onChange={(e) =>
-                  setUserData({ ...userData, [e.target.name]: e.target.value })
-                }
+                onChange={(e) => {
+                  setUserData({ ...userData, [e.target.name]: e.target.value });
+                  setabout(e.target.value);
+                }}
               ></textarea>
             </div>
 
             <div class="flex justify-center mt-10">
               <textarea
-                class="rounded-xl bg-white text-black font-bold h-[8rem] w-[16rem] md:h-28 md:w-[300px] border-2 border-black text-base p-2"
-                placeholder="What will you miss the most after graduating?"
+                type="text"
+                class="rounded-xl bg-white text-black font-bold h-[8rem] max-h-[12rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
+                placeholder=" what wil you miss the most after   graduating"
                 name="question_1"
                 value={userData.question_1}
-                onChange={(e) =>
-                  setUserData({ ...userData, [e.target.name]: e.target.value })
-                }
+                onChange={(e) => {
+                  setUserData({ ...userData, [e.target.name]: e.target.value });
+                  setquestion_1(e.target.value);
+                }}
               ></textarea>
             </div>
 
             <div class="flex justify-center mt-6">
               <textarea
-                class="rounded-xl bg-white text-black font-bold h-[6rem] w-[16rem] md:h-28 md:w-[300px] border-2 border-black text-base p-2"
-                placeholder="If you had power to implement a change in college what would it be?"
+                type="text"
+                class="rounded-xl bg-white text-black font-bold h-[6rem] max-h-[13rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black   text-base text-start p-2"
+                placeholder=" If you had power to implement a change in college what would it be?"
                 name="question_2"
                 value={userData.question_2}
-                onChange={(e) =>
-                  setUserData({ ...userData, [e.target.name]: e.target.value })
-                }
+                onChange={(e) => {
+                  setUserData({ ...userData, [e.target.name]: e.target.value });
+                  setquestion_2(e.target.value);
+                }}
               ></textarea>
             </div>
 
@@ -1081,19 +1092,24 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
           <div className="w-full flex justify-center py-8">
             <button
+              className="submit1"
+              id="sub5"
               disabled={state}
               onClick={() => {
-                if (
-                  !userData.alternate_contact_details ||
-                  !userData.address ||
-                  !userData.about ||
-                  !userData.question_1 ||
-                  !userData.question_2
-                ) {
-                  HandleEmpty("");
-                } else {
-                  setHid(7);
-                  onSubmit();
+                {
+                  if (
+                    alternate_contact_details === "" ||
+                    address === "" ||
+                    about === "" ||
+                    question_1 === "" ||
+                    question_2 === ""
+                  ) {
+                    HandleEmpty("");
+                  } else {
+                    setHid(7);
+                    onSubmit();
+                    // resendOTP();
+                  }
                 }
               }}
               class="border-2 border-black bg-white text-black h-10 w-32 
@@ -1103,7 +1119,18 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               Continue
             </button>
           </div>
-
+          <button
+            onClick={() => {
+              setHid(5);
+            }}
+          >
+            {" "}
+            <img
+              src={Bbtn}
+              class={`hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${isDarkMode ? "bg-gray-400" : ""
+                }`}
+            />{" "}
+          </button>
         </div>
 
         {/* fourth page */}
@@ -1175,7 +1202,9 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                     ? `${isDarkMode ? "gray" : "#DFE3E8"}`
                     : `${isDarkMode ? "#222831" : "white"}`,
               }}
-              onClick={resendOTP}
+              onClick={() => {
+              resendOTP();
+            }}
               class="hover:underline underline-offset-2 text-xl"
             >
               Resend Otp
