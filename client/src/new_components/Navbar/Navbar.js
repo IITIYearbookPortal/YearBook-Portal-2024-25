@@ -53,6 +53,7 @@ useEffect(() => {
     if (!loggedin && !profile.length) {
       setLinks([
         { name: "Home", path: "/" },
+        { name: "Previous Year Book", path: "/previous-yrbook" },
         { name: "Login", path: "/login" },
         { name: "More Links", path: "/footer" },
       ]);
