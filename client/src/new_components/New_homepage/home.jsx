@@ -262,7 +262,7 @@ const Home = () => {
               transition={{ duration: 1 }}
               className="snap-scroll text-3xl md:text-5xl text-white"
             >
-              "Change can be scary,  <br />
+              "Every ending is just the beginning of  <br />
             </motion.h1>
             <motion.h1
               viewport={{ once: true }}
@@ -271,7 +271,7 @@ const Home = () => {
               transition={{ duration: 1 }}
               className="snap-scroll text-3xl md:text-5xl mt-4 text-white"
             >
-              but so is staying in the same place" <br />
+              something we can’t yet imagine" <br />
             </motion.h1>
             <motion.h1
               viewport={{ once: true }}
@@ -337,7 +337,7 @@ const Home = () => {
           transition={{ duration: 1 }}
           className="text-3xl text-[#fee06d] sm:text-4xl md:text-5xl lg:text-6xl px-4"
         >
-          "Relive the good times,
+          "Before we scatter into the world,
         </motion.h1>
 
         <motion.h1
@@ -347,7 +347,7 @@ const Home = () => {
           transition={{ duration: 1 }}
           className="text-3xl text-[#fee06d] sm:text-4xl md:text-5xl lg:text-6xl mt-2 px-4"
         >
-          one cherished comment at a time"
+          let's leave something behind"
         </motion.h1>
 
         <motion.p
@@ -357,7 +357,7 @@ const Home = () => {
           transition={{ duration: 1, delay: 1 }}
           className="text-md text-[#a1cfe9] sm:text-lg md:text-xl lg:text-2xl mt-8 max-w-3xl px-6 sm:px-10 lg:px-20"
         >
-          This is your space to capture and celebrate the memories that made your college journey special. From heartfelt farewells to funny moments, every comment holds a piece of your story. Relive the laughter, friendships, and milestones that shaped these unforgettable years.
+          This is your space to capture the moments that shaped you. From late-night laughs to heartfelt farewells, every message adds a page to your story. Revisit the friendships, milestones, and memories that made these years unforgettable.
         </motion.p>
 
         <div className="relative w-full h-full flex flex-col items-center justify-center mt-8 sm:flex-row sm:justify-center lg:space-x-20 md:space-x-20">
