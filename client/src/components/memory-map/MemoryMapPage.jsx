@@ -34,6 +34,16 @@ function MemoryMapPage() {
 
   const authorName = user?.name;
 
+  const userEmail = user?.email;
+
+const myRelatedMemories = useMemo(() => {
+  return memories.filter(
+    (m) =>
+      m.authorName === authorName ||   // written by me
+      m.seniorId === userEmail         // written for me
+  );
+}, [memories, authorName, userEmail]);
+
   const { allUsers } = useContext(LoginContext);
 
   const seniors = useMemo(() => {
@@ -103,17 +113,30 @@ function MemoryMapPage() {
 };
 
 
+  // const handlePrint = () => {
+  //   if (selectedSeniors.length === 0) {
+  //     toast({
+  //       title: 'Select seniors first',
+  //       description: 'Please select at least one senior to print.',
+  //       variant: 'destructive',
+  //     });
+  //     return;
+  //   }
+  //   window.print();
+  // };
+
   const handlePrint = () => {
-    if (selectedSeniors.length === 0) {
-      toast({
-        title: 'Select seniors first',
-        description: 'Please select at least one senior to print.',
-        variant: 'destructive',
-      });
-      return;
-    }
-    window.print();
-  };
+  if (myRelatedMemories.length === 0) {
+    toast({
+      title: 'No memories to print',
+      description: 'No related memories found.',
+      variant: 'destructive',
+    });
+    return;
+  }
+
+  window.print();
+};
 
   const seniorMemories = useMemo(() => {
     if (selectedSeniorIds.length === 0) return memories;
@@ -240,7 +263,7 @@ function MemoryMapPage() {
 )} */}
 <PrintSummary
   seniors={seniors}
-  memories={memories}
+  memories={myRelatedMemories}
 />
 
       </div>
