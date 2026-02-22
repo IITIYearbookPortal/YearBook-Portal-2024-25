@@ -9,7 +9,7 @@ module.exports = {
         "nav-light": "url('../public/images/global/bg-nav-light.png')",
         "nav-dark": "url('../public/images/global/bg-nav-dark.png')",
         "bg-dark": "url('../public/images/global/bg-dark.webp')",
-        "bannerImg": "url('../public/images/global/2_light.jpg')",
+        "bannerImg": "url('../public/images/global/bg-2.jpeg')",
         "blackOverlay": "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%)",
         "greenOverlay": "linear-gradient(to right, #EEEEEE 0%, #76ABAE 100%)",
       },
