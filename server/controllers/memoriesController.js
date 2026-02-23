@@ -1,20 +1,24 @@
-const asyncHandler = require('express-async-handler');
-const Memory = require('../models/memories');
-const { randomUUID } = require('crypto');
-const cloudinary = require('../config/cloudinary');
-const streamifier = require('streamifier');
+const asyncHandler = require("express-async-handler");
+const Memory = require("../models/memories");
+const { randomUUID } = require("crypto");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
+const PendingMemory = require("../models/pendingMemories.js");
 
 const getMemories = asyncHandler(async (req, res) => {
   const { seniorId, seniorIds } = req.query;
 
-  const filter = { isDeleted: false,isVerified:true };
+  const filter = {
+    isDeleted: false,
+    toBeAcceptedBy: { $size: 0 },
+  };
 
   if (seniorId) {
     filter.seniorId = seniorId;
   }
 
   if (seniorIds) {
-    filter.seniorId = { $in: seniorIds.split(',') };
+    filter.seniorId = { $in: seniorIds.split(",") };
   }
 
   const memories = await Memory.find(filter).sort({ createdAt: -1 });
@@ -36,13 +40,17 @@ const createMemory = asyncHandler(async (req, res) => {
   const { locationId, content, authorName } = req.body;
   let { seniorIds } = req.body;
 
+  //seniorsId is an array consisting targeting seniors emails as strings
+
+  // console.log(req.body);
+
   if (!locationId || !content || !authorName || !seniorIds) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   seniorIds = JSON.parse(seniorIds);
   if (!Array.isArray(seniorIds) || seniorIds.length === 0) {
-    return res.status(400).json({ error: 'Invalid seniorIds' });
+    return res.status(400).json({ error: "Invalid seniorIds" });
   }
 
   let imageUrls = [];
@@ -51,14 +59,14 @@ const createMemory = asyncHandler(async (req, res) => {
     const uploadPromises = req.files.map((file) => {
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-          { 
-            folder: 'yearbook/memories',
-            resource_type: 'image', 
+          {
+            folder: "yearbook/memories",
+            resource_type: "image",
           },
           (error, result) => {
             if (error) return reject(error);
             resolve(result.secure_url);
-          }
+          },
         );
 
         streamifier.createReadStream(file.buffer).pipe(stream);
@@ -77,11 +85,19 @@ const createMemory = asyncHandler(async (req, res) => {
     authorName,
     images: imageUrls,
     groupId,
-    isVerified : false,
+    // isVerified : false,
+    toBeAcceptedBy: seniorIds,
   }));
 
   const memories = await Memory.insertMany(docs);
 
+  for (const memory of memories) {
+    await PendingMemory.updateOne(
+      { seniorEmail: memory.seniorId },
+      { $addToSet: { memoryGroupIds: memory.groupId } },
+      { upsert: true },
+    );
+  }
   const formatted = memories.map((m) => ({
     id: m.id,
     locationId: m.locationId,
@@ -91,32 +107,31 @@ const createMemory = asyncHandler(async (req, res) => {
     images: m.images,
     createdAt: m.createdAt,
     groupId: m.groupId,
-    isVerified : false,
+    isVerified: false,
   }));
 
   res.status(201).json(formatted);
 });
 
-
-
 const getPendingRequests = asyncHandler(async (req, res) => {
-  const memories = await Memory.aggregate([
-    {
-      $match: { isVerified: false }
-    },
-    {
-      $sort: { createdAt: -1 }
-    },
-    {
-      $group: {
-        _id: "$groupId",
-        doc: { $first: "$$ROOT" }
-      }
-    },
-    {
-      $replaceRoot: { newRoot: "$doc" }
-    }
-  ]);
+  const { email } = req.params;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  const pending = await PendingMemory.findOne({
+    seniorEmail: email,
+  }).select("memoryGroupIds");
+
+  if (!pending || !pending.memoryGroupIds?.length) {
+    return res.json([]);
+  }
+
+  const memories = await Memory.find({
+    seniorId: email,
+    groupId: { $in: pending.memoryGroupIds },
+  }).sort({ createdAt: -1 });
 
   const response = memories.map((m) => ({
     id: m._id,
@@ -132,13 +147,22 @@ const getPendingRequests = asyncHandler(async (req, res) => {
   res.json(response);
 });
 
-
 const approveRequest = asyncHandler(async (req, res) => {
-  const { groupId } = req.params;
+  const { memoryGroupId, email } = req.params;
+
+  if (!memoryGroupId || !email) {
+    res.status(400);
+    throw new Error("Missing params");
+  }
+
+  await PendingMemory.updateOne(
+    { seniorEmail: email },
+    { $pull: { memoryGroupIds: memoryGroupId } },
+  );
 
   const result = await Memory.updateMany(
-    { groupId },
-    { $set: { isVerified: true } }
+    { groupId: memoryGroupId },
+    { $pull: { toBeAcceptedBy: email } },
   );
 
   if (result.matchedCount === 0) {
@@ -147,57 +171,68 @@ const approveRequest = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({
-    message: "Memories approved successfully",
+    message: "Memory approved",
     updatedCount: result.modifiedCount,
   });
 });
 
-
 const getPublicIdFromUrl = (url) => {
-  const uploadIndex = url.indexOf('/upload/');
+  const uploadIndex = url.indexOf("/upload/");
   const pathWithVersion = url.slice(uploadIndex + 8);
 
-  const pathWithoutVersion = pathWithVersion.replace(/^v\d+\//, '');
+  const pathWithoutVersion = pathWithVersion.replace(/^v\d+\//, "");
 
-  return pathWithoutVersion.replace(/\.[^/.]+$/, '');
+  return pathWithoutVersion.replace(/\.[^/.]+$/, "");
 };
 
-
 const deleteRequest = asyncHandler(async (req, res) => {
-  const { groupId } = req.params;
+  const { memoryGroupId, email } = req.params;
 
-  const memories = await Memory.find({ groupId });
+  if (!memoryGroupId || !email) {
+    res.status(400);
+    throw new Error("Missing params");
+  }
 
-  if (!memories || memories.length === 0) {
+  const memories = await Memory.find({
+    groupId: memoryGroupId,
+    toBeAcceptedBy: email,
+  });
+
+  if (!memories.length) {
     res.status(404);
-    throw new Error("Memories not found");
+    throw new Error("No pending memories for this user");
   }
 
   const deletePromises = [];
 
   memories.forEach((memory) => {
-    if (memory.images && memory.images.length > 0) {
+    if (memory.images?.length) {
       memory.images.forEach((imgUrl) => {
         const publicId = getPublicIdFromUrl(imgUrl);
-        deletePromises.push(
-          cloudinary.uploader.destroy(publicId)
-        );
+        deletePromises.push(cloudinary.uploader.destroy(publicId));
       });
     }
   });
 
-  if (deletePromises.length > 0) {
+  if (deletePromises.length) {
     await Promise.all(deletePromises);
   }
 
-  await Memory.deleteMany({ groupId });
+  await Memory.deleteMany({
+    groupId: memoryGroupId,
+    toBeAcceptedBy: email,
+  });
+
+  await PendingMemory.updateOne(
+    { seniorEmail: email },
+    { $pull: { memoryGroupIds: memoryGroupId } },
+  );
 
   res.status(200).json({
-    message: "Memory requests and images deleted successfully",
+    message: "Memory rejected",
     deletedCount: memories.length,
   });
 });
-
 
 // const memory_img = asyncHandler(async (req, res) => {
 //     const user_email = req.body.user_email
@@ -212,7 +247,7 @@ const deleteRequest = asyncHandler(async (req, res) => {
 //           { _id: NewUser._id },
 //           { $push: { memory_img: memory_img } },
 //         )
-  
+
 //         return res.send({ message: 'Image Uploaded Successfully.' })
 //       }
 //       try {
@@ -223,7 +258,7 @@ const deleteRequest = asyncHandler(async (req, res) => {
 //       } catch (err) {
 //         console.log(err)
 //       }
-  
+
 //       return res.send({ message: 'Image Upload Successfully.' })
 //     } catch (err) {
 //       console.log(err)
@@ -237,4 +272,4 @@ module.exports = {
   getPendingRequests,
   approveRequest,
   deleteRequest,
-}
+};
