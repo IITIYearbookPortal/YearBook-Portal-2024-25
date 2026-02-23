@@ -113,15 +113,18 @@ useEffect(() => {
           </ul>
 
           {/* Sign In Button */}
-          <div className="hidden lg:flex justify-end space-x-12 items-center bg-green-400 rounded-md">
-            <a
-              href={loggedin ? "/logout" : "/login"}
-              className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${loggedin ? "text-sm" : "text-base"
-                }`}
-            >
-              {loggedin ? "Logout" : "Sign Up"}
-            </a>
-          </div>
+          {!loggedin && 
+           (
+            <div className="hidden lg:flex justify-end space-x-12 items-center bg-green-400 rounded-md">
+              <a
+                href={"/login"}
+                className={`bg-gradient-to-r from-lightgrey to-neutral-100 px-3 py-2 rounded ${loggedin ? "text-sm" : "text-base"
+                  }`}
+              >
+                Sign Up
+              </a>
+            </div>)
+          }
 
           {/* Mobile Menu Toggle */}
           <div className="lg:hidden">
