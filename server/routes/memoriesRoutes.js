@@ -25,8 +25,8 @@ router.post(
 // ADD image to a memory
 // router.post('/memories_image', memory_img)
 
-router.get('/memories/get-pending-request',getPendingRequests);
-router.patch('/memories/accept/:groupId',approveRequest);
-router.delete('/memories/delete/:groupId',deleteRequest);
+router.get('/memories/get-pending-requests/:email',getPendingRequests);
+router.patch('/memories/accept/:memoryId/:email',approveRequest);
+router.delete('/memories/delete/:memoryId/:email',deleteRequest);
 
 module.exports = router

@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
 const API_BASE = process.env.REACT_APP_API_URL;
-const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL;
 
 const VerifyMemories = () => {
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -21,17 +21,20 @@ const VerifyMemories = () => {
     }
   }, [token]);
 
-  let isAdmin = user?.email === ADMIN_EMAIL;
-  // uncomment the below line to acces the page without been logged in as admin
-  isAdmin = true;
+  const email = user?.email;
+
   const fetchPending = useCallback(async () => {
+    if (!email) return;
+
     try {
       setLoading(true);
-      const res = await fetch(`${API_BASE}/memories/get-pending-request`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+
+      const res = await fetch(
+        `${API_BASE}/memories/get-pending-requests/${email}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
         },
-      });
+      );
 
       if (!res.ok) throw new Error("Failed to fetch pending memories");
 
@@ -42,44 +45,49 @@ const VerifyMemories = () => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, email]);
 
   useEffect(() => {
-    if (!token || !isAdmin) {
+    if (!token || !email) {
       navigate("/login", { replace: true });
     } else {
       fetchPending();
     }
-  }, [token, isAdmin, navigate, fetchPending]);
+  }, [token, email, navigate, fetchPending]);
 
-  const acceptMemory = async (groupId) => {
+  const acceptMemory = async (memoryId) => {
     try {
-      console.log(groupId);
-      const res = await fetch(`${API_BASE}/memories/accept/${groupId}`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `${API_BASE}/memories/accept/${memoryId}/${email}`,
+        {
+          method: "PATCH",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
       if (res.ok) fetchPending();
     } catch (err) {
       console.error("Error accepting memory:", err);
     }
   };
 
-  const deleteMemory = async (groupId) => {
+  const deleteMemory = async (memoryId) => {    
     try {
-      const res = await fetch(`${API_BASE}/memories/delete/${groupId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `${API_BASE}/memories/delete/${memoryId}/${email}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
       if (res.ok) fetchPending();
     } catch (err) {
       console.error("Error deleting memory:", err);
     }
   };
 
-  if (!token || !isAdmin) {
-    return null;
-  }
+  if (!token || !email) return null;
 
   return (
     <div className="container mx-auto px-6 py-8 text-white">
@@ -96,32 +104,36 @@ const VerifyMemories = () => {
           {memories.map((m) => (
             <div
               key={m.id}
-              className="border border-gray-600 rounded-lg p-4 bg-black bg-opacity-40"
+              className="border border-gray-700 rounded-xl p-5 bg-gray-900 shadow-md"
             >
-              <p className="font-semibold text-blue-400">{m.authorName}</p>
+              <p className="font-semibold text-emerald-400">{m.authorName}</p>
+
               <p className="mt-2 text-gray-200">{m.content}</p>
 
-              <div className="flex flex-wrap gap-3 mt-4">
-                {m.images?.map((img, i) => (
-                  <img 
-                    key={i} 
-                    src={img} 
-                    alt="Memory" 
-                    className="h-32 w-auto object-cover rounded shadow-md border border-gray-700" 
-                  />
-                ))}
-              </div>
+              {m.images?.length > 0 && (
+                <div className="flex flex-wrap gap-3 mt-4">
+                  {m.images.map((img, i) => (
+                    <img
+                      key={i}
+                      src={img}
+                      alt="Memory"
+                      className="h-32 rounded-lg border border-gray-800 object-cover"
+                    />
+                  ))}
+                </div>
+              )}
 
               <div className="flex gap-4 mt-6">
                 <button
-                  onClick={() => acceptMemory(m.groupId)}
-                  className="px-6 py-2 bg-green-600 hover:bg-green-700 transition-colors rounded font-medium"
+                  onClick={() => acceptMemory(m.id)}
+                  className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600/80 transition-colors rounded-xl font-medium"
                 >
                   Accept
                 </button>
+
                 <button
-                  onClick={() => deleteMemory(m.groupId)}
-                  className="px-6 py-2 bg-red-600 hover:bg-red-700 transition-colors rounded font-medium"
+                  onClick={() => deleteMemory(m.id)}
+                  className="px-6 py-2 bg-red-600 hover:bg-red-700 transition-colors rounded-xl font-medium"
                 >
                   Reject
                 </button>

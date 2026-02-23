@@ -41,6 +41,7 @@ import "react-toastify/dist/ReactToastify.css";
 export const Prof = ({ isDarkMode, setIsDarkMode }) => {
   const { loading, profile, loggedin, isStudent, verified } =
     useContext(LoginContext);
+
   const [state, setState] = useState(false);
   const [imageUploaded, setImageUploaded] = useState(false);
   const [imageSelected, setImageSelected] = useState(false);
@@ -58,7 +59,6 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
 
   // useEffect(() => {
   // }, [isDarkMode]);
-
 
   const { roll, name } = useParams();
 
@@ -337,18 +337,27 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
           <div className="flex justify-between items-start mb-6">
             <div className="text-emerald-400 font-medium">Student Details</div>
 
-            <div
-              onClick={() => {
-                const ans = window.confirm(
-                  "Are you sure you want to edit your Profile?",
-                );
-                if (ans) {
-                  navigate(`/edit/${profile.roll_no}/${profile.name}`);
-                }
-              }}
-              className="p-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 "
-            >
-              <button>Edit Profile</button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => (window.location.href = "/verifyMemories")}
+                className="px-4 py-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 transition-colors"
+              >
+                Verify Memories
+              </button>
+
+              <button
+                onClick={() => {
+                  const ans = window.confirm(
+                    "Are you sure you want to edit your Profile?",
+                  );
+                  if (ans) {
+                    navigate(`/edit/${profile.roll_no}/${profile.name}`);
+                  }
+                }}
+                className="px-4 py-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 transition-colors"
+              >
+                Edit Profile
+              </button>
             </div>
           </div>
 

@@ -75,6 +75,8 @@ function MemoryMapPage() {
   try {
     formData.append('authorName', authorName);
 
+    console.log(formData);
+
     const res = await axios.post(
       `${process.env.REACT_APP_API_URL}/create-memory`,
       formData,

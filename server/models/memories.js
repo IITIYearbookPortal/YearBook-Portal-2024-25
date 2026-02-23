@@ -30,6 +30,12 @@ const MemorySchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+
+    toBeAcceptedBy:{
+      type: [String],
+      default:[],
+    },
+
     groupId: {
       type: String,
     },
