@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const PendingMemoriesSchema = new mongoose.Schema(
   {
-    memoryIds: {
-      type: [mongoose.Schema.Types.ObjectId],
+    memoryGroupIds: {
+      type: [String],
       default: [],
     },
     seniorEmail: {

@@ -13,8 +13,8 @@ function AddMemoryForm({ onSubmit, onCancel }) {
   const handleImageSelect = (e) => {
     const files = Array.from(e.target.files);
 
-    if (images.length + files.length > 3) {
-      alert('You can select at most 3 images');
+    if (images.length + files.length > 1) {
+      alert('You can select at most 1 images');
       return;
     }
 
@@ -65,7 +65,7 @@ function AddMemoryForm({ onSubmit, onCancel }) {
 
       <div className="amf-field">
         <Label className="amf-label">
-          Add Photos (Max 3)
+          Add Photos (Max 1)
         </Label>
 
         <div className="amf-images-wrap">
@@ -86,7 +86,7 @@ function AddMemoryForm({ onSubmit, onCancel }) {
             </div>
           ))}
 
-          {images.length < 3 && (
+          {images.length < 1 && (
             <label className="amf-add-label">
               <ImagePlus />
               <input

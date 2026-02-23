@@ -33,7 +33,7 @@ const VerifyMemories = () => {
         `${API_BASE}/memories/get-pending-requests/${email}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        },
+        }
       );
 
       if (!res.ok) throw new Error("Failed to fetch pending memories");
@@ -55,14 +55,14 @@ const VerifyMemories = () => {
     }
   }, [token, email, navigate, fetchPending]);
 
-  const acceptMemory = async (memoryId) => {
+  const acceptMemory = async (memoryGroupId) => {
     try {
       const res = await fetch(
-        `${API_BASE}/memories/accept/${memoryId}/${email}`,
+        `${API_BASE}/memories/accept/${memoryGroupId}/${email}`,
         {
           method: "PATCH",
           headers: { Authorization: `Bearer ${token}` },
-        },
+        }
       );
 
       if (res.ok) fetchPending();
@@ -71,14 +71,14 @@ const VerifyMemories = () => {
     }
   };
 
-  const deleteMemory = async (memoryId) => {    
+  const deleteMemory = async (memoryGroupId) => {
     try {
       const res = await fetch(
-        `${API_BASE}/memories/delete/${memoryId}/${email}`,
+        `${API_BASE}/memories/delete/${memoryGroupId}/${email}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
-        },
+        }
       );
 
       if (res.ok) fetchPending();
@@ -125,14 +125,14 @@ const VerifyMemories = () => {
 
               <div className="flex gap-4 mt-6">
                 <button
-                  onClick={() => acceptMemory(m.id)}
+                  onClick={() => acceptMemory(m.groupId)}
                   className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600/80 transition-colors rounded-xl font-medium"
                 >
                   Accept
                 </button>
 
                 <button
-                  onClick={() => deleteMemory(m.id)}
+                  onClick={() => deleteMemory(m.groupId)}
                   className="px-6 py-2 bg-red-600 hover:bg-red-700 transition-colors rounded-xl font-medium"
                 >
                   Reject

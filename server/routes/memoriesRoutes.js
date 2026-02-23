@@ -26,7 +26,7 @@ router.post(
 // router.post('/memories_image', memory_img)
 
 router.get('/memories/get-pending-requests/:email',getPendingRequests);
-router.patch('/memories/accept/:memoryId/:email',approveRequest);
-router.delete('/memories/delete/:memoryId/:email',deleteRequest);
+router.patch('/memories/accept/:memoryGroupId/:email',approveRequest);
+router.delete('/memories/delete/:memoryGroupId/:email',deleteRequest);
 
 module.exports = router

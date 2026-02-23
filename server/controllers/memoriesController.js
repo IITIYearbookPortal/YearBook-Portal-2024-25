@@ -8,7 +8,10 @@ const PendingMemory = require("../models/pendingMemories.js");
 const getMemories = asyncHandler(async (req, res) => {
   const { seniorId, seniorIds } = req.query;
 
-  const filter = { isDeleted: false };
+  const filter = {
+    isDeleted: false,
+    toBeAcceptedBy: { $size: 0 },
+  };
 
   if (seniorId) {
     filter.seniorId = seniorId;
@@ -91,7 +94,7 @@ const createMemory = asyncHandler(async (req, res) => {
   for (const memory of memories) {
     await PendingMemory.updateOne(
       { seniorEmail: memory.seniorId },
-      { $addToSet: { memoryIds: memory._id } },
+      { $addToSet: { memoryGroupIds: memory.groupId } },
       { upsert: true },
     );
   }
@@ -119,34 +122,16 @@ const getPendingRequests = asyncHandler(async (req, res) => {
 
   const pending = await PendingMemory.findOne({
     seniorEmail: email,
-  }).select("memoryIds");
+  }).select("memoryGroupIds");
 
-  if (!pending || !pending.memoryIds.length) {
+  if (!pending || !pending.memoryGroupIds?.length) {
     return res.json([]);
   }
 
-  const memories = await Memory.aggregate([
-    {
-      $match: {
-        _id: { $in: pending.memoryIds },
-        seniorId: email,
-      },
-    },
-    {
-      $sort: { createdAt: -1 },
-    },
-    {
-      $group: {
-        _id: "$groupId",
-        doc: { $first: "$$ROOT" },
-      },
-    },
-    {
-      $replaceRoot: { newRoot: "$doc" },
-    },
-  ]);
-
-  console.log(memories);
+  const memories = await Memory.find({
+    seniorId: email,
+    groupId: { $in: pending.memoryGroupIds },
+  }).sort({ createdAt: -1 });
 
   const response = memories.map((m) => ({
     id: m._id,
@@ -163,11 +148,21 @@ const getPendingRequests = asyncHandler(async (req, res) => {
 });
 
 const approveRequest = asyncHandler(async (req, res) => {
-  const { groupId } = req.params;
+  const { memoryGroupId, email } = req.params;
+
+  if (!memoryGroupId || !email) {
+    res.status(400);
+    throw new Error("Missing params");
+  }
+
+  await PendingMemory.updateOne(
+    { seniorEmail: email },
+    { $pull: { memoryGroupIds: memoryGroupId } },
+  );
 
   const result = await Memory.updateMany(
-    { groupId },
-    { $set: { isVerified: true } },
+    { groupId: memoryGroupId },
+    { $pull: { toBeAcceptedBy: email } },
   );
 
   if (result.matchedCount === 0) {
@@ -176,7 +171,7 @@ const approveRequest = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({
-    message: "Memories approved successfully",
+    message: "Memory approved",
     updatedCount: result.modifiedCount,
   });
 });
@@ -191,19 +186,27 @@ const getPublicIdFromUrl = (url) => {
 };
 
 const deleteRequest = asyncHandler(async (req, res) => {
-  const { groupId } = req.params;
+  const { memoryGroupId, email } = req.params;
 
-  const memories = await Memory.find({ groupId });
+  if (!memoryGroupId || !email) {
+    res.status(400);
+    throw new Error("Missing params");
+  }
 
-  if (!memories || memories.length === 0) {
+  const memories = await Memory.find({
+    groupId: memoryGroupId,
+    toBeAcceptedBy: email,
+  });
+
+  if (!memories.length) {
     res.status(404);
-    throw new Error("Memories not found");
+    throw new Error("No pending memories for this user");
   }
 
   const deletePromises = [];
 
   memories.forEach((memory) => {
-    if (memory.images && memory.images.length > 0) {
+    if (memory.images?.length) {
       memory.images.forEach((imgUrl) => {
         const publicId = getPublicIdFromUrl(imgUrl);
         deletePromises.push(cloudinary.uploader.destroy(publicId));
@@ -211,14 +214,22 @@ const deleteRequest = asyncHandler(async (req, res) => {
     }
   });
 
-  if (deletePromises.length > 0) {
+  if (deletePromises.length) {
     await Promise.all(deletePromises);
   }
 
-  await Memory.deleteMany({ groupId });
+  await Memory.deleteMany({
+    groupId: memoryGroupId,
+    toBeAcceptedBy: email,
+  });
+
+  await PendingMemory.updateOne(
+    { seniorEmail: email },
+    { $pull: { memoryGroupIds: memoryGroupId } },
+  );
 
   res.status(200).json({
-    message: "Memory requests and images deleted successfully",
+    message: "Memory rejected",
     deletedCount: memories.length,
   });
 });
