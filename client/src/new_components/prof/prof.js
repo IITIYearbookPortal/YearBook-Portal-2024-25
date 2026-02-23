@@ -451,7 +451,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                               <div className="flex items-start gap-3">
                                 <img
                                   src={
-                                    val.id.profile_img.url ||
+                                    val?.id?.profile_img?.url ||
                                     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                                   }
                                   className="w-10 h-10 rounded-full object-cover"
@@ -564,7 +564,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                         <div className="flex items-start gap-3">
                           <img
                             src={
-                              val.id.profile_img.url ||
+                              val?.id?.profile_img?.url ||
                               "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                             }
                             className="w-10 h-10 rounded-full object-cover"
@@ -670,7 +670,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                         <div className="flex items-start gap-3">
                           <img
                             src={
-                              val.id.profile_img.url ||
+                              val?.id?.profile_img?.url ||
                               "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                             }
                             className="w-10 h-10 rounded-full object-cover"
