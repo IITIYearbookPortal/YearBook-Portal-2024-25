@@ -5,7 +5,6 @@ import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
 } from "firebase/auth";
-// import "./otpVerificationnew.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { LoginContext } from "../../helpers/Context";
@@ -16,6 +15,8 @@ import Abtn from "./arrowBtn.png";
 import { PhoneInput } from "react-international-phone";
 import jwt_decode from "jwt-decode";
 import { useNavigate, Link, useParams } from "react-router-dom";
+const RESEND_TIMEOUT_DURATION = 60; 
+
 
 function Fill1(props) {
   const {
@@ -32,7 +33,16 @@ function Fill1(props) {
     setProfileIcon,
     isStudent,
   } = useContext(LoginContext);
-
+  const [counter, setCounter] = useState(0);
+  useEffect(() => {
+    let timer;
+    if (counter > 0) {
+      timer = setInterval(() => {
+        setCounter((prevCounter) => prevCounter - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [counter]);
   let user;
 
   if (window.localStorage.getItem("token") !== null) {
@@ -79,7 +89,6 @@ function Fill1(props) {
   const navigate = useNavigate();
 
   const HandleEmpty = (e) => {
-    //for handling empty text
     if (e === "") {
       toast("Please fill all the details !", {
         theme: "dark",
@@ -88,128 +97,131 @@ function Fill1(props) {
     }
   };
 
-useEffect(() => {
-  console.log("[reCAPTCHA] useEffect triggered – starting...");
+  useEffect(() => {
+    console.log("[reCAPTCHA] useEffect triggered – starting...");
 
-  const initVerifier = async () => {
-    // Small delay to ensure DOM + reCAPTCHA script loaded
-    await new Promise(resolve => setTimeout(resolve, 500));
+    const initVerifier = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (window.recaptchaVerifier) {
-      console.log("[reCAPTCHA] Verifier exists – trying to render");
-      try {
-        await window.recaptchaVerifier.render();
-        console.log("[reCAPTCHA] Existing verifier ready");
-      } catch (err) {
-        console.error("[reCAPTCHA] Existing render error:", err);
-      }
-      return;
-    }
-
-    try {
-      console.log("[reCAPTCHA] Creating new verifier...");
-      window.recaptchaVerifier = new RecaptchaVerifier(
-  "recaptcha-container2",
-  {
-    size: "invisible",
-    callback: (response) => {
-      console.log("[reCAPTCHA] Solved:", response);
-    },
-    "expired-callback": () => {
-      console.log("[reCAPTCHA] Expired");
-    },
-  },
-  auth
-);
-
-
-      console.log("[reCAPTCHA] Verifier instance created");
-
-      await window.recaptchaVerifier.render();
-      console.log("[reCAPTCHA] Render success – verifier READY");
-    } catch (err) {
-      console.error("[reCAPTCHA] CRITICAL INIT ERROR:", err);
-      console.error("Full error stack:", err.stack);
-      toast.error("reCAPTCHA init failed – check console & refresh");
-    }
-  };
-
-  initVerifier();
-
-  return () => {
-    console.log("[reCAPTCHA] Cleanup...");
-    if (window.recaptchaVerifier) {
-      window.recaptchaVerifier.clear?.();
-      window.recaptchaVerifier = null;
-    }
-  };
-}, [auth]);
-
-
-const sendOTP = () => {
-  console.log("[sendOTP] Starting with phone:", userData.contact_details);
-
-  if (!userData.contact_details || !userData.contact_details.startsWith("+")) {
-    toast.error("Phone number must start with +91...");
-    setMessage("Invalid phone format");
-    return;
-  }
-
-  axios
-    .post(process.env.REACT_APP_API_URL + "/userDataNew", {
-      email: user.email,
-      personal_email_id: userData.personal_email_id,
-      contact_details: userData.contact_details,
-    })
-    .then((res) => {
-      console.log("[sendOTP] Backend save successful");
-      setMessage("Sending OTP...");
-
-      // Safety check – most important part
-            // Safety check
-      console.log("[sendOTP] Verifier at call time:", window.recaptchaVerifier); // ← Add this
-      if (!window.recaptchaVerifier) {
-        console.error("[sendOTP] verifier is null!");
-        toast.error("reCAPTCHA not ready. Refresh page.");
-        setMessage("reCAPTCHA failed to load. Please refresh and retry.");
+      if (window.recaptchaVerifier) {
+        console.log("[reCAPTCHA] Verifier exists – trying to render");
+        try {
+          await window.recaptchaVerifier.render();
+          console.log("[reCAPTCHA] Existing verifier ready");
+        } catch (err) {
+          console.error("[reCAPTCHA] Existing render error:", err);
+        }
         return;
       }
 
-      const phoneNumber = userData.contact_details;
-      const appVerifier = window.recaptchaVerifier;
+      try {
+        console.log("[reCAPTCHA] Creating new verifier...");
+        window.recaptchaVerifier = new RecaptchaVerifier(
+          "recaptcha-container2",
+          {
+            size: "invisible",
+            callback: (response) => {
+              console.log("[reCAPTCHA] Solved:", response);
+            },
+            "expired-callback": () => {
+              console.log("[reCAPTCHA] Expired");
+            },
+          },
+          auth
+        );
 
-      console.log("[sendOTP] Calling signInWithPhoneNumber...");
+        console.log("[reCAPTCHA] Verifier instance created");
 
-      signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-        .then((confirmationResult) => {
-          console.log("[sendOTP] OTP sent successfully");
-          window.confirmationResult = confirmationResult;
-          setSentOtp(true);
-          setSub(true);
-          toast.success("OTP sent!");
-        })
-        .catch((error) => {
-          console.error("[sendOTP] Firebase error:", error);
-          console.error("Code:", error.code);
-          console.error("Message:", error.message);
+        await window.recaptchaVerifier.render();
+        console.log("[reCAPTCHA] Render success – verifier READY");
+      } catch (err) {
+        console.error("[reCAPTCHA] CRITICAL INIT ERROR:", err);
+        console.error("Full error stack:", err.stack);
+        toast.error("reCAPTCHA init failed – check console & refresh");
+      }
+    };
 
-          let userMessage = "Failed to send OTP. Please try again.";
-          if (error.code === "auth/invalid-phone-number") {
-            userMessage = "Invalid phone number format";
-          } else if (error.code === "auth/too-many-requests") {
-            userMessage = "Too many attempts. Try again later.";
-          }
+    initVerifier();
 
-          toast.error(userMessage);
-          setMessage(userMessage);
-        });
-    })
-    .catch((err) => {
-      console.error("[sendOTP] Backend error:", err);
-      toast.error("Failed to save your details");
-      setMessage("Something went wrong. Try again.");
-    });
-};
+    return () => {
+      console.log("[reCAPTCHA] Cleanup...");
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear?.();
+        window.recaptchaVerifier = null;
+      }
+    };
+  }, [auth]);
+
+  const sendOTP = () => {
+    console.log("[sendOTP] Starting with phone:", userData.contact_details);
+
+    if (
+      !userData.contact_details ||
+      !userData.contact_details.startsWith("+")
+    ) {
+      toast.error("Phone number must start with +91...");
+      setMessage("Invalid phone format");
+      return;
+    }
+
+    axios
+      .post(process.env.REACT_APP_API_URL + "/userDataNew", {
+        email: user.email,
+        personal_email_id: userData.personal_email_id,
+        contact_details: userData.contact_details,
+      })
+      .then((res) => {
+        console.log("[sendOTP] Backend save successful");
+        setMessage("Sending OTP...");
+
+        console.log(
+          "[sendOTP] Verifier at call time:",
+          window.recaptchaVerifier
+        );
+        if (!window.recaptchaVerifier) {
+          console.error("[sendOTP] verifier is null!");
+          toast.error("reCAPTCHA not ready. Refresh page.");
+          setMessage("reCAPTCHA failed to load. Please refresh and retry.");
+          return;
+        }
+
+        const phoneNumber = userData.contact_details;
+        const appVerifier = window.recaptchaVerifier;
+
+        console.log("[sendOTP] Calling signInWithPhoneNumber...");
+
+        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+          .then((confirmationResult) => {
+            console.log("[sendOTP] OTP sent successfully");
+            window.confirmationResult = confirmationResult;
+            setSentOtp(true);
+            setCounter(RESEND_TIMEOUT_DURATION);
+            setSub(true);
+            toast.success("OTP sent!");
+          })
+          .catch((error) => {
+            console.error("[sendOTP] Firebase error:", error);
+            console.error("Code:", error.code);
+            console.error("Message:", error.message);
+
+            let userMessage = "Failed to send OTP. Please try again.";
+            if (error.code === "auth/invalid-phone-number") {
+              userMessage = "Invalid phone number format";
+            } else if (error.code === "auth/too-many-requests") {
+              userMessage = "Too many attempts. Try again later.";
+            }
+
+            toast.error(userMessage);
+            setMessage(userMessage);
+          });
+      })
+      .catch((err) => {
+        console.error("[sendOTP] Backend error:", err);
+        toast.error("Failed to save your details");
+        setMessage("Something went wrong. Try again.");
+      });
+  };
+
   const onSubmit = () => {
     setState(true);
     setTimeout(() => {
@@ -219,7 +231,6 @@ const sendOTP = () => {
   };
 
   const otpVerify = (e) => {
-    // e.preventDefault();
     setState(true);
     setTimeout(() => {
       setState(false);
@@ -241,14 +252,16 @@ const sendOTP = () => {
             ) {
               setHid(4);
               setFill(true);
-
               setSentOtp(false);
             }
             setMessage(res.data.message);
           })
           .catch((err) => {
-            console.error("Backend /verify failed:", err.response?.data || err.message);
-  toast.error("Verification failed on server. Try again.");
+            console.error(
+              "Backend /verify failed:",
+              err.response?.data || err.message
+            );
+            toast.error("Verification failed on server. Try again.");
           });
       })
       .catch((error) => {
@@ -265,56 +278,40 @@ const sendOTP = () => {
   const resendMail = () => {
     setMinutes(0);
     setSeconds(30);
-    // setLink(`/emailverification/${user.jti}`);
-        axios
-          .post(process.env.REACT_APP_API_URL + "/verify", {
-            userId: user.email,
-          })
-          .then((res) => {
-            if (
-              res.data.message ===
-              "Sent a verification email to your personal email_id"
-            ) {
-              // setHid(8);
-              // setFill(true);
-              // setSentOtp(false);
-            }
-            setMessage(res.data.message);
-          })
-          .catch((err) => {});
+    axios
+      .post(process.env.REACT_APP_API_URL + "/verify", {
+        userId: user.email,
+      })
+      .then((res) => {
+        setMessage(res.data.message);
+      })
+      .catch((err) => {});
   };
 
   return (
     <>
-      <div class=" h-fit w-screen ">
-                  <div id="recaptcha-container2"></div>
-
-        {/* first page */}
-
-        {/* secound page */}
-
-        {/* third page */}
+      <div className=" h-fit w-screen ">
+        <div id="recaptcha-container2"></div>
 
         <div
-          class={
+          className={
             hid == 1
               ? " h-screen w-screen bg-[#222831] text-white  flex justify-center items-center text-1xl relative  border-b-2  fadeInRight "
               : "hidden"
           }
         >
-          <div class="h-12 top-[30px] sm:top-30  absolute  md:text-3xl md:top-40  lg:text-4xl lg:top-48 flex justify-center items-center tmp afu ">
+          <div className="h-12 top-[30px] sm:top-30  absolute  md:text-3xl md:top-40  lg:text-4xl lg:top-48 flex justify-center items-center tmp afu ">
             {" "}
             We want to remember you forever 🤞{" "}
           </div>
 
-          <div class=" h-10 top-[60px] sm:top-56 absolute md:text-3xl md:top-64 lg:mt-2 lg:text-4xl flex justify-center items-center tmp afu">
+          <div className=" h-10 top-[60px] sm:top-56 absolute md:text-3xl md:top-64 lg:mt-2 lg:text-4xl flex justify-center items-center tmp afu">
             {" "}
-            Do tell us your <span class="text-red-600 ml-4">
-              phone number
-            </span>{" "}
+            Do tell us your{" "}
+            <span className="text-red-600 ml-4">phone number</span>{" "}
           </div>
 
-          <div class=" w-full flex justify-center items-center mt-7 md:mt-40  afu">
+          <div className=" w-full flex justify-center items-center mt-7 md:mt-40  afu">
             <PhoneInput
               style={{
                 padding: "0px",
@@ -328,8 +325,7 @@ const sendOTP = () => {
                 setPhone(phone);
                 setUserData({ ...userData, ["contact_details"]: phone });
               }}
-              className="border-2 rounded-xl border-black p-2 w-full flex justify-center items-center
-                "
+              className="border-2 rounded-xl border-black p-2 w-full flex justify-center items-center"
               inputStyle={{
                 width: "200px",
                 height: "40px",
@@ -343,21 +339,7 @@ const sendOTP = () => {
             />
           </div>
 
-          <div class="h-64 flex justify-center items-center flex-row ml-7 md:mt-32 afu absolute">
-            {/* <div>
-              <input
-                type="text"
-                class=" h-[41px] w-[200px] lg:h-10 lg:w-64 mt-12 border-2 border-black text-black rounded-2xl text-center"
-                placeholder="Contact Number*"
-                name="contact_details"
-                value={userData.contact_details}
-                onChange={(e) => {
-                  // HandleEmptyNo(e);
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                }}
-              ></input>
-            </div> */}
-          </div>
+          <div className="h-64 flex justify-center items-center flex-row ml-7 md:mt-32 afu absolute"></div>
 
           <button
             onClick={() => {
@@ -371,48 +353,45 @@ const sendOTP = () => {
                 });
               }
             }}
-            class="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black bottom-[80px] absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10  lg:mt-[12rem] btnh border-dashed afu "
+            className="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black bottom-[80px] absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10  lg:mt-[12rem] btnh border-dashed afu "
           >
             {" "}
             Continue{" "}
           </button>
 
-          <div class=" absolute bottom-4 left-4 lg:bottom-16 lg:left-8 afu">
+          <div className=" absolute bottom-4 left-4 lg:bottom-16 lg:left-8 afu">
             <img
               src={phoneimg}
               alt="phone"
-              class="hidden sm:block h-[90px] w-[90px] lg:h-40 lg:w-40 filter invert"
+              className="hidden sm:block h-[90px] w-[90px] lg:h-40 lg:w-40 filter invert"
             />
           </div>
-
-          {/* <button onClick={() => {
-            setHid(1);
-          }} > <img src={Abtn} class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr" /> </button> */}
         </div>
 
-        {/* fifth page */}
-
         <div
-          class={
+          className={
             hid == 2
               ? " h-screen w-screen  bg-[#222831] text-white flex justify-center items-center text-1xl relative  border-b-2"
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-[80px] left-4 absolute text-[20px]  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center tmp afd">
+          <div className="h-12 w-full top-[80px] left-4 absolute text-[20px]  md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center tmp afd">
             {" "}
             And your{" "}
-            <span class="text-red-600 ml-2 mr-2 text-[20px] md:text-5xl"> Personal </span>{" "}
+            <span className="text-red-600 ml-2 mr-2 text-[20px] md:text-5xl">
+              {" "}
+              Personal{" "}
+            </span>{" "}
             email ?{" "}
           </div>
 
-          <div class="h-14 w-48 lg:h-14 lg:w-72 absolute top-[150px] lg:top-80 mt-0 flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl afd">
+          <div className="h-14 w-48 lg:h-14 lg:w-72 absolute top-[150px] lg:top-80 mt-0 flex justify-center items-center flex-row md:mt-4 lg:mt-0 lg:text-xl afd">
             <input
               type="text"
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 text-black border-black rounded-2xl text-center"
+              className="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 text-black border-black rounded-2xl text-center"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -428,9 +407,8 @@ const sendOTP = () => {
               } else {
                 setHid(2);
               }
-              // {EmailId != '' ? setHid(5): setHid(4)};
             }}
-            class="border-2 border-black bg-white text-black h-8 w-32 mt-60 flex items-center justify-center bottom-[100px] lg:bottom-60 absolute lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
+            className="border-2 border-black bg-white text-black h-8 w-32 mt-60 flex items-center justify-center bottom-[100px] lg:bottom-60 absolute lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
           >
             {" "}
             Continue{" "}
@@ -444,39 +422,33 @@ const sendOTP = () => {
             {" "}
             <img
               src={Abtn}
-              class="hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert"
+              className="hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr filter invert"
             />{" "}
           </button>
         </div>
 
-        {/* seventh page */}
-
-        {/* eight page */}
-
-        {/* fourth page */}
-
         <div
-          class={
+          className={
             hid == 3
               ? " h-screen w-screen bg-[#222831] text-white flex justify-center items-center  relative  border-b-2 "
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-[40px] left-4 absolute text-[18px]  md:text-3xl md:top-40 lg:text-[34px] xl:text-4xl lg:top-48 flex justify-center items-center tmp asr ">
+          <div className="h-12 w-full top-[40px] left-4 absolute text-[18px]  md:text-3xl md:top-40 lg:text-[34px] xl:text-4xl lg:top-48 flex justify-center items-center tmp asr ">
             {" "}
             Don't take it personally "Corporate" wants to verify your phone
             number{" "}
           </div>
 
-          <div class=" h-10 w-full top-[180px] text-[15px] left-0 absolute md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[18px] lg:left-12 flex justify-center asr">
+          <div className=" h-10 w-full top-[180px] text-[15px] left-0 absolute md:text-3xl md:top-64 md:w-100 md:left-14 lg:mt-0 lg:text-[18px] lg:left-12 flex justify-center asr">
             {" "}
             (Enter the OTP you recieved on your phone){" "}
           </div>
 
-          <div class="h-14 w-48  absolute top-[150px] md:top-64 mt-10 flex justify-center items-center flex-row md:mt-4 lg:mt-10 lg:text-xl afu">
+          <div className="h-14 w-48  absolute top-[150px] md:top-64 mt-10 flex justify-center items-center flex-row md:mt-4 lg:mt-10 lg:text-xl afu">
             <input
               type="text"
-              class="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-black text-black rounded-2xl text-center"
+              className="h-[32px] w-[200px] lg:h-10 lg:w-64 lg:mt-12 border-2 border-black text-black rounded-2xl text-center"
               maxLength={6}
               onChange={(e) => {
                 setOtp1(e.target.value);
@@ -485,29 +457,18 @@ const sendOTP = () => {
             ></input>
           </div>
 
-          {/* <button
-            // disabled={seconds > 0 || minutes > 0}
-            // style={{
-            //   color: seconds > 0 || minutes > 0 ? "#DFE3E8" : "#000000",
-            // }}
-            // onClick={() => {
-            //   navigate(`/otpVerificationnew/${user.jti}`)
-            // }}
-
-            to = {`/otpVerificationnew/${user.jti}`}
-
-            class="border-2 border-black flex items-center justify-center  h-8 w-32 bottom-36 left-10 absolute lg:left-[350px] p-0 text-base leading-none rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-28  xl:left-[550px] afu"> Resend Otp </button>
-
-          {/* <div class="flex bottom-16 left-6 absolute lg:left-[350px] md:bottom-2 md:mt-32  md:h-10  lg:mt-28  xl:left-[535px] xl:bottom-28 afu " >
-            {seconds > 0 || minutes > 0 ? (
-              <p>
-                Time Remaining: {minutes < 10 ? `0${minutes}` : minutes}:
-                {seconds < 10 ? `0${seconds}` : seconds}
-              </p>
-            ) : (
-              <p>Didn't recieve code?</p>
-            )}
-          </div> */}
+          <button
+            disabled={counter > 0}
+            onClick={() => {
+              // You can pass true to sendOTP if you want to differentiate "Resend" logic
+              sendOTP(true); 
+            }}
+            className={`flex items-center justify-center h-8 w-40 bottom-48 left-10 absolute lg:left-[350px] p-0 text-base leading-none rounded-3xl md:top-96 md:mt-32 md:h-10 lg:mt-20 xl:left-[600px] afu border-2 border-black ${
+              counter > 0 ? "opacity-50 cursor-not-allowed" : "text-gray-300 btnh border-dashed"
+            }`}
+          >
+            {counter > 0 ? `Resend in ${counter}s` : "Resend Otp"}
+          </button>
 
           <button
             onClick={(e) => {
@@ -515,51 +476,37 @@ const sendOTP = () => {
               if (Otp1 !== "") {
                 otpVerify();
               }
-
-              // { verify == true ? setHid(4) : setHid(3) };
             }}
-            class="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black bottom-[80px] sm:bottom-36 absolute p-0 text-base leading-none text-center  rounded-3xl md:top-96 md:mt-32   md:w-32 md:h-10  lg:mt-36 btnh border-dashed afu"
+            className="h-8 w-32 flex items-center justify-center border-2 border-black bg-white text-black bottom-[80px] sm:bottom-36 absolute p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-36 btnh border-dashed afu"
           >
             {" "}
             Continue{" "}
           </button>
-          {/* 
-          <button onClick={() => {
-            setHid(2);
-          }} > <img src={Abtn} class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr" /> </button> */}
         </div>
-        {/* sixth page */}
 
         <div
-          class={
+          className={
             hid == 4
               ? " h-screen w-screen bg-[#222831] text-white flex justify-center items-center text-1xl relative  border-b-2 "
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-44 left-4 absolute text-4xl  md:text-4xl md:top-40 lg:text-4xl xl:text-5xl lg:top-48 flex justify-center items-center tmp atd ">
+          <div className="h-12 w-full top-44 left-4 absolute text-4xl  md:text-4xl md:top-40 lg:text-4xl xl:text-5xl lg:top-48 flex justify-center items-center tmp atd ">
             Check your inbox.{" "}
           </div>
 
-          <div class="h-12 w-full top-56 left-4 absolute text-2xl  md:text-[20px] md:top-52 lg:text-[22px] lg:top-64 flex justify-center items-center tmp afu">
+          <div className="h-12 w-full top-56 left-4 absolute text-2xl  md:text-[20px] md:top-52 lg:text-[22px] lg:top-64 flex justify-center items-center tmp afu">
             (Check spam folder as well and close this window){" "}
           </div>
 
-          {/* 
-          <button onClick={() => {
-            setHid(3);
-          }} > <img src={Abtn} class=" h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr" /> </button> */}
-
-          
-            <button
-              onClick={() => {
-                resendMail();
-              }}
-              class="border-2 px-6 py-1  border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
-            >
-              Resend Mail
-            </button>
-          
+          <button
+            onClick={() => {
+              resendMail();
+            }}
+            className="border-2 px-6 py-1  border-black bg-white text-black btnh border-dashed rounded-3xl afu md:mt-16 lg:mt-40 text-[1.3rem] "
+          >
+            Resend Mail
+          </button>
         </div>
       </div>
       <ToastContainer />

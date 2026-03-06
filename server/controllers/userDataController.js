@@ -69,7 +69,7 @@ const userDataNew = asyncHandler(async (req, res) => {
   const personal_email_id = req.body.personal_email_id;
   const contact_details = req.body.contact_details;
 
-  console.log(req.body);
+  // console.log(req.body);
 
   const User = await Users.findOneAndUpdate(
     { email: email },
@@ -232,7 +232,7 @@ const verifyPhoneOtp = async (req, res, next) => {
     try {
       //Email the user a unique verification link
       const url = `${serverLink}/verify/${verificationToken}`;
-      console.log("Reaches");
+      // console.log("Reaches");
       transporter.sendMail({
         to: user.personal_email_id,
         subject: "Verify Account",
@@ -313,7 +313,7 @@ const resendMail = asyncHandler(async (req, res) => {
   try {
     //Email the user a unique verification link
     const url = `${serverLink}/verify/${verificationToken}`;
-    console.log("Reaches");
+    // console.log("Reaches");
     transporter.sendMail({
       to: personalMailId,
       subject: "Verify Account",
