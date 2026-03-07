@@ -27,6 +27,14 @@ const pollSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  academic_program: {
+    type: String,
+    required: true,
+    enum: [
+      "Bachelor of Technology (BTech)",
+      "Master of Technology (MTech)",
+    ]
+  }
 });
 
 module.exports = mongoose.model('Poll', pollSchema);

@@ -3,10 +3,15 @@ const User = require('../models/userModel'); // Import User model if necessary f
 
 // Controller to create a new poll
 exports.createPoll = async (req, res) => {
-  const { question, options, createdBy } = req.body;
+  const { question, options, createdBy , academic_program} = req.body;
 
   if (!question || options.length < 2) {
     return res.status(400).json({ message: "Poll must have a question and at least two options." });
+  }
+  if (!academic_program) {
+    return res.status(400).json({
+      message: "Academic program is required."
+    });
   }
 
   try {
@@ -22,6 +27,7 @@ exports.createPoll = async (req, res) => {
       question,
       options:initializedOptions,
       createdBy:user._id, // Use the user name from the request body (ensure it’s passed from frontend)
+      academic_program, 
       votes: [] // Initialize votes as an empty array
     });
 

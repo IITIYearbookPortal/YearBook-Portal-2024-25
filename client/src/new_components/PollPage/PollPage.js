@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../helpers/Context";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,25 +11,27 @@ import alumniEmails from "../../new_components/Navbar/akumniData.json";
 const PollPage = () => {
   const [polls, setPolls] = useState([]);
   const { loggedin, profile, loading } = useContext(LoginContext);
+
   const [newPoll, setNewPoll] = useState({
     question: "",
     academic_program: "Bachelor of Technology (BTech)",
     options: [{ rollNo: "", name: "" }, { rollNo: "", name: "" }]
   });
-  const navigate = useNavigate();
 
   // Admin check
- const adminUsers = process.env.REACT_APP_ADMIN_USERS
-  ? process.env.REACT_APP_ADMIN_USERS.split(",")
-  : [];
+  const adminUsers = process.env.REACT_APP_ADMIN_USERS
+    ? process.env.REACT_APP_ADMIN_USERS.split(",")
+    : [];
 
-const isAlumni = Array.isArray(alumniEmails) && profile?.email
-  ? alumniEmails.includes(profile.email)
-  : false;
+  const isAlumni =
+    Array.isArray(alumniEmails) && profile?.email
+      ? alumniEmails.includes(profile.email)
+      : false;
 
-const isAdmin = Array.isArray(adminUsers) && profile?.email
-  ? adminUsers.includes(profile.email)
-  : false;
+  const isAdmin =
+    Array.isArray(adminUsers) && profile?.email
+      ? adminUsers.includes(profile.email)
+      : false;
 
   // Redirect if not logged in
   useEffect(() => {
@@ -41,22 +42,34 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/polls`)
-      .then(res => setPolls(res.data.polls || []))
-      .catch(err => console.error("Error fetching polls:", err));
+      .then((res) => {
+        if (Array.isArray(res.data.polls)) {
+          setPolls(res.data.polls);
+        } else {
+          setPolls([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching polls:", err);
+        setPolls([]);
+      });
   }, []);
 
   // Handle new poll submission
   const handlePollSubmit = (e) => {
     e.preventDefault();
 
-    if (!newPoll.question || newPoll.options.filter(opt => opt.rollNo && opt.name).length < 2) {
+    if (
+      !newPoll.question.trim() ||
+      newPoll.options.filter((opt) => opt.rollNo && opt.name).length < 2
+    ) {
       toast.error("Provide question & at least 2 options.", { autoClose: 2000 });
       return;
     }
 
     const processedOptions = newPoll.options
-      .filter(opt => opt.rollNo && opt.name)
-      .map(opt => `${opt.rollNo} - ${opt.name}`);
+      .filter((opt) => opt.rollNo && opt.name)
+      .map((opt) => `${opt.rollNo} - ${opt.name}`);
 
     axios
       .post(`${process.env.REACT_APP_API_URL}/createPoll`, {
@@ -65,16 +78,18 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
         options: processedOptions,
         createdBy: profile.email
       })
-      .then(res => {
+      .then((res) => {
         toast.success("Poll created successfully!", { autoClose: 2000 });
-        setPolls([...polls, res.data.poll]);
+
+        setPolls((prev) => [...prev, res.data.poll]);
+
         setNewPoll({
           question: "",
           academic_program: "Bachelor of Technology (BTech)",
           options: [{ rollNo: "", name: "" }, { rollNo: "", name: "" }]
         });
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error creating poll:", err);
         toast.error("Failed to create poll. Try again.");
       });
@@ -86,17 +101,23 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
       .delete(`${process.env.REACT_APP_API_URL}/polls/${pollId}`)
       .then(() => {
         toast.success("Poll deleted successfully!", { autoClose: 2000 });
-        setPolls(polls.filter(p => p._id !== pollId));
+
+        setPolls((prev) => prev.filter((p) => p._id !== pollId));
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error deleting poll:", err);
         toast.error("Failed to delete poll. Try again.");
       });
   };
 
-  // Split polls for display
-  const ugPolls = polls.filter(p => p.academic_program.includes("BTech"));
-  const pgPolls = polls.filter(p => p.academic_program.includes("MTech"));
+  // Separate polls by academic program
+  const ugPolls = polls.filter(
+    (p) => p.academic_program === "Bachelor of Technology (BTech)"
+  );
+
+  const pgPolls = polls.filter(
+    (p) => p.academic_program === "Master of Technology (MTech)"
+  );
 
   if (loading) {
     return (
@@ -122,23 +143,37 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
         {/* Admin Create Poll */}
         {isAdmin && (
           <div className="bg-gray-900 p-6 rounded-lg mb-8 shadow-md">
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">Create a New Poll</h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+              Create a New Poll
+            </h2>
+
             <form onSubmit={handlePollSubmit} className="space-y-4">
               <input
                 type="text"
                 placeholder="Enter poll question"
                 value={newPoll.question}
-                onChange={e => setNewPoll({ ...newPoll, question: e.target.value })}
+                onChange={(e) =>
+                  setNewPoll({ ...newPoll, question: e.target.value })
+                }
                 className={styles.input}
               />
 
               <select
                 value={newPoll.academic_program}
-                onChange={e => setNewPoll({ ...newPoll, academic_program: e.target.value })}
+                onChange={(e) =>
+                  setNewPoll({
+                    ...newPoll,
+                    academic_program: e.target.value
+                  })
+                }
                 className={styles.input}
               >
-                <option value="Bachelor of Technology (BTech)">UG (BTech)</option>
-                <option value="Master of Technology (MTech)">PG (MTech)</option>
+                <option value="Bachelor of Technology (BTech)">
+                  UG (BTech)
+                </option>
+                <option value="Master of Technology (MTech)">
+                  PG (MTech)
+                </option>
               </select>
 
               {newPoll.options.map((option, index) => (
@@ -147,25 +182,30 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
                     type="text"
                     placeholder="Roll No"
                     value={option.rollNo}
-                    onChange={e =>
+                    onChange={(e) =>
                       setNewPoll({
                         ...newPoll,
                         options: newPoll.options.map((opt, i) =>
-                          i === index ? { ...opt, rollNo: e.target.value } : opt
+                          i === index
+                            ? { ...opt, rollNo: e.target.value }
+                            : opt
                         )
                       })
                     }
                     className={`${styles.input} w-1/2`}
                   />
+
                   <input
                     type="text"
                     placeholder="Name"
                     value={option.name}
-                    onChange={e =>
+                    onChange={(e) =>
                       setNewPoll({
                         ...newPoll,
                         options: newPoll.options.map((opt, i) =>
-                          i === index ? { ...opt, name: e.target.value } : opt
+                          i === index
+                            ? { ...opt, name: e.target.value }
+                            : opt
                         )
                       })
                     }
@@ -177,13 +217,19 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
               <div className="flex gap-4">
                 <button
                   type="button"
-                  onClick={() => setNewPoll({
-                    ...newPoll,
-                    options: [...newPoll.options, { rollNo: "", name: "" }]
-                  })}
+                  onClick={() =>
+                    setNewPoll({
+                      ...newPoll,
+                      options: [
+                        ...newPoll.options,
+                        { rollNo: "", name: "" }
+                      ]
+                    })
+                  }
                   className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 text-black"
                 >
-                  <Plus className="h-5 w-5" /> Add Option
+                  <Plus className="h-5 w-5" />
+                  Add Option
                 </button>
 
                 <button
@@ -197,22 +243,33 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
           </div>
         )}
 
-        {/* Two-Column Poll Display */}
+        {/* Poll Display */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* UG Column */}
+          
+          {/* UG Polls */}
           <div>
-            <h2 className="text-2xl font-bold text-green-400 mb-4">UG Polls</h2>
+            <h2 className="text-2xl font-bold text-green-400 mb-4">
+              UG Polls
+            </h2>
+
             <div className="space-y-4">
               {ugPolls.length > 0 ? (
-                ugPolls.map(poll => (
-                  <div key={poll._id} className="bg-gray-900 p-5 rounded-lg shadow-md">
-                    <h3 className="text-lg font-semibold text-[#EEEEEE] mb-2">{poll.question}</h3>
+                ugPolls.map((poll) => (
+                  <div
+                    key={poll._id}
+                    className="bg-gray-900 p-5 rounded-lg shadow-md"
+                  >
+                    <h3 className="text-lg font-semibold text-[#EEEEEE] mb-2">
+                      {poll.question}
+                    </h3>
+
                     <div className="flex gap-2 mt-2">
                       <Link to={`/polls/results/${poll._id}`}>
                         <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
                           Do Polling
                         </button>
                       </Link>
+
                       {isAdmin && (
                         <button
                           onClick={() => handleDeletePoll(poll._id)}
@@ -225,25 +282,37 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
                   </div>
                 ))
               ) : (
-                <p className="text-gray-400">No UG polls available.</p>
+                <p className="text-gray-400">
+                  No UG polls available.
+                </p>
               )}
             </div>
           </div>
 
-          {/* PG Column */}
+          {/* PG Polls */}
           <div>
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">PG Polls</h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-4">
+              PG Polls
+            </h2>
+
             <div className="space-y-4">
               {pgPolls.length > 0 ? (
-                pgPolls.map(poll => (
-                  <div key={poll._id} className="bg-gray-900 p-5 rounded-lg shadow-md">
-                    <h3 className="text-lg font-semibold text-[#EEEEEE] mb-2">{poll.question}</h3>
+                pgPolls.map((poll) => (
+                  <div
+                    key={poll._id}
+                    className="bg-gray-900 p-5 rounded-lg shadow-md"
+                  >
+                    <h3 className="text-lg font-semibold text-[#EEEEEE] mb-2">
+                      {poll.question}
+                    </h3>
+
                     <div className="flex gap-2 mt-2">
                       <Link to={`/polls/results/${poll._id}`}>
                         <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
                           Do Polling
                         </button>
                       </Link>
+
                       {isAdmin && (
                         <button
                           onClick={() => handleDeletePoll(poll._id)}
@@ -256,10 +325,13 @@ const isAdmin = Array.isArray(adminUsers) && profile?.email
                   </div>
                 ))
               ) : (
-                <p className="text-gray-400">No PG polls available.</p>
+                <p className="text-gray-400">
+                  No PG polls available.
+                </p>
               )}
             </div>
           </div>
+
         </div>
       </div>
     </div>
