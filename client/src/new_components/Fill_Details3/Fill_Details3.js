@@ -1174,14 +1174,14 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               }
             }}
             disabled={isButtonDisabled}
-            class="h-10 w-32 mt-6 border-2 border-black bg-white text-black 
+            class="h-10 w-32 my-6 border-2 border-black bg-white text-black 
            text-base rounded-3xl border-dashed"
           >
             Continue
           </button>
 
           {/*  BOTTOM SECTION  */}
-          <div className="absolute bottom-10 w-full flex flex-col items-center gap-2">
+          // <div className="absolute bottom-10 w-full flex flex-col items-center gap-2">
 
             <div className="text-center">
               {seconds > 0 || minutes > 0 ? (
@@ -1210,7 +1210,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               Resend Otp
             </button>
 
-          </div>
+          // </div>
 
         </div>
 
@@ -1273,3 +1273,4 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 }
 
 export default Fill3;
+
