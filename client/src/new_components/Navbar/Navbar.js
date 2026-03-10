@@ -40,7 +40,7 @@ const Navbar = () => {
     if (!loggedin) {
       return [
         { name: "Home", path: "/" },
-        { name: "Previous Year Book", path: "/previous-yrbook" },
+        { name: "PYb'25", path: "/previous-yrbook" },
         { name: "Login", path: "/login" },
         { name: "More Links", path: "/footer" },
       ];
@@ -57,7 +57,7 @@ const Navbar = () => {
           name: "My Profile",
           path: `/profile/${profile?.roll_no}/${profile?.name}`,
         },
-        { name: "Previous Year Book", path: "/previous-yrbook" },
+        { name: "PYb'25", path: "/previous-yrbook" },
         { name: "Memory Map", path: "/memory" },
         { name: "More Links", path: "/footer" },
         { name: "Logout", path: "/logout" },
@@ -67,7 +67,7 @@ const Navbar = () => {
     return [
       { name: "Home", path: "/" },
       { name: "Search People", path: "/userlist" },
-      { name: "Previous Year Book", path: "/previous-yrbook" },
+      { name: "PYb'25", path: "/previous-yrbook" },
       {
         name: "My Profile",
         path: `/profile/nongrad/${user.name}/${user.email}`,

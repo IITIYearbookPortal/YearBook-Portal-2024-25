@@ -626,7 +626,7 @@ const Home = () => {
             style={{ scale }}
           >
             <img
-              src="/images/homepage/connections/6.jpg"
+              src="/images/homepage/connections/6.JPG"
               alt="Background"
               className="w-1/4 p-0.5 h-1/3 object-cover"
             />

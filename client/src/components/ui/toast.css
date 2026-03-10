@@ -1,33 +1,29 @@
-/* Toast.css
-   Lightweight CSS implementing layout, variants and animations for the Radix toast components.
-   Tweak colors and durations to match your design tokens.
-*/
+/* Toast.css */
 
-/* Viewport positioning */
-.toast-viewport {
+/* Toast wrapper (translucent background) */
+.toast-wrapper {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
+  top: 60px; /* adjust for navbar height */
+  left: 12px;
+  right: 12px;
+  z-index: 1000;
+
   display: flex;
   flex-direction: column-reverse;
   gap: 12px;
   padding: 12px;
-  pointer-events: none; /* allow clicks through empty areas */
+
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.6); /* translucent */
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+
+  display: none; /* hidden by default */
+  transition: opacity 0.3s ease;
 }
 
-@media (min-width: 640px) {
-  .toast-viewport {
-    right: 12px;
-    top: auto;
-    bottom: 12px;
-    left: auto;
-    align-items: flex-end;
-    width: auto;
-    max-width: 420px;
-    padding: 16px;
-  }
+.toast-wrapper.show {
+  display: flex;
 }
 
 /* Base toast */
@@ -49,25 +45,23 @@
   transition: transform 260ms cubic-bezier(.16,1,.3,1), opacity 200ms ease;
 }
 
-/* Default variant */
+/* Variants */
 .toast-default {
   background: var(--toast-bg, #fff);
   border-color: rgba(0,0,0,0.06);
   color: var(--toast-foreground, #0f172a);
 }
-
-/* Destructive variant */
 .toast-destructive {
   background: var(--toast-destructive-bg, #fff5f5);
   border-color: var(--toast-destructive-border, #fca5a5);
   color: var(--toast-destructive-foreground, #7f1d1d);
 }
 
-/* Title + description */
-.toast-title { font-weight: 600; font-size: 0.95rem; margin: 0; }
-.toast-desc { font-size: 0.9rem; opacity: 0.9; margin: 0; }
+/* Title + Description */
+.toast-title { color:white; font-weight: 600; font-size: 0.95rem; margin: 0; }
+.toast-desc { color: white; font-size: 0.9rem; opacity: 0.9; margin: 0; }
 
-/* Actions container: keep it compact */
+/* Actions */
 .toast-action {
   margin-left: auto;
   align-self: center;
@@ -80,7 +74,7 @@
   font-size: 0.875rem;
 }
 
-/* Close button (X) */
+/* Close button */
 .toast-close {
   position: absolute;
   top: 8px;
@@ -97,42 +91,24 @@
   cursor: pointer;
 }
 .toast-close:focus { outline: none; box-shadow: 0 0 0 4px rgba(59,130,246,0.12); }
-
-/* show close on hover/focus of toast */
 .toast:hover .toast-close,
-.toast:focus-within .toast-close {
-  opacity: 1;
-}
+.toast:focus-within .toast-close { opacity: 1; }
 
-.toast-close-icon {
-  width: 16px;
-  height: 16px;
-  color: rgba(15,23,42,0.6);
-}
+.toast-close-icon { width: 16px; height: 16px; color: rgba(255,255,255,0.8); }
 
-/* Animations (Radix uses data-state attributes) */
-@keyframes toast-slide-in {
-  from { transform: translateY(-10px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-@keyframes toast-slide-out {
-  from { transform: translateX(0); opacity: 1; }
-  to   { transform: translateX(100%); opacity: 0; }
-}
+/* Animations */
+@keyframes toast-slide-in { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes toast-slide-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
 
-.toast[data-state="open"] {
-  animation: toast-slide-in 300ms cubic-bezier(.16,1,.3,1);
-}
-.toast[data-state="closed"] {
-  animation: toast-slide-out 240ms ease;
-}
+.toast[data-state="open"] { animation: toast-slide-in 300ms cubic-bezier(.16,1,.3,1); }
+.toast[data-state="closed"] { animation: toast-slide-out 240ms ease; }
 
-/* Swipe behavior (Radix sets data-swipe attributes during interactions) */
+/* Swipe behavior */
 .toast[data-swipe="move"] { transition: none; }
 .toast[data-swipe="cancel"] { transform: translateX(0); transition: transform 200ms ease; }
 .toast[data-swipe="end"] { transform: translateX(var(--radix-toast-swipe-end-x)); transition: transform 200ms ease; }
 
-/* Small responsive adjustments */
+/* Responsive adjustments */
 @media (max-width: 640px) {
   .toast { border-radius: 8px; padding: 12px; }
   .toast-title { font-size: 0.95rem; }
