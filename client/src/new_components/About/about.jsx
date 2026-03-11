@@ -1,11 +1,11 @@
 import React from 'react';
 import { Timeline } from "./timeline";
-import img1 from './Navbar.png';
+import img1 from './Navbar1.png';
 import img2 from './Login.png';
-import img3 from './Login2.png';
+import img3 from './Login4.png';
 import img4 from './Login3.png';
 import img5 from './poll.jpg';
-import img6 from './memorymap.png';
+import img6 from './memorymap2.png';
 
 export default function About() {
   const data = [
@@ -28,7 +28,7 @@ export default function About() {
         <div>
 
           <p className="text-neutral-200 text-sm md:text-lg font-normal mb-4">
-            Click on the icon at the top left to explore various options.
+            Click on the navbar at the top to explore various options.
 
           </p>
           <div className="flex justify-center">

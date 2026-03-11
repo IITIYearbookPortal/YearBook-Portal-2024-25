@@ -177,7 +177,7 @@ const myRelatedMemories = useMemo(() => {
           <div className="mm-hero">
             <h2 className="mm-hero-title">Memory Map- Where Memories Live</h2>
             <p className="mm-hero-sub">
-              Click on any location to view memories or add your own.
+             After adding a memory, it will be sent to your friends for verification. Once everyone approves it, the memory will appear on the Memory Map for everyone. You can also verify your memories from your profile page. 
             </p>
           </div>
 
