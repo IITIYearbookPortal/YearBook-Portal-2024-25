@@ -128,34 +128,26 @@ exports.getPollById = async (req, res) => {
 //   };
 
   
-// Delete poll
 exports.deletePoll = async (req, res) => {
-  try {
-    console.log("Delete request params:", req.params);
-
     const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({ message: "Poll ID is required" });
+    
+    try {
+      const poll = await Poll.findById(id);
+      if (!poll) {
+        return res.status(404).json({ message: 'Poll not found' });
+      }
+  
+      // Check if the user is the creator of the poll
+    //   if (poll.createdBy !== req.user.email) {
+        // return res.status(403).json({ message: 'You are not authorized to delete this poll' });
+    //   }
+  
+      // Delete the poll
+      await poll.remove();
+      res.status(200).json({ message: 'Poll deleted successfully' });
+    } catch (err) {
+      res.status(500).json({ message: 'Error deleting poll', error: err.message });
     }
-
-    const deletedPoll = await Poll.findByIdAndDelete(id);
-
-    if (!deletedPoll) {
-      return res.status(404).json({ message: "Poll not found" });
-    }
-
-    return res.status(200).json({
-      message: "Poll deleted successfully"
-    });
-
-  } catch (err) {
-    console.error("Delete Error:", err);
-    return res.status(500).json({
-      message: "Error deleting poll",
-      error: err.message
-    });
-  }
 };
 
 
