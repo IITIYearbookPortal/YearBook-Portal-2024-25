@@ -16,6 +16,12 @@ function Edit({ isDarkMode }) {
   const [imageUrl, setImageUrl] = useState("");       // What <img> displays
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const getImageUrl = (img) => {
+    if (!img) return "";
+    if (typeof img === "string") return img;
+    return img.url || "";
+  };
+
   useEffect(() => {
     if (!loading) {
       if (!loggedin) navigate("/login");
@@ -25,15 +31,35 @@ function Edit({ isDarkMode }) {
     }
   }, [loading, loggedin, isStudent, profile, roll, name, navigate]);
 
-  useEffect(() => {
-    if (profile && Object.keys(profile).length > 0) {
-      setUserData({ ...profile });
+    useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/getUsersCompleteData/${roll}`,
+          { withCredentials: true }
+        );
 
-      // Load existing profile image from backend
-      setImageUrl(profile.profile_img || "");
-      setImageFile(null); // No new image selected yet
+        const user = res.data?.user;
+        console.log(user)
+        if (user) {
+          setUserData(user);
+          setImageUrl(getImageUrl(user.profile_img));
+          setImageFile(null);
+        }
+      } catch (err) {
+        console.error("GET user failed, falling back to context:", err);
+        // fallback to context profile
+        if (profile && Object.keys(profile).length > 0) {
+          setUserData({ ...profile });
+          setImageUrl(getImageUrl(profile.profile_img));
+          setImageFile(null);
+        }
+      }
+    };
+    if (roll && name) {
+      fetchUser();
     }
-  }, [profile]);
+  }, [roll, name, profile]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

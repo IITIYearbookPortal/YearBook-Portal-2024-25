@@ -43,24 +43,13 @@ const getUsersData = asyncHandler(async (req, res) => {
   return res.send(userData);
 });
 
-const getUsersDatanew = asyncHandler(async (req, res) => {
-  //Get all usersData from MongoDb
-  const email = req.body.email;
-  // const personal_email_id = req.body.personal_email_id
-  // const contact_details = req.body.contact_details
-
-  const User = await Users.findOne({ email: email });
-
-  // User.personal_email_id = personal_email_id
-  // User.contact_details = contact_details
-
-  //If no usersData
-  if (!User?.length) {
-    return res.send({ message: "No userData found" });
+const getUsersCompleteData = asyncHandler(async (req, res) => {
+  const { roll_no } = req.params;
+  const user = await Users.findOne({ roll_no });
+  if (!user) {
+    return res.status(404).json({ message: "No userData found" });
   }
-  // Map over each user to extract only the necessary data
-
-  return res.send(User);
+  return res.json({ user });
 });
 
 const userDataNew = asyncHandler(async (req, res) => {
@@ -544,7 +533,7 @@ const getSearchWord = asyncHandler(async (req, res) => {
 module.exports = {
   userDataNewemail,
   userDataNew,
-  getUsersDatanew,
+  getUsersCompleteData,
   getUsersData,
   createUsersData,
   updateUser,

@@ -25,7 +25,7 @@ router.put(
 );
 
 router.get("/getUsersData", userDataController.getUsersData);
-router.post("/getUsersDatanew", userDataController.getUsersDatanew);
+router.get("/getUsersCompleteData/:roll_no", userDataController.getUsersCompleteData);
 router.post("/userDataNew", userDataController.userDataNew);
 router.post("/userDataemail", userDataController.userDataNewemail);
 
