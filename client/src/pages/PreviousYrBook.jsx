@@ -79,7 +79,7 @@ const PreviousYrBook = () => {
     "Humanities and Social Sciences",
     "Mathematics",
     "Mechanical Engineering",
-    "Metallurgical Engineering and Materials Science",
+    "Metallurgy Engineering and Materials Science",
     "Physics",
     "MS-DSM",
     "Center of Futuristic Defense and Space Technology(CFDST)",
