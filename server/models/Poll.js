@@ -32,6 +32,7 @@ const pollSchema = new mongoose.Schema({
     required: true,
     enum: [
       "Bachelor of Technology (BTech)",
+      "MSDSM",
       "Master of Technology (MTech)",
     ]
   }

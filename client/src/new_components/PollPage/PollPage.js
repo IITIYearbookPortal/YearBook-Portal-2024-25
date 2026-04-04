@@ -119,6 +119,10 @@ const PollPage = () => {
     (p) => p.academic_program === "Master of Technology (MTech)"
   );
 
+  const msdsmPolls = polls.filter(
+    (p) => p.academic_program === "MSDSM"
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
@@ -173,6 +177,9 @@ const PollPage = () => {
                 </option>
                 <option value="Master of Technology (MTech)">
                   PG (MTech)
+                </option>
+                <option value="MSDSM">
+                  MSDSM
                 </option>
               </select>
 
@@ -244,7 +251,7 @@ const PollPage = () => {
         )}
 
         {/* Poll Display */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {/* UG Polls */}
           <div>
@@ -329,6 +336,48 @@ const PollPage = () => {
                   No PG polls available.
                 </p>
               )}
+            </div>
+          </div>
+          {/* MSDSM Polls */}
+          <div>
+            <h2 className="text-2xl font-bold text-purple-400 mb-4">
+              MSDSM Polls
+            </h2>
+
+            <div className="space-y-4">
+              {msdsmPolls.length > 0 ? (
+                msdsmPolls.map((poll) => (
+                  <div
+                    key={poll._id}
+                    className="bg-gray-900 p-5 rounded-lg shadow-md"
+                  >
+                    <h3 className="text-lg font-semibold text-[#EEEEEE] mb-2">
+                      {poll.question}
+                    </h3>
+
+                    <div className="flex gap-2 mt-2">
+                      <Link to={`/polls/results/${poll._id}`}>
+                        <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">
+                          Do Polling
+                        </button>
+                      </Link>
+
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleDeletePoll(poll._id)}
+                          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        > Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+                ) : (
+                  <p className="text-gray-400">
+                    No MSDSM polls available.
+                  </p>
+                )
+              }
             </div>
           </div>
 
