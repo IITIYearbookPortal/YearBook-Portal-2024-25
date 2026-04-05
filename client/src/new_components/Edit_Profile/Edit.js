@@ -183,6 +183,7 @@ function Edit({ isDarkMode }) {
               <option value="Humanities and Social Sciences">Humanities and Social Sciences</option>
               <option value="Electric Vehicle Technology">Electric Vehicle Technology</option>
               <option value="Center of Futuristic Defense and Space Technology(CFDST)">Center of Futuristic Defense and Space Technology(CFDST)</option>
+              <option value="MS-DSM">MS-DSM</option>
             </select>
 
             <input className="inped mb-4" name="address" value={userData.address || ""} onChange={handleChange} placeholder="Address" />
