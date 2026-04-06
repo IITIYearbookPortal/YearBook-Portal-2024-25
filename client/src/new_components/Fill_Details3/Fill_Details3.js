@@ -589,11 +589,11 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                   Civil Engineering
                 </option>
                 <option
-                  value="Metallurgy Engineering and Materials Science"
+                  value="Metallurgical Engineering and Materials Science"
                   name="department"
                   class="selct bg-[#222831]"
                 >
-                  Metallurgy Engineering and Materials Science
+                  Metallurgical Engineering and Materials Science
                 </option>
                 <option
                   value="Astronomy, Astrophysics and Space Engineering"
@@ -650,6 +650,13 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                   class="selct bg-[#222831]"
                 >
                   MS-DSM
+                </option>
+                <option
+                  value="Center of Futuristic Defense and Space Technology(CFDST)"
+                  name="academic_program"
+                  class="selct bg-[#222831]"
+                >
+                  Center of Futuristic Defense and Space Technology(CFDST)
                 </option>
               </select>
             </div>
@@ -1181,7 +1188,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
           </button>
 
           {/*  BOTTOM SECTION  */}
-          // <div className="absolute bottom-10 w-full flex flex-col items-center gap-2">
+          <div className="absolute bottom-10 w-full flex flex-col items-center gap-2">
 
             <div className="text-center">
               {seconds > 0 || minutes > 0 ? (
@@ -1210,7 +1217,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
               Resend Otp
             </button>
 
-          // </div>
+          </div>
 
         </div>
 

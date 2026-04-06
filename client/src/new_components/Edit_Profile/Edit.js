@@ -178,7 +178,7 @@ function Edit({ isDarkMode }) {
               <option value="Electrical Engineering">Electrical Engineering</option>
               <option value="Mechanical Engineering">Mechanical Engineering</option>
               <option value="Civil Engineering">Civil Engineering</option>
-              <option value="Metallurgy Engineering and Materials Science">Metallurgy Engineering and Materials Science</option>
+              <option value="Metallurgical Engineering and Materials Science">Metallurgical Engineering and Materials Science</option>
               <option value="Astronomy, Astrophysics and Space Engineering">Astronomy, Astrophysics and Space Engineering</option>
               <option value="Biosciences and Biomedical Engineering">Biosciences and Biomedical Engineering</option>
               <option value="Physics">Physics</option>
@@ -186,6 +186,8 @@ function Edit({ isDarkMode }) {
               <option value="Mathematics">Mathematics</option>
               <option value="Humanities and Social Sciences">Humanities and Social Sciences</option>
               <option value="Electric Vehicle Technology">Electric Vehicle Technology</option>
+              <option value="Center of Futuristic Defense and Space Technology(CFDST)">Center of Futuristic Defense and Space Technology(CFDST)</option>
+              <option value="MS-DSM">MS-DSM</option>
             </select>
 
             <input className="inped mb-4" name="address" value={userData.address || ""} onChange={handleChange} placeholder="Address" />
@@ -197,7 +199,7 @@ function Edit({ isDarkMode }) {
             <p className="mb-2 text-white">Q1. What will you miss the most after graduating?</p>
             <input className="inped mb-4" name="question_1" value={userData.question_1 || ""} onChange={handleChange} />
 
-            <p className="mb-2 text-white">Q2. College change you'd implement?</p>
+            <p className="mb-2 text-white">Q2. What did college teach you beyond academics?</p>
             <input className="inped" name="question_2" value={userData.question_2 || ""} onChange={handleChange} />
 
             <div className="btn-wrapper">

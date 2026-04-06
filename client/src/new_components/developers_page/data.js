@@ -30,7 +30,7 @@ import img26 from "./images/Sarang.webp"
     {
       name:"Yashasvi",
       image:img13,
-      role:"Backend",
+      role:"",
       github_id:"https://github.com/Yashasvi1515",
       insta_id:"https://www.instagram.com/_.yashasvi.__/",
       linkedin_id:"https://www.linkedin.com/in/yashasvi-shukla-49882030a/",

@@ -82,6 +82,7 @@ const PreviousYrBook = () => {
     "Metallurgy Engineering and Materials Science",
     "Physics",
     "MS-DSM",
+    "Center of Futuristic Defense and Space Technology(CFDST)",
   ];
 
   return (
