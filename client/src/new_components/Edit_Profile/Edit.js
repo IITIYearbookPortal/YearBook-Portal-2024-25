@@ -110,7 +110,11 @@ function Edit({ isDarkMode }) {
       ];
 
       fields.forEach((field) => {
-        formData.append(field, userData[field] ?? "");
+        let value = userData[field] ?? "";
+        if (field === "name") {
+          value = value.trim();
+        }
+        formData.append(field, value);
       });
 
       const res = await axios.put(
