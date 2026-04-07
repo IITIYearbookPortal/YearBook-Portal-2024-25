@@ -22,17 +22,16 @@ const getMemories = asyncHandler(async (req, res) => {
   }
 
   const memories = await Memory.find(filter).sort({ createdAt: -1 });
-
   const response = memories.map((m) => ({
     id: m.id,
     locationId: m.locationId,
     seniorId: m.seniorId,
     authorName: m.authorName,
+    groupId: m.groupId,
     content: m.content,
     images: m.images,
     createdAt: m.createdAt,
   }));
-
   res.json(response);
 });
 
