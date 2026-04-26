@@ -66,6 +66,8 @@ const userDataNew = asyncHandler(async (req, res) => {
       $set: {
         personal_email_id: personal_email_id,
         contact_details: contact_details,
+        one_step_verified: true,
+        two_step_verified: true,
       },
     },
   );
@@ -190,6 +192,8 @@ const createUsersData = asyncHandler(async (req, res) => {
         },
         question_1,
         question_2,
+        one_step_verified: true,
+        two_step_verified: true,
       });
 
       return res.json({
