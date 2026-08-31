@@ -2,36 +2,65 @@ import React, { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { LoginContext } from "../../helpers/Context";
-import alumniData from "./akumniData.json";
+import axios from "axios";
 import jwt_decode from "jwt-decode";
 import logo from "./lo.jpeg";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const { loggedin, profile } = useContext(LoginContext);
 
   const [user, setUser] = useState(() => {
     const token = localStorage.getItem("token");
+
     if (!token) return null;
+
     try {
       return jwt_decode(token);
     } catch {
       localStorage.removeItem("token");
+
       return null;
     }
   });
 
+  // Alumni data fetched from backend
+  const [alumniData, setAlumniData] = useState([]);
+
+  // Fetch alumni data from backend
+  useEffect(() => {
+    const fetchAlumniData = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/getAlumniData`,
+        );
+
+        setAlumniData(res.data);
+      } catch (err) {
+        console.error("Failed to fetch alumni data:", err);
+      }
+    };
+
+    fetchAlumniData();
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     if (!token) {
       setUser(null);
+
       return;
     }
+
     try {
       const decoded = jwt_decode(token);
+
       setUser(decoded);
     } catch {
       localStorage.removeItem("token");
+
       setUser(null);
     }
   }, [loggedin]);
@@ -40,8 +69,11 @@ const Navbar = () => {
     if (!loggedin) {
       return [
         { name: "Home", path: "/" },
+
         { name: "PYb'25", path: "/previous-yrbook" },
+
         { name: "Login", path: "/login" },
+
         { name: "More Links", path: "/footer" },
       ];
     }
@@ -51,29 +83,44 @@ const Navbar = () => {
     if (alumniData.includes(user.email)) {
       return [
         { name: "Home", path: "/" },
+
         { name: "Search People", path: "/userlist" },
+
         { name: "Polls", path: "/polls" },
+
         {
           name: "My Profile",
+
           path: `/profile/${profile?.roll_no}/${profile?.name}`,
         },
+
         { name: "PYb'25", path: "/previous-yrbook" },
+
         { name: "Memory Map", path: "/memory" },
+
         { name: "More Links", path: "/footer" },
+
         { name: "Logout", path: "/logout" },
       ];
     }
 
     return [
       { name: "Home", path: "/" },
+
       { name: "Search People", path: "/userlist" },
+
       { name: "PYb'25", path: "/previous-yrbook" },
+
       {
         name: "My Profile",
+
         path: `/profile/nongrad/${user.name}/${user.email}`,
       },
+
       { name: "My Souvenir", path: "/goldcard" },
+
       { name: "More Links", path: "/footer" },
+
       { name: "Logout", path: "/logout" },
     ];
   };
@@ -86,6 +133,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center py-3">
           <div className="flex items-center flex-shrink-0">
             <img src={logo} alt="logo" className="h-10 w-10 mr-2" />
+
             <span className="text-xl tracking-tight">YearBook' 2026</span>
           </div>
 
@@ -94,7 +142,9 @@ const Navbar = () => {
               <li key={index}>
                 <a
                   href={link.path}
-                  className={`hover:text-lightgreen ${loggedin ? "text-sm" : "text-base"}`}
+                  className={`hover:text-lightgreen ${
+                    loggedin ? "text-sm" : "text-base"
+                  }`}
                 >
                   {link.name}
                 </a>

@@ -6,17 +6,41 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./PollPage.module.css";
 import { Plus } from "lucide-react";
-import alumniEmails from "../../new_components/Navbar/akumniData.json";
 
 const PollPage = () => {
   const [polls, setPolls] = useState([]);
+
   const { loggedin, profile, loading } = useContext(LoginContext);
+
+  const [alumniEmails, setAlumniEmails] = useState([]);
 
   const [newPoll, setNewPoll] = useState({
     question: "",
+
     academic_program: "Bachelor of Technology (BTech)",
-    options: [{ rollNo: "", name: "" }, { rollNo: "", name: "" }]
+
+    options: [
+      { rollNo: "", name: "" },
+      { rollNo: "", name: "" },
+    ],
   });
+
+  // Fetch alumni data from backend
+  useEffect(() => {
+    const fetchAlumniData = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/getAlumniData`,
+        );
+
+        setAlumniEmails(res.data);
+      } catch (err) {
+        console.error("Failed to fetch alumni data:", err);
+      }
+    };
+
+    fetchAlumniData();
+  }, []);
 
   // Admin check
   const adminUsers = process.env.REACT_APP_ADMIN_USERS
@@ -35,13 +59,17 @@ const PollPage = () => {
 
   // Redirect if not logged in
   useEffect(() => {
-    if (!loading && !loggedin) window.location.href = "/login";
+    if (!loading && !loggedin) {
+      window.location.href = "/login";
+    }
   }, [loading, loggedin]);
 
   // Fetch all polls
   useEffect(() => {
     axios
+
       .get(`${process.env.REACT_APP_API_URL}/polls`)
+
       .then((res) => {
         if (Array.isArray(res.data.polls)) {
           setPolls(res.data.polls);
@@ -49,8 +77,10 @@ const PollPage = () => {
           setPolls([]);
         }
       })
+
       .catch((err) => {
         console.error("Error fetching polls:", err);
+
         setPolls([]);
       });
   }, []);
@@ -63,21 +93,31 @@ const PollPage = () => {
       !newPoll.question.trim() ||
       newPoll.options.filter((opt) => opt.rollNo && opt.name).length < 2
     ) {
-      toast.error("Provide question & at least 2 options.", { autoClose: 2000 });
+      toast.error("Provide question & at least 2 options.", {
+        autoClose: 2000,
+      });
+
       return;
     }
 
     const processedOptions = newPoll.options
+
       .filter((opt) => opt.rollNo && opt.name)
+
       .map((opt) => `${opt.rollNo} - ${opt.name}`);
 
     axios
+
       .post(`${process.env.REACT_APP_API_URL}/createPoll`, {
         question: newPoll.question,
+
         academic_program: newPoll.academic_program,
+
         options: processedOptions,
-        createdBy: profile.email
+
+        createdBy: profile.email,
       })
+
       .then((res) => {
         toast.success("Poll created successfully!", { autoClose: 2000 });
 
@@ -85,12 +125,19 @@ const PollPage = () => {
 
         setNewPoll({
           question: "",
+
           academic_program: "Bachelor of Technology (BTech)",
-          options: [{ rollNo: "", name: "" }, { rollNo: "", name: "" }]
+
+          options: [
+            { rollNo: "", name: "" },
+            { rollNo: "", name: "" },
+          ],
         });
       })
+
       .catch((err) => {
         console.error("Error creating poll:", err);
+
         toast.error("Failed to create poll. Try again.");
       });
   };
@@ -98,37 +145,41 @@ const PollPage = () => {
   // Delete poll
   const handleDeletePoll = (pollId) => {
     axios
+
       .delete(`${process.env.REACT_APP_API_URL}/polls/${pollId}`)
+
       .then(() => {
         toast.success("Poll deleted successfully!", { autoClose: 2000 });
 
         setPolls((prev) => prev.filter((p) => p._id !== pollId));
       })
+
       .catch((err) => {
         console.error("Error deleting poll:", err);
+
         toast.error("Failed to delete poll. Try again.");
       });
   };
 
   // Separate polls by academic program
   const ugPolls = polls.filter(
-    (p) => p.academic_program === "Bachelor of Technology (BTech)"
+    (p) => p.academic_program === "Bachelor of Technology (BTech)",
   );
 
   const pgPolls = polls.filter(
-    (p) => p.academic_program === "Master of Technology (MTech)"
+    (p) => p.academic_program === "Master of Technology (MTech)",
   );
 
-  const msdsmPolls = polls.filter(
-    (p) => p.academic_program === "MSDSM"
-  );
+  const msdsmPolls = polls.filter((p) => p.academic_program === "MSDSM");
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900">
         <div className="loader">
           <span className="bar"></span>
+
           <span className="bar"></span>
+
           <span className="bar"></span>
         </div>
       </div>
@@ -157,7 +208,10 @@ const PollPage = () => {
                 placeholder="Enter poll question"
                 value={newPoll.question}
                 onChange={(e) =>
-                  setNewPoll({ ...newPoll, question: e.target.value })
+                  setNewPoll({
+                    ...newPoll,
+                    question: e.target.value,
+                  })
                 }
                 className={styles.input}
               />
@@ -167,7 +221,8 @@ const PollPage = () => {
                 onChange={(e) =>
                   setNewPoll({
                     ...newPoll,
-                    academic_program: e.target.value
+
+                    academic_program: e.target.value,
                   })
                 }
                 className={styles.input}
@@ -175,12 +230,10 @@ const PollPage = () => {
                 <option value="Bachelor of Technology (BTech)">
                   UG (BTech)
                 </option>
-                <option value="Master of Technology (MTech)">
-                  PG (MTech)
-                </option>
-                <option value="MSDSM">
-                  MSDSM
-                </option>
+
+                <option value="Master of Technology (MTech)">PG (MTech)</option>
+
+                <option value="MSDSM">MSDSM</option>
               </select>
 
               {newPoll.options.map((option, index) => (
@@ -192,11 +245,15 @@ const PollPage = () => {
                     onChange={(e) =>
                       setNewPoll({
                         ...newPoll,
+
                         options: newPoll.options.map((opt, i) =>
                           i === index
-                            ? { ...opt, rollNo: e.target.value }
-                            : opt
-                        )
+                            ? {
+                                ...opt,
+                                rollNo: e.target.value,
+                              }
+                            : opt,
+                        ),
                       })
                     }
                     className={`${styles.input} w-1/2`}
@@ -209,11 +266,15 @@ const PollPage = () => {
                     onChange={(e) =>
                       setNewPoll({
                         ...newPoll,
+
                         options: newPoll.options.map((opt, i) =>
                           i === index
-                            ? { ...opt, name: e.target.value }
-                            : opt
-                        )
+                            ? {
+                                ...opt,
+                                name: e.target.value,
+                              }
+                            : opt,
+                        ),
                       })
                     }
                     className={`${styles.input} w-1/2`}
@@ -227,10 +288,15 @@ const PollPage = () => {
                   onClick={() =>
                     setNewPoll({
                       ...newPoll,
+
                       options: [
                         ...newPoll.options,
-                        { rollNo: "", name: "" }
-                      ]
+
+                        {
+                          rollNo: "",
+                          name: "",
+                        },
+                      ],
                     })
                   }
                   className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 text-black"
@@ -252,12 +318,9 @@ const PollPage = () => {
 
         {/* Poll Display */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          
           {/* UG Polls */}
           <div>
-            <h2 className="text-2xl font-bold text-green-400 mb-4">
-              UG Polls
-            </h2>
+            <h2 className="text-2xl font-bold text-green-400 mb-4">UG Polls</h2>
 
             <div className="space-y-4">
               {ugPolls.length > 0 ? (
@@ -289,18 +352,14 @@ const PollPage = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-gray-400">
-                  No UG polls available.
-                </p>
+                <p className="text-gray-400">No UG polls available.</p>
               )}
             </div>
           </div>
 
           {/* PG Polls */}
           <div>
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">
-              PG Polls
-            </h2>
+            <h2 className="text-2xl font-bold text-blue-400 mb-4">PG Polls</h2>
 
             <div className="space-y-4">
               {pgPolls.length > 0 ? (
@@ -332,12 +391,11 @@ const PollPage = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-gray-400">
-                  No PG polls available.
-                </p>
+                <p className="text-gray-400">No PG polls available.</p>
               )}
             </div>
           </div>
+
           {/* MSDSM Polls */}
           <div>
             <h2 className="text-2xl font-bold text-purple-400 mb-4">
@@ -366,21 +424,18 @@ const PollPage = () => {
                         <button
                           onClick={() => handleDeletePoll(poll._id)}
                           className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                        > Delete
+                        >
+                          Delete
                         </button>
                       )}
                     </div>
                   </div>
                 ))
-                ) : (
-                  <p className="text-gray-400">
-                    No MSDSM polls available.
-                  </p>
-                )
-              }
+              ) : (
+                <p className="text-gray-400">No MSDSM polls available.</p>
+              )}
             </div>
           </div>
-
         </div>
       </div>
     </div>

@@ -1,53 +1,46 @@
-import { useState, useContext, useMemo, useEffect } from 'react';
-import CampusMap from './CampusMap';
-import SeniorSelector from './SeniorSelector';
-import MemoryModal from './MemoryModal';
-import PrintSummary from './PrintSummary';
-import { Button } from '../../components/ui/button';
-import { Printer, MapPin, Heart } from 'lucide-react';
-import { toast } from '../../hooks/use-toast';
-import axios from 'axios';
-import './MemoryMapPage.css';
-import { LoginContext } from '../../helpers/Context';
-import jwt_decode from 'jwt-decode';
-import { CampusDataProvider } from './memoryMapContext';
-import alumniData from '../../new_components/Navbar/akumniData.json';
+import { useState, useContext, useMemo, useEffect } from "react";
+import CampusMap from "./CampusMap";
+import SeniorSelector from "./SeniorSelector";
+import MemoryModal from "./MemoryModal";
+import PrintSummary from "./PrintSummary";
+import { Button } from "../../components/ui/button";
+import { Printer, MapPin, Heart } from "lucide-react";
+import { toast } from "../../hooks/use-toast";
+import axios from "axios";
+import "./MemoryMapPage.css";
+import { LoginContext } from "../../helpers/Context";
+import jwt_decode from "jwt-decode";
+import { CampusDataProvider } from "./memoryMapContext";
+
+// REMOVED:
+// import alumniData from '../../new_components/Navbar/alumniData';
 
 function MemoryMapPage() {
-  const [selectedSeniors, setSelectedSeniors] = useState([]); // CHANGED
+  const [selectedSeniors, setSelectedSeniors] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [memories, setMemories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // NEW: store alumni data fetched from backend
+  const [alumniData, setAlumniData] = useState([]);
+
+  // NEW: track whether alumni data has loaded
+  const [alumniDataLoaded, setAlumniDataLoaded] = useState(false);
+
   let user = {};
-  if (window.localStorage.getItem('token') !== null) {
-    user = jwt_decode(window.localStorage.getItem('token'));
-  }
 
-  if (Object.keys(user).length === 0) {
-    window.location.href = '/';
-  }
-
-  if (!alumniData.includes(user.email)) {
-    window.location.href = '/';
+  if (window.localStorage.getItem("token") !== null) {
+    user = jwt_decode(window.localStorage.getItem("token"));
   }
 
   const authorName = user?.name;
-
   const userEmail = user?.email;
-
-const myRelatedMemories = useMemo(() => {
-  return memories.filter(
-    (m) =>
-      m.authorName === authorName ||   // written by me
-      m.seniorId === userEmail         // written for me
-  );
-}, [memories, authorName, userEmail]);
 
   const { allUsers } = useContext(LoginContext);
 
   const seniors = useMemo(() => {
     if (!allUsers) return [];
+
     return allUsers.map((u) => ({
       id: u.email,
       name: u.name,
@@ -59,20 +52,73 @@ const myRelatedMemories = useMemo(() => {
 
   const selectedSeniorIds = useMemo(
     () => selectedSeniors.map((s) => s.id),
-    [selectedSeniors]
+    [selectedSeniors],
   );
+
+  /*
+   * NEW:
+   * Fetch alumni data from backend.
+   */
+  useEffect(() => {
+    const fetchAlumniData = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/getAlumniData`,
+        );
+
+        setAlumniData(res.data);
+        setAlumniDataLoaded(true);
+      } catch (err) {
+        console.error("Failed to fetch alumni data:", err);
+
+        setAlumniDataLoaded(true);
+      }
+    };
+
+    fetchAlumniData();
+  }, []);
+
+  /*
+   * NEW:
+   * Check whether logged-in user is an alumni
+   * after alumni data has been fetched.
+   */
+  useEffect(() => {
+    if (!alumniDataLoaded) return;
+
+    // No logged-in user
+    if (Object.keys(user).length === 0) {
+      window.location.href = "/";
+      return;
+    }
+
+    // User is not an alumni
+    if (!alumniData.includes(user.email)) {
+      window.location.href = "/";
+    }
+  }, [alumniData, alumniDataLoaded, user.email]);
+
+  const myRelatedMemories = useMemo(() => {
+    return memories.filter(
+      (m) =>
+        m.authorName === authorName || // written by me
+        m.seniorId === userEmail, // written for me
+    );
+  }, [memories, authorName, userEmail]);
 
   useEffect(() => {
     const fetchMemories = async () => {
       try {
         const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/memories`
+          `${process.env.REACT_APP_API_URL}/memories`,
         );
+
         setMemories(res.data);
       } catch (err) {
         console.error(err);
       }
     };
+
     fetchMemories();
   }, []);
 
@@ -82,68 +128,67 @@ const myRelatedMemories = useMemo(() => {
   };
 
   const handleAddMemory = async (formData) => {
-  try {
-    formData.append('authorName', authorName);
+    try {
+      formData.append("authorName", authorName);
 
-    const res = await axios.post(
-      `${process.env.REACT_APP_API_URL}/create-memory`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'multipart/form-data',
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/create-memory`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
         },
-      }
-    );
+      );
 
-    setMemories((prev) => [...prev, res.data]);
+      setMemories((prev) => [...prev, res.data]);
 
-    toast({
-      title: 'Memory added 💫',
-      description: 'Your memory has been saved.',
-    });
-  } catch (err) {
-    console.error(err);
-    toast({
-      title: 'Error',
-      description: 'Failed to save memory',
-      variant: 'destructive',
-    });
-  }
-};
+      toast({
+        title: "Memory added 💫",
+        description: "Your memory has been saved.",
+      });
+    } catch (err) {
+      console.error(err);
 
-
-  // const handlePrint = () => {
-  //   if (selectedSeniors.length === 0) {
-  //     toast({
-  //       title: 'Select seniors first',
-  //       description: 'Please select at least one senior to print.',
-  //       variant: 'destructive',
-  //     });
-  //     return;
-  //   }
-  //   window.print();
-  // };
+      toast({
+        title: "Error",
+        description: "Failed to save memory",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handlePrint = () => {
-  if (myRelatedMemories.length === 0) {
-    toast({
-      title: 'No memories to print',
-      description: 'No related memories found.',
-      variant: 'destructive',
-    });
-    return;
-  }
+    if (myRelatedMemories.length === 0) {
+      toast({
+        title: "No memories to print",
+        description: "No related memories found.",
+        variant: "destructive",
+      });
 
-  window.print();
-};
+      return;
+    }
+
+    window.print();
+  };
 
   const seniorMemories = useMemo(() => {
     if (selectedSeniorIds.length === 0) return memories;
-    return memories.filter((m) =>
-      selectedSeniorIds.includes(m.seniorId)
-    );
+
+    return memories.filter((m) => selectedSeniorIds.includes(m.seniorId));
   }, [memories, selectedSeniorIds]);
+
+  /*
+   * Optional:
+   * While alumni data is loading, don't render the page.
+   *
+   * This prevents the page from briefly appearing before
+   * we know whether the user is an alumni.
+   */
+  if (!alumniDataLoaded) {
+    return null;
+  }
 
   return (
     <CampusDataProvider seniors={seniors} memories={memories}>
@@ -155,8 +200,10 @@ const myRelatedMemories = useMemo(() => {
                 <div className="mm-logo">
                   <MapPin className="mm-logo-icon" />
                 </div>
+
                 <div>
                   <h1 className="mm-title">Memory Map</h1>
+
                   <p className="mm-sub">College Yearbook • Class of 2026</p>
                 </div>
               </div>
@@ -167,6 +214,7 @@ const myRelatedMemories = useMemo(() => {
                 className="mm-print-btn"
               >
                 <Printer className="w-4 h-4" />
+
                 <span className="mm-print-text">Print Summary</span>
               </Button>
             </div>
@@ -176,8 +224,12 @@ const myRelatedMemories = useMemo(() => {
         <main className="mm-main mm-container no-print">
           <div className="mm-hero">
             <h2 className="mm-hero-title">Memory Map- Where Memories Live</h2>
+
             <p className="mm-hero-sub">
-             After adding a memory, it will be sent to your friends for verification. Once everyone approves it, the memory will appear on the Memory Map for everyone. You can also verify your memories from your profile page. 
+              After adding a memory, it will be sent to your friends for
+              verification. Once everyone approves it, the memory will appear on
+              the Memory Map for everyone. You can also verify your memories
+              from your profile page.
             </p>
           </div>
 
@@ -187,29 +239,28 @@ const myRelatedMemories = useMemo(() => {
                 <SeniorSelector
                   seniors={seniors}
                   selectedSeniors={selectedSeniors}
-                  onChange={setSelectedSeniors}     
+                  onChange={setSelectedSeniors}
                 />
 
                 <div className="mm-stats-card">
                   <div className="mm-stats-header">
                     <Heart className="mm-heart-icon" />
+
                     <h4 className="mm-stats-title">Memory Stats</h4>
                   </div>
+
                   <div className="mm-stats-grid">
                     <div>
-                      <p className="mm-stats-number">
-                        {seniorMemories.length}
-                      </p>
+                      <p className="mm-stats-number">{seniorMemories.length}</p>
+
                       <p className="mm-stats-label">Total Memories</p>
                     </div>
+
                     <div>
                       <p className="mm-stats-number">
-                        {
-                          new Set(
-                            seniorMemories.map((m) => m.locationId)
-                          ).size
-                        }
+                        {new Set(seniorMemories.map((m) => m.locationId)).size}
                       </p>
+
                       <p className="mm-stats-label">Locations</p>
                     </div>
                   </div>
@@ -227,11 +278,30 @@ const myRelatedMemories = useMemo(() => {
               </div>
 
               <div className="mm-instructions">
-                <div className="mm-instr-item"><span className="mm-swatch mm-swatch-hostel" /> Hostels</div>
-                <div className="mm-instr-item"><span className="mm-swatch mm-swatch-academic" /> Academic</div>
-                <div className="mm-instr-item"><span className="mm-swatch mm-swatch-food" /> Food & Social</div>
-                <div className="mm-instr-item"><span className="mm-swatch mm-swatch-sports" /> Sports</div>
-                <div className="mm-instr-item"><span className="mm-swatch mm-swatch-labs" /> Labs</div>
+                <div className="mm-instr-item">
+                  <span className="mm-swatch mm-swatch-hostel" />
+                  Hostels
+                </div>
+
+                <div className="mm-instr-item">
+                  <span className="mm-swatch mm-swatch-academic" />
+                  Academic
+                </div>
+
+                <div className="mm-instr-item">
+                  <span className="mm-swatch mm-swatch-food" />
+                  Food & Social
+                </div>
+
+                <div className="mm-instr-item">
+                  <span className="mm-swatch mm-swatch-sports" />
+                  Sports
+                </div>
+
+                <div className="mm-instr-item">
+                  <span className="mm-swatch mm-swatch-labs" />
+                  Labs
+                </div>
               </div>
             </section>
           </div>
@@ -248,24 +318,25 @@ const myRelatedMemories = useMemo(() => {
           onAddMemory={handleAddMemory}
         />
 
-        {/* {selectedSeniors.length > 0 && (
+        {/* 
+        {selectedSeniors.length > 0 && (
           <PrintSummary
             seniors={selectedSeniors}
             memories={seniorMemories}
           />
-        )} */}
+        )}
+        */}
 
-        {/* {selectedSeniors.length > 0 && (
-  <PrintSummary
-    senior={selectedSeniors[0]}
-    memories={seniorMemories}
-  />
-)} */}
-<PrintSummary
-  seniors={seniors}
-  memories={myRelatedMemories}
-/>
+        {/*
+        {selectedSeniors.length > 0 && (
+          <PrintSummary
+            senior={selectedSeniors[0]}
+            memories={seniorMemories}
+          />
+        )}
+        */}
 
+        <PrintSummary seniors={seniors} memories={myRelatedMemories} />
       </div>
     </CampusDataProvider>
   );

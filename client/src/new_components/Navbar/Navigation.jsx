@@ -3,24 +3,30 @@ import { motion } from "framer-motion";
 import { MenuItem } from "./MenuItem";
 import { useContext, useState, useEffect } from "react";
 import { LoginContext } from "../../helpers/Context";
-import alumniData from "./akumniData.json";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 const variants = {
   open: {
     opacity: 1,
+
     y: 0,
+
     transition: {
       staggerChildren: 0.07,
+
       delayChildren: 0.2,
     },
   },
+
   closed: {
     opacity: 1,
+
     y: -20,
+
     transition: {
       staggerChildren: 0.05,
+
       staggerDirection: -1,
     },
   },
@@ -29,14 +35,19 @@ const variants = {
 const variants2 = {
   open: {
     y: 0,
+
     opacity: 1,
+
     transition: {
       y: { stiffness: 1000, velocity: -100 },
     },
   },
+
   closed: {
     y: 50,
+
     opacity: 0,
+
     transition: {
       y: { stiffness: 1000 },
     },
@@ -45,48 +56,96 @@ const variants2 = {
 
 function Navigation({ isOpen, setIsOpen }) {
   const [links, setLinks] = useState([]);
-  let user = {};
 
-  if (window.localStorage.getItem("token") !== null) {
-    user = jwt_decode(window.localStorage.getItem("token"));
-  }
+  const [alumniData, setAlumniData] = useState([]);
 
   const { loggedin, profile } = useContext(LoginContext);
 
+  let user = {};
+
+  if (window.localStorage.getItem("token") !== null) {
+    try {
+      user = jwt_decode(window.localStorage.getItem("token"));
+    } catch (err) {
+      console.error("Invalid token:", err);
+
+      user = {};
+    }
+  }
+
+  /*
+   * Fetch alumni data from backend
+   */
+  useEffect(() => {
+    const fetchAlumniData = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/getAlumniData`,
+        );
+
+        setAlumniData(res.data);
+      } catch (err) {
+        console.error("Failed to fetch alumni data:", err);
+      }
+    };
+
+    fetchAlumniData();
+  }, []);
+
+  /*
+   * Set navigation links
+   */
   useEffect(() => {
     if (isOpen) {
-      if (!loggedin && !profile.length) {
+      if (!loggedin && !profile?.length) {
         setLinks([
           { name: "Home", path: "/" },
-          //  { name: "Change Theme", path: "/changetheme" },
+
+          // { name: "Change Theme", path: "/changetheme" },
+
           { name: "Login", path: "/login" },
+
           { name: "More Links", path: "/footer" },
         ]);
       } else {
         if (alumniData.includes(user.email)) {
           setLinks([
             { name: "Home", path: "/" },
+
             { name: "Search People", path: "/userlist" },
+
             {
               name: "My Profile",
-              path: `/profile/${profile.roll_no}/${profile.name}`,
+
+              path: `/profile/${profile?.roll_no}/${profile?.name}`,
             },
+
             { name: "Memory Map", path: "/memory" },
-            //  { name: "Change Theme", path: "/changetheme" },
+
+            // { name: "Change Theme", path: "/changetheme" },
+
             { name: "More Links", path: "/footer" },
+
             // { name: "Logout", path: "/logout" },
           ]);
         } else {
           setLinks([
             { name: "Home", path: "/" },
+
             { name: "Search People", path: "/userlist" },
+
             {
               name: "My Profile",
+
               path: `/profile/nongrad/${user.name}/${user.email}`,
             },
+
             { name: "My Souvenir", path: "/goldcard" },
+
             // { name: "Change Theme", path: "/changetheme" },
+
             { name: "More Links", path: "/footer" },
+
             // { name: "Logout", path: "/logout" },
           ]);
         }
@@ -94,11 +153,11 @@ function Navigation({ isOpen, setIsOpen }) {
     } else {
       const delay = setTimeout(() => {
         setLinks([]);
-      }, 500); //
+      }, 500);
 
       return () => clearTimeout(delay);
     }
-  }, [isOpen, loggedin, profile]);
+  }, [isOpen, loggedin, profile, alumniData, user.email]);
 
   // const [isDarkMode, setIsDarkMode] = useState(() => {
   //   const storedThemeMode = localStorage.getItem("themeMode");
@@ -131,15 +190,23 @@ function Navigation({ isOpen, setIsOpen }) {
           setIsOpen={setIsOpen}
         />
       ))}
-      {/* <motion.li
+
+      {/*
+      <motion.li
         variants={variants2}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         className="h-8 w-auto z-50 text-4xl hover:underline hover:text-5xl cursor-pointer"
       >
-        <button onClick={toggleTheme}>Change Theme</button>
-      </motion.li> */}
+
+        <button onClick={toggleTheme}>
+          Change Theme
+        </button>
+
+      </motion.li>
+      */}
     </motion.ul>
   );
 }
+
 export { Navigation };

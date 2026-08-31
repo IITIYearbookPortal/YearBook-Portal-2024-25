@@ -4,7 +4,7 @@ import { commtdata } from "./data";
 import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import alumniData from "../Navbar/akumniData.json";
+import alumniData from "../Navbar/alumniData";
 import { LoginContext } from "../../helpers/Context";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

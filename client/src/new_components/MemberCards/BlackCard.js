@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { LoginContext } from "../../helpers/Context";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import alumniData from "../Navbar/akumniData.json";
+import alumniData from "../Navbar/alumniData";
 
 function BlackCard(props) {
   const {

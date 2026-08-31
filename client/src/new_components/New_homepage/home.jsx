@@ -11,7 +11,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import alumniData from "../Navbar/akumniData.json";
+import alumniData from "../Navbar/alumniData";
 import jwt_decode from "jwt-decode";
 
 //images
@@ -329,59 +329,59 @@ const Home = () => {
         name="second"
         className="relative bg-black snap-start min-h-screen flex flex-col justify-center items-center bg-cover p-4"
       >
-      <div className="relative w-full h-full flex flex-col items-center text-center">
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-3xl text-[#fee06d] sm:text-4xl md:text-5xl lg:text-6xl px-4"
-        >
-          "Before we scatter into the world,
-        </motion.h1>
+        <div className="relative w-full h-full flex flex-col items-center text-center">
+          <motion.h1
+            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="text-3xl text-[#fee06d] sm:text-4xl md:text-5xl lg:text-6xl px-4"
+          >
+            "Before we scatter into the world,
+          </motion.h1>
 
-        <motion.h1
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="text-3xl text-[#fee06d] sm:text-4xl md:text-5xl lg:text-6xl mt-2 px-4"
-        >
-          let's leave something behind"
-        </motion.h1>
+          <motion.h1
+            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="text-3xl text-[#fee06d] sm:text-4xl md:text-5xl lg:text-6xl mt-2 px-4"
+          >
+            let's leave something behind"
+          </motion.h1>
 
-        <motion.p
-          viewport={{ once: true }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="text-md text-[#a1cfe9] sm:text-lg md:text-xl lg:text-2xl mt-8 max-w-3xl px-6 sm:px-10 lg:px-20"
-        >
-          This is your space to capture the moments that shaped you. From late-night laughs to heartfelt farewells, every message adds a page to your story. Revisit the friendships, milestones, and memories that made these years unforgettable.
-        </motion.p>
-
-        <div className="relative w-full h-full flex flex-col items-center justify-center mt-8 sm:flex-row sm:justify-center lg:space-x-20 md:space-x-20">
-          <motion.img
-            viewport={{ once: false }}
-            initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
+          <motion.p
+            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1 }}
-            src="/images/homepage/24-yearbook.png"
-            alt="Yearbook 2024"
-            className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-48 lg:h-48 exclude-dark-mode"
-          />
-          <motion.img
-            viewport={{ once: false }}
-            initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-            whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
-            transition={{ duration: 1, delay: 1 }}
-            src="/images/homepage/25-yearbook.png"
-            alt="Yearbook 2023"
-            className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-48 lg:h-48 exclude-dark-mode mt-4 sm:mt-0"
-          />
+            className="text-md text-[#a1cfe9] sm:text-lg md:text-xl lg:text-2xl mt-8 max-w-3xl px-6 sm:px-10 lg:px-20"
+          >
+            This is your space to capture the moments that shaped you. From late-night laughs to heartfelt farewells, every message adds a page to your story. Revisit the friendships, milestones, and memories that made these years unforgettable.
+          </motion.p>
+
+          <div className="relative w-full h-full flex flex-col items-center justify-center mt-8 sm:flex-row sm:justify-center lg:space-x-20 md:space-x-20">
+            <motion.img
+              viewport={{ once: false }}
+              initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
+              transition={{ duration: 1, delay: 1 }}
+              src="/images/homepage/24-yearbook.png"
+              alt="Yearbook 2024"
+              className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-48 lg:h-48 exclude-dark-mode"
+            />
+            <motion.img
+              viewport={{ once: false }}
+              initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 20 }}
+              transition={{ duration: 1, delay: 1 }}
+              src="/images/homepage/25-yearbook.png"
+              alt="Yearbook 2023"
+              className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-48 lg:h-48 exclude-dark-mode mt-4 sm:mt-0"
+            />
+          </div>
         </div>
-      </div>
-    
+
       </Element>
 
 
@@ -394,7 +394,7 @@ const Home = () => {
 
 
     const [isMobile, setIsMobile] = useState(window.innerWidth < 868);
-  
+
     useEffect(() => {
       const handleResize = () => setIsMobile(window.innerWidth < 868);
       window.addEventListener("resize", handleResize);
@@ -405,70 +405,70 @@ const Home = () => {
       <Element
         name="third"
         className="snap-start bg-darkbg min-h-screen   bg-cover p-10"
-     
+
       >
-     {isMobile ? (
-      <div className="flex flex-col items-center w-full px-4 sm:px-8 md:px-16 lg:px-32 py-10 0 text-white">
-      <h2 className="text-3xl font-bold mb-10 text-white">Timeline</h2>
-      <div className="relative w-full max-w-5xl">
-        <div className="absolute left-1/2 w-1 h-full transform bg-gray-600 -translate-x-1/2"></div>
-        {timelineData.map((item, index) => (
-          <div
-            key={index}
-            className={`flex ${index % 2 === 0 ? "justify-start" : "justify-end"} w-full mb-8 relative`}
-          >
-            {/* Combine year and title in one vertically-aligned container */}
-            <div className="w-1/2 flex flex-col px-4">
-              <div className="flex flex-col items-start">
-                <div className="bg-lightgreen text-black px-4 py-2 rounded-lg font-bold">{item.year}</div>
-                <div className="mt-2 p-4 rounded-lg shadow-lg text-sm sm:text-base">{item.title}</div>
+        {isMobile ? (
+          <div className="flex flex-col items-center w-full px-4 sm:px-8 md:px-16 lg:px-32 py-10 0 text-white">
+            <h2 className="text-3xl font-bold mb-10 text-white">Timeline</h2>
+            <div className="relative w-full max-w-5xl">
+              <div className="absolute left-1/2 w-1 h-full transform bg-gray-600 -translate-x-1/2"></div>
+              {timelineData.map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex ${index % 2 === 0 ? "justify-start" : "justify-end"} w-full mb-8 relative`}
+                >
+                  {/* Combine year and title in one vertically-aligned container */}
+                  <div className="w-1/2 flex flex-col px-4">
+                    <div className="flex flex-col items-start">
+                      <div className="bg-lightgreen text-black px-4 py-2 rounded-lg font-bold">{item.year}</div>
+                      <div className="mt-2 p-4 rounded-lg shadow-lg text-sm sm:text-base">{item.title}</div>
+                    </div>
+                  </div>
+                  <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-lightgreen rounded-full border-4 border-gray-900"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+
+        ) : (
+
+          <div className="p-8  text-white">
+            <motion.h2
+              viewport={{ once: true }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+              className="text-6xl font-bold mb-14  text-white text-center ">
+              Timeline
+            </motion.h2>
+
+            <div className="mt-48">
+              <div className={`flex flex-row items-center relative mx-4 mt-20`}>
+                <div
+                  className={`absolute left-1/2 transform -translate-x-1/2 rounded-full border-4 border-gray-500 "h-1 w-full top-2`}></div>
+                <div className={`flex align-text-bottom`}>
+                  {timelineData.map((item, index) => (
+                    <motion.div
+                      key={index}
+                      className={`flex flex-row gap-4 relative mb-8`}
+                      initial={{ opacity: 0, x: -50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 1.5, delay: index * 0.2 }}
+                    ><div className={`mr-4px`}>
+                        <div className="w-2 h-2 bg-lightgreen rounded-full -translate-y-[-8px] z-10"></div>
+                        <div className={`mt-2`}>
+                          <div className="text-lg font-semibold bg-lightgreen text-black p-2 rounded-lg mt-5 h-[40px] w-max">{item.year}</div>
+                          <div className="mt-2 rounded-lg shadow-lg text-sm sm:text-base mr-3 flex-grow p-2">{item.title}</div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}</div>
               </div>
             </div>
-            <div className="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-lightgreen rounded-full border-4 border-gray-900"></div>
           </div>
-        ))}
-      </div>
-    </div>
-    
-     
-      ) :(
-        
-    <div className="p-8  text-white">
-        <motion.h2
-        viewport={{ once: true }}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="text-6xl font-bold mb-14  text-white text-center ">
-          Timeline
-        </motion.h2>
+        )}
 
-       <div className="mt-48">
-        <div className={`flex flex-row items-center relative mx-4 mt-20`}> 
-            <div
-            className={`absolute left-1/2 transform -translate-x-1/2 rounded-full border-4 border-gray-500 "h-1 w-full top-2`}></div>
-          <div className={`flex align-text-bottom`}>
-          {timelineData.map((item, index) => (
-            <motion.div
-              key={index}
-              className={`flex flex-row gap-4 relative mb-8`}
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.5, delay: index * 0.2 }}
-            ><div className={`mr-4px`}>
-              <div className="w-2 h-2 bg-lightgreen rounded-full -translate-y-[-8px] z-10"></div>
-              <div className={`mt-2`}>
-              <div className="text-lg font-semibold bg-lightgreen text-black p-2 rounded-lg mt-5 h-[40px] w-max">{item.year}</div>
-              <div className="mt-2 rounded-lg shadow-lg text-sm sm:text-base mr-3 flex-grow p-2">{item.title}</div>
-              </div>
-              </div>
-            </motion.div>
-          ))}</div>
-        </div>
-        </div>
-      </div> 
-      )}
-             
       </Element>
     );
   };
@@ -479,7 +479,7 @@ const Home = () => {
   //   return (
   //     <Element name="fourth" className="snap-start bg-lightgreen ">
   //       <div className="">
-           
+
   //         timeline 
   //       </div>
   //     </Element>

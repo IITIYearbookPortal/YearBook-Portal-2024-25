@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../helpers/Context";
-import alumniData from "./Navbar/akumniData.json";
+import alumniData from "./Navbar/alumniData";
 import axios from "axios";
 import "./UserList.module.css"; // Import your CSS file for styling
 
