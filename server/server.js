@@ -17,6 +17,7 @@ const memoryRoutes = require("./routes/memoriesRoutes");
 const commentRoutes = require("./routes/commentsRoutes");
 const pollRoutes = require("./routes/pollRoutes");
 const previousYrBookRoute = require("./routes/previousYrBook")
+const alumniRoute = require("./routes/alumniData");
 
 // Add this middleware to use the routes
 
@@ -84,6 +85,7 @@ app.use(cookieParser());
 // log in development environment
 
 const morgan = require("morgan");
+const alumniData = require("./models/alumniData");
 // const { default: PreviousYrBook } = require("../client/src/pages/previousYrBook");
 app.use(morgan("dev"));
 
@@ -146,6 +148,7 @@ app.use(memoryRoutes);
 app.use(commentRoutes);
 app.use(pollRoutes);
 app.use(previousYrBookRoute);
+app.use(alumniRoute);
 
 app.use('/check', (req, res) => {
   res.send('hi');
