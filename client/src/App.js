@@ -41,6 +41,7 @@ import { BrowserRouter } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import VerifyMemories from "./pages/VerifyMemories.jsx";
+import CampusMapPage from "./pages/CampusMapPage.jsx";
 
 const queryClient = new QueryClient();
 
@@ -503,6 +504,7 @@ const App = ({ location }) => {
               {/* Extra Pages */}
 
               <Route path="/memory" element={<Index />} />
+              <Route path="/map" element={<CampusMapPage />} />
 
               <Route path="*" element={<NotFound />} />
 
