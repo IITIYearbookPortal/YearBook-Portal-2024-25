@@ -15,12 +15,8 @@ import { LoginContext } from "../../helpers/Context";
 import { useContext } from "react";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
-import jwt_decode from "jwt-decode";
 import { useParams } from "react-router-dom";
 
-// ─── EDITABLE REDIRECT URL ────────────────────────────────────────────────────
-const REDIRECT_URL = "https://yearbook.iiti.ac.in";
-// ──────────────────────────────────────────────────────────────────────────────
 
 function Fill3({ isDarkMode, setIsDarkMode }) {
   const {
@@ -34,11 +30,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     profile,
   } = useContext(LoginContext);
 
-  let user;
-  if (window.localStorage.getItem("token") !== null) {
-    user = jwt_decode(window.localStorage.getItem("token"));
-  }
-
+  const {user} = useContext(LoginContext);
   const jti = useParams();
 
   useEffect(() => {
@@ -103,7 +95,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     setRollNo(event.target.value);
   };
 
-  // ─── SUBMIT: save directly, mark verified=true, redirect ──────────────────
+  // Save a pending profile before requesting the verification codes.
   const onSubmit = () => {
     setState(true);
 
@@ -123,20 +115,13 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     formData.append("question_1", userData.question_1);
     formData.append("question_2", userData.question_2);
     formData.append("profile_img", profileImage);
-    // Skip OTP/email — mark both verification steps as done
-    formData.append("one_step_verified", true);
-    formData.append("two_step_verified", true);
-
     axios
       .post(process.env.REACT_APP_API_URL + "/userData", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then(() => {
-        setFill(true);
-        toast.success("Details saved! Redirecting...", { autoClose: 1500 });
-        setTimeout(() => {
-          window.location.href = REDIRECT_URL;
-        }, 1600);
+      .then(({data}) => {
+        if (data.message !== "Profile created") throw new Error(data.message);
+        window.location.assign("/otpVerificationnew/" + user.jti);
       })
       .catch(() => {
         setState(false);

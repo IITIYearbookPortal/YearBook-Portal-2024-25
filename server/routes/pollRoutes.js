@@ -1,4 +1,8 @@
 const express = require('express');
+function admin(req,res,next) {
+  if (!req.user.pollAdmin) return res.sendStatus(403);
+  next();
+}
 const router = express.Router();
 const {
   createPoll,
@@ -14,12 +18,12 @@ const {
 router.get('/polls', getPollById);
 router.get("/polls/:id", getPoll);
 // Route to create a new poll
-router.post('/createPoll', createPoll);
+router.post('/createPoll', admin, createPoll);
 
 
 // Route to vote on a poll
 router.post('/votePoll', votePoll);
-router.delete('/polls/:id', deletePoll); 
+router.delete('/polls/:id', admin, deletePoll);
 
 router.get("/polls/results/:id", getPollResults);
 

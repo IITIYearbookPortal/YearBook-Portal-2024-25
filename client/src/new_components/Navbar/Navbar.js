@@ -3,67 +3,12 @@ import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { LoginContext } from "../../helpers/Context";
 import axios from "axios";
-import jwt_decode from "jwt-decode";
 import logo from "./lo.jpeg";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const { loggedin, profile } = useContext(LoginContext);
-
-  const [user, setUser] = useState(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) return null;
-
-    try {
-      return jwt_decode(token);
-    } catch {
-      localStorage.removeItem("token");
-
-      return null;
-    }
-  });
-
-  // Alumni data fetched from backend
-  const [alumniData, setAlumniData] = useState([]);
-
-  // Fetch alumni data from backend
-  useEffect(() => {
-    const fetchAlumniData = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/getAlumniData`,
-        );
-
-        setAlumniData(res.data);
-      } catch (err) {
-        console.error("Failed to fetch alumni data:", err);
-      }
-    };
-
-    fetchAlumniData();
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      setUser(null);
-
-      return;
-    }
-
-    try {
-      const decoded = jwt_decode(token);
-
-      setUser(decoded);
-    } catch {
-      localStorage.removeItem("token");
-
-      setUser(null);
-    }
-  }, [loggedin]);
+  const {loggedin, profile, user} = useContext(LoginContext);
 
   const getLinks = () => {
     if (!loggedin) {
@@ -80,7 +25,7 @@ const Navbar = () => {
 
     if (!user) return [];
 
-    if (alumniData.includes(user.email)) {
+    if (user.alumni) {
       return [
         { name: "Home", path: "/" },
 

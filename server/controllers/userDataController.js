@@ -1,28 +1,11 @@
 const asyncHandler = require("express-async-handler");
 require("dotenv").config();
-const mongoose = require("mongoose");
-const nodemailer = require("nodemailer");
-const jwt = require("jsonwebtoken");
 const Users = require("../models/userModel");
 const cloudinary = require("../config/cloudinary");
 
-const gmailUser = process.env.GMAIL_USER;
-const gmailPass = process.env.GMAIL_PASS;
-const serverLink = process.env.SERVER_LINK;
-const clientLink = process.env.CLIENT_LINK;
-
-const transporter = nodemailer.createTransport({
-  service: "Gmail",
-  auth: {
-    user: gmailUser,
-
-    pass: gmailPass,
-  },
-});
-
 const getUsersData = asyncHandler(async (req, res) => {
   //Get all usersData from MongoDb
-  const User = await Users.find();
+  const User = await Users.find({one_step_verified:true,two_step_verified:true});
 
   //If no usersData
   if (!User?.length) {
@@ -45,71 +28,17 @@ const getUsersData = asyncHandler(async (req, res) => {
 
 const getUsersCompleteData = asyncHandler(async (req, res) => {
   const { roll_no } = req.params;
-  const user = await Users.findOne({ roll_no });
+  if (roll_no !== req.profile?.roll_no) return res.sendStatus(403);
+  const user = await Users.findById(req.profile._id);
   if (!user) {
     return res.status(404).json({ message: "No userData found" });
   }
   return res.json({ user });
 });
 
-const userDataNew = asyncHandler(async (req, res) => {
-  //Get all usersData from MongoDb
-  const email = req.body.email;
-  const personal_email_id = req.body.personal_email_id;
-  const contact_details = req.body.contact_details;
-
-  // console.log(req.body);
-
-  const User = await Users.findOneAndUpdate(
-    { email: email },
-    {
-      $set: {
-        personal_email_id: personal_email_id,
-        contact_details: contact_details,
-        one_step_verified: true,
-        two_step_verified: true,
-      },
-    },
-  );
-
-  // User.personal_email_id = personal_email_id
-  // User.contact_details = contact_details
-
-  //If no usersData
-  // if (!User?.length) {
-  //   return res.send({ message: 'No userData found' })
-  // }
-  // Map over each user to extract only the necessary data
-
-  return res.send(User);
-});
-
-const userDataNewemail = asyncHandler(async (req, res) => {
-  //Get all usersData from MongoDb
-  const email = req.body.email;
-  const personal_email_id = req.body.personal_email_id;
-
-  const User = await Users.findOneAndUpdate(
-    { email: email },
-    { $set: { personal_email_id: personal_email_id } },
-  );
-
-  // User.personal_email_id = personal_email_id
-  // User.contact_details = contact_details
-
-  //If no usersData
-  // if (!User?.length) {
-  //   return res.send({ message: 'No userData found' })
-  // }
-  // Map over each user to extract only the necessary data
-
-  return res.send(User);
-});
-
 //Add a New User
 const createUsersData = asyncHandler(async (req, res) => {
   const {
-    email,
     name,
     roll_no,
     academic_program,
@@ -125,6 +54,9 @@ const createUsersData = asyncHandler(async (req, res) => {
     question_2,
   } = req.body;
 
+  const email = req.user.email;
+  if (req.profile) return res.status(409).json({message:"Profile already exists"});
+  if (!validEmail(personal_email_id) || !validPhone(contact_details)) return res.status(400).json({message:"Invalid contact details"});
   if (!req.file) {
     return res.status(400).json({ message: "Profile image is required" });
   }
@@ -154,7 +86,7 @@ const createUsersData = asyncHandler(async (req, res) => {
     return res.json({ message: "Mobile Number is already in use" });
   }
 
-  if (isNaN(roll_no)) {
+  if (!/^\d+$/.test(roll_no)) {
     return res.json({ message: "Roll No. should be in Digits" });
   }
 
@@ -173,7 +105,8 @@ const createUsersData = asyncHandler(async (req, res) => {
         return res.status(500).json({ message: "Image upload failed" });
       }
 
-      await Users.create({
+      try { await Users.create({
+        indexedEnrollment: true,
         email,
         name,
         roll_no,
@@ -192,12 +125,16 @@ const createUsersData = asyncHandler(async (req, res) => {
         },
         question_1,
         question_2,
-        one_step_verified: true,
-        two_step_verified: true,
+        one_step_verified: false,
+        two_step_verified: false,
       });
 
+      } catch (err) {
+        await cloudinary.uploader.destroy(result.public_id).catch(() => {});
+        return res.status(err.code === 11000 ? 409 : 500).json({message:"Could not create profile"});
+      }
       return res.json({
-        message: "Sent an OTP to your contact number.",
+        message: "Profile created",
       });
     },
   );
@@ -205,145 +142,7 @@ const createUsersData = asyncHandler(async (req, res) => {
   uploadStream.end(req.file.buffer);
 });
 
-module.exports = createUsersData;
-
-
-const verifyPhoneOtp = async (req, res, next) => {
-  try {
-    const userId = req.body.userId;
-
-    const user = await Users.findOne({ email: userId }).exec();
-    if (!user) {
-      res.send({ message: "User not found" });
-      return;
-    }
-
-    user.one_step_verified = true;
-    await user.save();
-
-    const verificationToken = user.generateVerificationToken();
-    try {
-      //Email the user a unique verification link
-      const url = `${serverLink}/verify/${verificationToken}`;
-      // console.log("Reaches");
-      transporter.sendMail({
-        to: user.personal_email_id,
-        subject: "Verify Account",
-        // html: `Click <a href='${url}'>here</a> to confirm your email.`,
-        html: `<p>Thank you for registering on the Yearbook Portal.<br/>
-        
-        It's a pleasure to have you join the Alumni Community of IIT Indore! We congratulate you on your graduation!<br/>
-        To stay connected with your Batch and the Institute, we urge you to create your profile on the Alumni Portal by visiting
-        <a href='https://alumni.iiti.ac.in/'>Alumni Portal Link</a><br/>
-        You can connect with us on LinkedIn to ensure all your updates can be featured on the Official Page of the Alumni Cell.
-      <a href = 'https://in.linkedin.com/company/alumni-cell-iit-indore'>LinkedIn</a></p><br/>
-      Please verify your registered email by clicking on the link below.
-        <a href='${url}'>Verify</a><br/>
-      <p>Regards,<br/>
-      The Alumni Cell,<br/>
-      Indian Institute of Technology Indore</p>`,
-      });
-
-      return res.send({
-        message: `Sent a verification email to your personal email_id`,
-        user,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-
-//Verify the personal_email_id
-const verify = async (req, res) => {
-  const token = req.params.id;
-
-  //Check if we have an id
-  if (!token) {
-    return res.send({ message: "Missing token" });
-  }
-
-  //Verify the token from the URL
-  let payload = null;
-  try {
-    payload = jwt.verify(token, process.env.SECRET);
-  } catch (err) {
-    return res.send(err);
-  }
-
-  try {
-    //Find user with matching ID
-    const user = await Users.findOne({ _id: payload.ID }).exec();
-
-    if (!user) {
-      return res.send({ message: "User does not exist" });
-    }
-
-    //Update user verification status to true
-    user.two_step_verified = true;
-    await user.save();
-
-    return res.redirect(`${clientLink}/`);
-  } catch (err) {
-    return res.status(500).send(err);
-  }
-};
-
-//Resend Mail
-const resendMail = asyncHandler(async (req, res) => {
-  //Generate a veification token with th user's ID
-  const userId = req.body.userId;
-  const personalMailId = req.body.personalMailId;
-  const user = await Users.findOne({ email: userId }).exec();
-  if (!user) {
-    res.send({ message: "User not found" });
-    return;
-  }
-
-  const verificationToken = user.generateVerificationToken();
-  try {
-    //Email the user a unique verification link
-    const url = `${serverLink}/verify/${verificationToken}`;
-    // console.log("Reaches");
-    transporter.sendMail({
-      to: personalMailId,
-      subject: "Verify Account",
-      // html: `Click <a href='${url}'>here</a> to confirm your email.`,
-      html: `<p>Thank you for registering on the Yearbook Portal.<br/>
-        
-      It's a pleasure to have you join the Alumni Community of IIT Indore! We congratulate you on your graduation!<br/>
-      To stay connected with your Batch and the Institute, we urge you to join the following WhatsApp Group-
-      <a href='https://chat.whatsapp.com/JWVAs4MBiYJ9SkiMPRIro4'>Whatsapp Group Link</a><br/>
-      We also urge you to create your profile on the Alumni Portal by visiting
-      <a href='https://alumni.iiti.ac.in/'>Alumni Portal Link</a><br/>
-      You can connect with us on LinkedIn to ensure all your updates can be featured on the Official Page of the Alumni Cell.
-    <a href = 'https://in.linkedin.com/company/alumni-cell-iit-indore'>LinkedIn</a></p><br/>
-    Please verify your registered email by clicking on the link below.
-      <a href='${url}'>Verify</a><br/>
-    <p>Regards,<br/>
-    The Alumni Cell,<br/>
-    Indian Institute of Technology Indore</p>`,
-    });
-
-    return res.send({
-      message: `Sent a verification email to your personal email_id`,
-    });
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-//Upadte users data
-// const asyncHandler = require("express-async-handler");
-// const Users = require("../models/userModel");
-// const cloudinary = require("../utils/cloudinary");
-
-// const asyncHandler = require("express-async-handler");
-// const Users = require("../models/userModel");
-// const cloudinary = require("../utils/cloudinary");
-
+const {validEmail,validPhone} = require("../utils/otp");
 const streamifier = require("streamifier");
 
 
@@ -376,15 +175,17 @@ const updateUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  if (isNaN(roll_no)) {
+  if (!/^\d+$/.test(roll_no)) {
     return res.status(400).json({ message: "Roll No. should be numeric" });
   }
 
-  const user = await Users.findOne({ email });
+  const user = await Users.findById(req.profile._id);
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
 
+  if (roll_no !== user.roll_no) return res.status(400).json({message:"Roll number cannot be changed"});
+  let previousImage;
   if (req.file) {
     const uploadResult = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
@@ -401,13 +202,7 @@ const updateUser = asyncHandler(async (req, res) => {
       streamifier.createReadStream(req.file.buffer).pipe(stream);
     });
 
-    if (
-      user.profile_img?.public_id &&
-      user.profile_img.public_id.startsWith("yearbook/signup")
-    ) {
-      await cloudinary.uploader.destroy(user.profile_img.public_id);
-    }
-
+    previousImage = user.profile_img?.public_id;
     user.profile_img = {
       url: uploadResult.secure_url,
       public_id: uploadResult.public_id,
@@ -415,7 +210,7 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 
   user.name = name;
-  user.roll_no = roll_no;
+  // Roll numbers identify profiles across comments and directory links.
   user.academic_program = academic_program;
   user.department = department;
   user.address = address;
@@ -426,6 +221,7 @@ const updateUser = asyncHandler(async (req, res) => {
   user.question_2 = question_2;
 
   await user.save();
+  if (previousImage?.startsWith("yearbook/signup/")) await cloudinary.uploader.destroy(previousImage).catch(() => {});
 
   res.status(200).json({
     message: "User data updated successfully",
@@ -435,7 +231,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
 //find a user who logged in in user's data
 const findAUser = asyncHandler(async (req, res) => {
-  const email = req.body.email;
+  const email = req.user.email;
 
   const User = await Users.find({ email: email }).exec();
 
@@ -461,7 +257,7 @@ const findAUser = asyncHandler(async (req, res) => {
 
 //Get Users data who has logged in to be displayed on the profile page
 const getProfileData = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+  const email = req.user.email;
 
   const User = await Users.find({ email: email }).exec();
 
@@ -476,13 +272,14 @@ const getProfileData = asyncHandler(async (req, res) => {
 const getWordEntered = asyncHandler(async (req, res) => {
   const wordEntered = req.body.wordentered;
 
-  if (wordEntered.length === 0) {
+  if (typeof wordEntered !== "string" || wordEntered.length === 0) {
     return res.send([]);
   }
 
   const User = await Users.find({
-    name: { $regex: new RegExp("^" + wordEntered + ".*", "i") },
-  }).exec();
+    one_step_verified:true, two_step_verified:true,
+    name: { $regex: new RegExp("^" + wordEntered.slice(0,80).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i") },
+  }).select("name email roll_no department academic_program profile_img about").limit(50).exec();
 
   if (!User?.length) {
     return res.send([]);
@@ -495,7 +292,8 @@ const getWordEntered = asyncHandler(async (req, res) => {
 const getSearchWord = asyncHandler(async (req, res) => {
   const searchWord = req.body.searchword;
 
-  const User = await Users.find({ email: searchWord });
+  if (typeof searchWord !== "string") return res.sendStatus(400);
+  const User = await Users.find({ email: searchWord, one_step_verified:true,two_step_verified:true });
 
   if (!User?.length) {
     return res.send({});
@@ -535,18 +333,13 @@ const getSearchWord = asyncHandler(async (req, res) => {
 // })
 
 module.exports = {
-  userDataNewemail,
-  userDataNew,
   getUsersCompleteData,
   getUsersData,
   createUsersData,
   updateUser,
-  verify,
   getProfileData,
   getWordEntered,
   getSearchWord,
   findAUser,
-  verifyPhoneOtp,
-  resendMail,
   // deleteUser
 };

@@ -4,7 +4,6 @@ import { MenuItem } from "./MenuItem";
 import { useContext, useState, useEffect } from "react";
 import { LoginContext } from "../../helpers/Context";
 import axios from "axios";
-import jwt_decode from "jwt-decode";
 
 const variants = {
   open: {
@@ -57,41 +56,7 @@ const variants2 = {
 function Navigation({ isOpen, setIsOpen }) {
   const [links, setLinks] = useState([]);
 
-  const [alumniData, setAlumniData] = useState([]);
-
-  const { loggedin, profile } = useContext(LoginContext);
-
-  let user = {};
-
-  if (window.localStorage.getItem("token") !== null) {
-    try {
-      user = jwt_decode(window.localStorage.getItem("token"));
-    } catch (err) {
-      console.error("Invalid token:", err);
-
-      user = {};
-    }
-  }
-
-  /*
-   * Fetch alumni data from backend
-   */
-  useEffect(() => {
-    const fetchAlumniData = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/getAlumniData`,
-        );
-
-        setAlumniData(res.data);
-      } catch (err) {
-        console.error("Failed to fetch alumni data:", err);
-      }
-    };
-
-    fetchAlumniData();
-  }, []);
-
+  const {loggedin,profile,user} = useContext(LoginContext);
   /*
    * Set navigation links
    */
@@ -108,7 +73,7 @@ function Navigation({ isOpen, setIsOpen }) {
           { name: "More Links", path: "/footer" },
         ]);
       } else {
-        if (alumniData.includes(user.email)) {
+        if (user.alumni) {
           setLinks([
             { name: "Home", path: "/" },
 
@@ -157,7 +122,7 @@ function Navigation({ isOpen, setIsOpen }) {
 
       return () => clearTimeout(delay);
     }
-  }, [isOpen, loggedin, profile, alumniData, user.email]);
+  }, [isOpen, loggedin, profile, user]);
 
   // const [isDarkMode, setIsDarkMode] = useState(() => {
   //   const storedThemeMode = localStorage.getItem("themeMode");

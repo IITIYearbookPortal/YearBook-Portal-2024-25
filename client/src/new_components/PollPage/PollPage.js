@@ -12,7 +12,7 @@ const PollPage = () => {
 
   const { loggedin, profile, loading } = useContext(LoginContext);
 
-  const [alumniEmails, setAlumniEmails] = useState([]);
+
 
   const [newPoll, setNewPoll] = useState({
     question: "",
@@ -25,37 +25,9 @@ const PollPage = () => {
     ],
   });
 
-  // Fetch alumni data from backend
-  useEffect(() => {
-    const fetchAlumniData = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/getAlumniData`,
-        );
-
-        setAlumniEmails(res.data);
-      } catch (err) {
-        console.error("Failed to fetch alumni data:", err);
-      }
-    };
-
-    fetchAlumniData();
-  }, []);
-
-  // Admin check
-  const adminUsers = process.env.REACT_APP_ADMIN_USERS
-    ? process.env.REACT_APP_ADMIN_USERS.split(",")
-    : [];
-
-  const isAlumni =
-    Array.isArray(alumniEmails) && profile?.email
-      ? alumniEmails.includes(profile.email)
-      : false;
-
-  const isAdmin =
-    Array.isArray(adminUsers) && profile?.email
-      ? adminUsers.includes(profile.email)
-      : false;
+  const {user} = useContext(LoginContext);
+  const isAdmin = user.pollAdmin;
+  const isAlumni = user.alumni;
 
   // Redirect if not logged in
   useEffect(() => {

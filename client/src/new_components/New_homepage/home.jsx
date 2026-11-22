@@ -12,13 +12,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import alumniData from "../Navbar/alumniData";
-import jwt_decode from "jwt-decode";
 
 //images
 import bg from "./bg-1.jpg";
 
 //timeline 
-import 'react-vertical-timeline-component/style.min.css';
+
 
 const timelineData = [
   { year: "2021", title: "'Education is not just about knowledge, but about shaping the future.'" },
@@ -104,13 +103,11 @@ const Home = () => {
   //     scrollToFooterComponent();
   //   }
   // };
-  const logout = () => {
-    // window.location.reload();
-    setUser({});
-    navigate("/");
-    setLoggedin(false);
-    window.localStorage.clear();
-    // document.getElementById("google-login").hidden = false;
+  const logout = async () => {
+    try {
+      await axios.post(process.env.REACT_APP_API_URL + "/auth/logout");
+      window.location.replace("/");
+    } catch { window.alert("Sign-out failed. Please try again."); }
   };
 
   // const callFunctionLogout = () => {

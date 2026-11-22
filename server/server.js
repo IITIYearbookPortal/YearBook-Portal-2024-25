@@ -6,31 +6,22 @@ const userDataRoutes = require("./routes/userDataRoutes");
 const authRoutes = require("./routes/authRoutes");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
+const { requireUser, requireMember } = require("./middlewares/identity");
 const basicAuth = require("express-basic-auth");
-const AdminBro = require("admin-bro");
-const AdminBroExpress = require("@admin-bro/express");
-const AdminBroMongoose = require("@admin-bro/mongoose");
 const User = require("./models/userModel");
 const Comments = require("./models/comments");
 const memoryRoutes = require("./routes/memoriesRoutes");
 const commentRoutes = require("./routes/commentsRoutes");
 const pollRoutes = require("./routes/pollRoutes");
 const previousYrBookRoute = require("./routes/previousYrBook")
-const alumniRoute = require("./routes/alumniData");
-
-// Add this middleware to use the routes
-
-
-AdminBro.registerAdapter(AdminBroMongoose);
 
 const app = express();
 
 const port = process.env.PORT || 5000;
 
 // ADDING ENVIRENMENT VARIABLES
-mongodbLink = process.env.MONGODB_LINK;
-clientLink = process.env.CLIENT_LINK;
+const mongodbLink = process.env.MONGODB_LINK;
+const clientLink = process.env.CLIENT_LINK;
 
 //Middlewares
 
@@ -38,123 +29,81 @@ app.use(
   cors({
     origin: [clientLink],
     methods: ["GET", "POST","PATCH", "UPDATE", "PUT","DELETE", "OPTIONS"],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Yearbook-Request", "X-Yearbook-OTP"],
     credentials: true,
   })
 );
-
-// // Middleware function to check request origin
-// const checkOrigin = (req, res, next) => {
-//   // console.log(process.env.ALLOWED_ORIGIN);
-  
-//   const allowedOrigin = process.env.ALLOWED_ORIGIN; // Specify the allowed origin here
-
-//   const requestOrigin = req.headers.origin;
-//   // console.log(requestOrigin);
-//   // console.log("done")
-  
-
-//   if (requestOrigin === allowedOrigin) {
-//       next(); // Proceed to the next middleware or route handler
-//   } else {
-//     // next();
-//       res.status(401).json({ error: 'Unauthorized Access' });
-//   }
-// };
-const checkOrigin = (req, res, next) => {
-  const allowedOrigin = process.env.ALLOWED_ORIGIN;
-  const requestOrigin = req.headers.origin;
-
-  // Allow direct browser requests (no origin header)
-  if (!requestOrigin || requestOrigin === allowedOrigin) {
-    next();
-  } else {
-    res.status(401).json({ error: "Unauthorized Access" });
-  }
-};
-
-
-app.use((req, res, next) => {
-  checkOrigin(req, res, next);
-})
-
-app.use(express.json());
 
 app.use(cookieParser());
 
 // log in development environment
 
 const morgan = require("morgan");
-const alumniData = require("./models/alumniData");
-// const { default: PreviousYrBook } = require("../client/src/pages/previousYrBook");
+
 app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
   res.send("Hello from server");
 });
 
-app.listen(port, (err) => {
-  if (err) {
-  } else {
+const adminMount = express.Router();
+app.use("/admin", adminMount);
+async function configureAdmin() {
+  const username = process.env.ADMIN_USERNAME;
+  const password = process.env.ADMIN_PASSWORD;
+  if (!username || !password) {
+    adminMount.use((req,res) => res.sendStatus(503));
+    return;
   }
-});
+  const [{default:AdminJS}, {buildRouter}, adapter] = await Promise.all([
+    import("adminjs"), import("@adminjs/express"), import("@adminjs/mongoose")
+  ]);
+  AdminJS.registerAdapter(adapter);
+  const admin = new AdminJS({rootPath:"/admin", resources:[User,Comments],branding:{companyName:"YearBook Portal Administration"}});
 
-app.use(
-  session({
-    secret: "your_secret_key", // Change this to a secure random string
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+  adminMount.use((req,res,next) => {
+    res.set("Cache-Control","no-store");
+    if (!["GET","HEAD","OPTIONS"].includes(req.method) && req.headers.origin !== new URL(process.env.SERVER_LINK).origin) return res.sendStatus(403);
+    next();
+  }, basicAuth({users:{[username]:password},challenge:true}), buildRouter(admin));
+}
 
-mongoose
-  .connect(mongodbLink)
-  .then(() => {
-    console.log(`Connected to MongoDB successfully. And Running on PORT:${port}`,);
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-  });
-
-
-const AdminBroOptions = {
-  resources: [User, Comments],
-  branding: {
-    companyName: "YearBook Portal Administration",
-  },
-};
-const adminBro = new AdminBro(AdminBroOptions);
-const adminRouter = AdminBroExpress.buildRouter(adminBro);
-const adminAuth = basicAuth({
-  users: { [process.env.ADMIN_USERNAME]: process.env.ADMIN_PASSWORD },
-  challenge: true, // Sends authentication headers on a failed login attempt
-  unauthorizedResponse: "Authentication required!", // Response on unauthorized access
-});
-
-const noStore = (req, res, next) => {
-  res.setHeader(
-    "Cache-Control",
-    "no-store, no-cache, must-revalidate, private"
-  );
-  next();
-};
-app.use(adminBro.options.rootPath, noStore, adminAuth, adminRouter);
-
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(authRoutes);
-app.use(userDataRoutes);
-app.use(memoryRoutes);
-app.use(commentRoutes);
-app.use(pollRoutes);
-app.use(previousYrBookRoute);
-app.use(alumniRoute);
-
+app.use((req,res,next) => {
+  if (!["GET","HEAD","OPTIONS"].includes(req.method) &&
+      (req.headers.origin !== clientLink || req.get("X-Yearbook-Request") !== "1")) return res.sendStatus(403);
+  next();
+});
+// JSON identities and selectors must be scalars. The reorder contract is the only
+// structured mutation besides the array of poll option labels.
+app.use((req,res,next) => {
+  const body = req.body || {};
+  if (Array.isArray(body)) return res.sendStatus(400);
+  for (const [key,value] of Object.entries(body)) {
+    if (value === null) return res.sendStatus(400);
+    if (typeof value !== "object") continue;
+    if (key === "options" && Array.isArray(value) && value.every(v => typeof v === "string")) continue;
+    if (key === "updatedOrder" && Array.isArray(value) && value.every(v =>
+      v && typeof v._id === "string" && /^[a-f0-9]{24}$/i.test(v._id))) continue;
+    return res.status(400).json({message:"Invalid request field"});
+  }
+  if (Object.values(req.query).some(v => typeof v !== "string")) return res.sendStatus(400);
+  next();
+});
 app.use('/check', (req, res) => {
   res.send('hi');
 });
-// page not found error handling  middleware
+app.use(authRoutes);
+app.use(previousYrBookRoute);
+app.use(userDataRoutes);
+app.use(memoryRoutes);
+app.use(requireUser, requireMember);
+app.use(commentRoutes);
+app.use(pollRoutes);
 
+// page not found error handling  middleware
 
 app.use("*", (req, res, next) => {
   const error = {
@@ -167,11 +116,23 @@ app.use("*", (req, res, next) => {
 // global error handling middleware
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  const message = err.message || "Something went wrong";
-  const data = err.data || null;
+  const message = status >= 500 ? "Internal server error" : err.message;
+  const data = null;
   res.status(status).json({
     type: "error",
     message,
     data,
   });
 });
+
+async function start() {
+  await mongoose.connect(mongodbLink);
+  await Promise.all([User.init(), require("./models/authModel").init()]);
+  await configureAdmin();
+  return app.listen(port);
+}
+if (require.main === module) start().catch(err => {
+  console.error("Yearbook startup failed:", err.name);
+  process.exit(1);
+});
+module.exports = {app, configureAdmin};

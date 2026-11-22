@@ -8,6 +8,7 @@
 
 # testing
 /coverage
+/AUTH-SECURITY-REVIEW.md
 
 # production
 /build

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { LoginContext } from "../../helpers/Context";
 import "./Edit.scss";
 import axios from "axios";
+import OtpForm from "../OtpForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,6 +13,7 @@ function Edit({ isDarkMode }) {
   const { roll, name } = useParams();
 
   const [userData, setUserData] = useState({});
+  const [confirming,setConfirming] = useState(false);
   const [imageFile, setImageFile] = useState(null);   // NEW image (for backend)
   const [imageUrl, setImageUrl] = useState("");       // What <img> displays
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,7 +42,7 @@ function Edit({ isDarkMode }) {
         );
 
         const user = res.data?.user;
-        console.log(user)
+
         if (user) {
           setUserData(user);
           setImageUrl(getImageUrl(user.profile_img));
@@ -84,7 +86,7 @@ function Edit({ isDarkMode }) {
     };
   }, [imageUrl]);
 
-  const onUpdate = async () => {
+  const onUpdate = async code => {
     setIsSubmitting(true);
 
     try {
@@ -121,7 +123,7 @@ function Edit({ isDarkMode }) {
         `${process.env.REACT_APP_API_URL}/updateUser`,
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "multipart/form-data", "X-Yearbook-OTP":code },
           withCredentials: true,
         }
       );
@@ -137,7 +139,7 @@ function Edit({ isDarkMode }) {
       }
     } catch (err) {
       console.error("Update error:", err);
-      toast.error(err.response?.data?.message || "Profile update failed");
+      throw err;
     } finally {
       setIsSubmitting(false);
     }
@@ -159,7 +161,7 @@ function Edit({ isDarkMode }) {
             <h1 id="fill">Edit your Profile</h1>
 
             <input className="inped mb-4" name="name" value={userData.name || ""} onChange={handleChange} placeholder="Name" />
-            <input className="inped mb-4" name="roll_no" value={userData.roll_no || ""} onChange={handleChange} placeholder="Roll Number" />
+            <input className="inped mb-4" readOnly name="roll_no" value={userData.roll_no || ""} onChange={handleChange} placeholder="Roll Number" />
 
             <select className="slt" name="academic_program" value={userData.academic_program || ""} onChange={handleChange}>
               <option value="" disabled>Academic Program</option>
@@ -202,15 +204,15 @@ function Edit({ isDarkMode }) {
             <p className="mb-2 text-white">Q2. What did college teach you beyond academics?</p>
             <input className="inped" name="question_2" value={userData.question_2 || ""} onChange={handleChange} />
 
-            <div className="btn-wrapper">
+            {confirming ? <OtpForm purpose="edit-profile" onVerified={onUpdate}/> : <div className="btn-wrapper">
               <button
                 className="sbmit1 mt-5"
-                onClick={onUpdate}
+                onClick={()=>setConfirming(true)}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Updating..." : "Update"}
               </button>
-            </div>
+            </div>}
 
           </div>
 

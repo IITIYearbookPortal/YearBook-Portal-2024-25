@@ -11,7 +11,6 @@ import "react-toastify/dist/ReactToastify.css";
 // import jwt from 'jsonwebtoken';
 
 export function Makeacomment({ isDarkMode, setIsDarkMode }) {
-  const [decodedToken, setDecodedToken] = useState(null);
   const { result, isStudent, setIsStudent, user, loggedin, profile, loading } =
     useContext(LoginContext);
 
@@ -40,31 +39,6 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
   //   const storedThemeMode = localStorage.getItem("themeMode");
   //   return storedThemeMode === "dark";
   // });
-
-  useEffect(() => {
-    // Retrieve the token from localStorage
-    const token = localStorage.getItem("token");
-
-    // Check if token exists
-    if (token) {
-      try {
-        // Decode the token
-        const decoded = JSON.parse(atob(token.split(".")[1]));
-
-        // Set the decoded token in state
-        setDecodedToken(decoded);
-      } catch (error) {
-        console.error("Error decoding token:", error);
-        // Handle error decoding token
-      }
-    } else {
-      // Handle case when token doesn't exist in localStorage
-      console.warn("Token not found in localStorage");
-    }
-  }, []);
-
-  // Log decodedToken after useEffect
-  useEffect(() => {}, [decodedToken]);
 
   // Getting Reciever's Comments
   useEffect(() => {
@@ -105,7 +79,7 @@ export function Makeacomment({ isDarkMode, setIsDarkMode }) {
         await axios
           .post(process.env.REACT_APP_API_URL + "/comments", {
             // comment_sender_email: profile.email,
-            comment_sender_email: decodedToken.email,
+            comment_sender_email: user.email,
             comment_reciever_roll_no: roll_no,
             isStudent: isStudent,
             comment: comment2,

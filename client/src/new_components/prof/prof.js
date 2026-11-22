@@ -105,11 +105,6 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
       order: index,
     }));
 
-    const previousOrderMap = {};
-    approvedComments.forEach((comment, index) => {
-      previousOrderMap[comment._id] = index;
-    });
-
     // Make API call to update order in the database
     axios
       .post(process.env.REACT_APP_API_URL + "/updateCommentOrder", {
@@ -117,7 +112,6 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
         comment_reciever_roll_no: comment_reciever_roll_no,
         // comment_reciever_id: profile._id,
         updatedOrder: updatedOrder,
-        previousOrderMap: previousOrderMap,
       })
       .then((res) => {})
       .catch((error) => {
@@ -169,7 +163,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
     }
   }, [profile]);
 
-  const token = window.localStorage.getItem("token");
+
 
   // useEffect(() => {
   //   const fetchProfile = async () => {
@@ -379,7 +373,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                   </div>
                   <div className="flex items-center gap-2 text-gray-400">
                     <GraduationCapIcon className="w-4 h-4" />
-                    <span>{profile.dpeartment}</span>
+                    <span>{profile.department}</span>
                   </div>
                 </div>
                 <div className="space-y-2">

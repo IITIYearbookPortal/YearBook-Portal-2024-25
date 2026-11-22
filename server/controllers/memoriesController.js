@@ -36,7 +36,8 @@ const getMemories = asyncHandler(async (req, res) => {
 });
 
 const createMemory = asyncHandler(async (req, res) => {
-  const { locationId, content, authorName } = req.body;
+  const { locationId, content } = req.body;
+  const authorName = req.user.name;
   let { seniorIds } = req.body;
 
   //seniorsId is an array consisting targeting seniors emails as strings
@@ -154,13 +155,8 @@ const approveRequest = asyncHandler(async (req, res) => {
     throw new Error("Missing params");
   }
 
-  await PendingMemory.updateOne(
-    { seniorEmail: email },
-    { $pull: { memoryGroupIds: memoryGroupId } },
-  );
-
   const result = await Memory.updateMany(
-    { groupId: memoryGroupId },
+    { groupId: memoryGroupId, toBeAcceptedBy: email },
     { $pull: { toBeAcceptedBy: email } },
   );
 
@@ -169,6 +165,7 @@ const approveRequest = asyncHandler(async (req, res) => {
     throw new Error("No memories found for this group");
   }
 
+  await PendingMemory.updateOne({seniorEmail:email}, {$pull:{memoryGroupIds:memoryGroupId}});
   res.status(200).json({
     message: "Memory approved",
     updatedCount: result.modifiedCount,
@@ -202,34 +199,16 @@ const deleteRequest = asyncHandler(async (req, res) => {
     throw new Error("No pending memories for this user");
   }
 
-  const deletePromises = [];
-
-  memories.forEach((memory) => {
-    if (memory.images?.length) {
-      memory.images.forEach((imgUrl) => {
-        const publicId = getPublicIdFromUrl(imgUrl);
-        deletePromises.push(cloudinary.uploader.destroy(publicId));
-      });
-    }
-  });
-
-  if (deletePromises.length) {
-    await Promise.all(deletePromises);
-  }
-
-  await Memory.deleteMany({
-    groupId: memoryGroupId,
-    toBeAcceptedBy: email,
-  });
-
-  await PendingMemory.updateOne(
-    { seniorEmail: email },
-    { $pull: { memoryGroupIds: memoryGroupId } },
-  );
-
+  // Claim the rejection before removing shared assets. A concurrent approval
+  // may have already removed this member from the pending recipients.
+  const removed = await Memory.deleteMany({groupId: memoryGroupId, toBeAcceptedBy: email});
+  if (!removed.deletedCount) return res.status(409).json({message:"Decision already recorded"});
+  await PendingMemory.updateMany({memoryGroupIds:memoryGroupId}, {$pull:{memoryGroupIds:memoryGroupId}});
+  const assets = new Set(memories.flatMap(memory => memory.images || []).map(getPublicIdFromUrl));
+  await Promise.all(Array.from(assets, id => cloudinary.uploader.destroy(id)));
   res.status(200).json({
     message: "Memory rejected",
-    deletedCount: memories.length,
+    deletedCount: removed.deletedCount,
   });
 });
 

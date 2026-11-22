@@ -1,6 +1,6 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import jwt_decode from "jwt-decode";
+import {LoginContext} from "../helpers/Context";
 
 const API_BASE = process.env.REACT_APP_API_URL;
 
@@ -9,18 +9,7 @@ const VerifyMemories = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-
-  const user = useMemo(() => {
-    if (!token) return null;
-    try {
-      return jwt_decode(token);
-    } catch (err) {
-      console.error("Invalid token:", err);
-      return null;
-    }
-  }, [token]);
-
+  const {user} = useContext(LoginContext);
   const email = user?.email;
 
   const fetchPending = useCallback(async () => {
@@ -32,7 +21,7 @@ const VerifyMemories = () => {
       const res = await fetch(
         `${API_BASE}/memories/get-pending-requests/${email}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials:"include", headers: {"X-Yearbook-Request":"1"},
         }
       );
 
@@ -45,15 +34,15 @@ const VerifyMemories = () => {
     } finally {
       setLoading(false);
     }
-  }, [token, email]);
+  }, [email]);
 
   useEffect(() => {
-    if (!token || !email) {
+    if (!email) {
       navigate("/login", { replace: true });
     } else {
       fetchPending();
     }
-  }, [token, email, navigate, fetchPending]);
+  }, [email, navigate, fetchPending]);
 
   const acceptMemory = async (memoryGroupId) => {
     try {
@@ -61,7 +50,7 @@ const VerifyMemories = () => {
         `${API_BASE}/memories/accept/${memoryGroupId}/${email}`,
         {
           method: "PATCH",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials:"include", headers: {"X-Yearbook-Request":"1"},
         }
       );
 
@@ -77,7 +66,7 @@ const VerifyMemories = () => {
         `${API_BASE}/memories/delete/${memoryGroupId}/${email}`,
         {
           method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials:"include", headers: {"X-Yearbook-Request":"1"},
         }
       );
 
@@ -87,7 +76,7 @@ const VerifyMemories = () => {
     }
   };
 
-  if (!token || !email) return null;
+  if (!email) return null;
 
   return (
     <div className="container mx-auto px-6 py-8 text-white">

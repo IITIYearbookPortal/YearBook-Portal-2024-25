@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { LoginContext } from "../../helpers/Context";
 import { useNavigate, useParams } from "react-router-dom";
-import jwtDecode from "jwt-decode";
 
 const Nongrad = () => {
   const { name, email } = useParams();
@@ -13,7 +12,7 @@ const Nongrad = () => {
   const [comments, setComments] = useState([]);
   const navigate = useNavigate();
 
-  const token = jwtDecode(window.localStorage.getItem("token"));
+  const token = user;
 
   useEffect(() => {
     if (!loading && !loggedin) {

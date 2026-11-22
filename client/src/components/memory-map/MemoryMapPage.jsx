@@ -9,7 +9,6 @@ import { toast } from "../../hooks/use-toast";
 import axios from "axios";
 import "./MemoryMapPage.css";
 import { LoginContext } from "../../helpers/Context";
-import jwt_decode from "jwt-decode";
 import { CampusDataProvider } from "./memoryMapContext";
 
 // REMOVED:
@@ -21,18 +20,7 @@ function MemoryMapPage() {
   const [memories, setMemories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // NEW: store alumni data fetched from backend
-  const [alumniData, setAlumniData] = useState([]);
-
-  // NEW: track whether alumni data has loaded
-  const [alumniDataLoaded, setAlumniDataLoaded] = useState(false);
-
-  let user = {};
-
-  if (window.localStorage.getItem("token") !== null) {
-    user = jwt_decode(window.localStorage.getItem("token"));
-  }
-
+  const {user} = useContext(LoginContext);
   const authorName = user?.name;
   const userEmail = user?.email;
 
@@ -55,49 +43,7 @@ function MemoryMapPage() {
     [selectedSeniors],
   );
 
-  /*
-   * NEW:
-   * Fetch alumni data from backend.
-   */
-  useEffect(() => {
-    const fetchAlumniData = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/getAlumniData`,
-        );
-
-        setAlumniData(res.data);
-        setAlumniDataLoaded(true);
-      } catch (err) {
-        console.error("Failed to fetch alumni data:", err);
-
-        setAlumniDataLoaded(true);
-      }
-    };
-
-    fetchAlumniData();
-  }, []);
-
-  /*
-   * NEW:
-   * Check whether logged-in user is an alumni
-   * after alumni data has been fetched.
-   */
-  useEffect(() => {
-    if (!alumniDataLoaded) return;
-
-    // No logged-in user
-    if (Object.keys(user).length === 0) {
-      window.location.href = "/";
-      return;
-    }
-
-    // User is not an alumni
-    if (!alumniData.includes(user.email)) {
-      window.location.href = "/";
-    }
-  }, [alumniData, alumniDataLoaded, user.email]);
-
+  useEffect(() => { if (!user.alumni) window.location.replace("/"); }, [user.alumni]);
   const myRelatedMemories = useMemo(() => {
     return memories.filter(
       (m) =>
@@ -136,7 +82,7 @@ function MemoryMapPage() {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+
             "Content-Type": "multipart/form-data",
           },
         },
@@ -186,7 +132,7 @@ function MemoryMapPage() {
    * This prevents the page from briefly appearing before
    * we know whether the user is an alumni.
    */
-  if (!alumniDataLoaded) {
+  if (!user.alumni) {
     return null;
   }
 

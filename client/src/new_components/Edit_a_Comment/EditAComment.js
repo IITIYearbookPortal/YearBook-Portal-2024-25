@@ -11,23 +11,11 @@ export function Editacomment({ isDarkMode }) {
   const { userId, commentId } = useParams();
   const navigate = useNavigate();
 
-  const [decodedToken, setDecodedToken] = useState(null);
+  const {user: decodedToken} = useContext(LoginContext);
   const [editComments, setEditComments] = useState("");
   const [len, setLen] = useState(0);
   const [editCommentsUser, setEditCommentsUser] = useState(null);
   const [approvedComments, setApprovedComments] = useState([]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = JSON.parse(atob(token.split(".")[1]));
-        setDecodedToken(decoded);
-      } catch (error) {
-        console.error("Error decoding token:", error);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (!loading && !loggedin) {

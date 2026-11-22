@@ -5,7 +5,7 @@ const User = require('../models/userModel'); // Import User model if necessary f
 exports.createPoll = async (req, res) => {
   const { question, options, createdBy , academic_program} = req.body;
 
-  if (!question || options.length < 2) {
+  if (!question || !Array.isArray(options) || options.length < 2) {
     return res.status(400).json({ message: "Poll must have a question and at least two options." });
   }
   if (!academic_program) {
@@ -15,7 +15,7 @@ exports.createPoll = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email: createdBy });
+    const user = await User.findOne({ email: req.user.email });
     if (!user) {
       return res.status(404).json({ message: "User not found with the provided email." });
     }
@@ -40,54 +40,15 @@ exports.createPoll = async (req, res) => {
 
 // Controller to handle voting on a poll
 exports.votePoll = async (req, res) => {
-    const { pollId, option, user } = req.body;
-    const email=user
-  
-    if (!pollId || !option) {
-      return res.status(400).json({ message: "Poll ID and option are required" });
-    }
-  
+    const {pollId,option} = req.body;
+    if (!req.profile || typeof option !== "string" || typeof pollId !== "string") return res.sendStatus(400);
     try {
-      // Find user by email
-      const user = await User.findOne({ email: email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found with the provided email." });
-      }
-  
-      // Find poll by ID
-      const poll = await Poll.findById(pollId);
-      if (!poll) {
-        return res.status(404).json({ message: "Poll not found" });
-      }
-  
-      // Check if the user has already voted
-      const alreadyVoted = poll.votes.some(vote => vote.votedBy.toString() === user._id.toString());
-      if (alreadyVoted) {
-        return res.status(400).json({ message: "You have already voted" });
-      }
-  
-      // Find the selected option in the poll
-      const pollOption = poll.options.find(opt => opt.option === option);
-      if (!pollOption) {
-        return res.status(404).json({ message: "Option not found" });
-      }
-  
-      // Increment the vote count for the selected option
-      pollOption.voteCount += 1;
-  
-      // Add the vote to the poll
-      poll.votes.push({
-        option,
-        votedBy: user._id, // Link vote to the user (user._id is the ObjectId)
-      });
-  
-      await poll.save();
-      res.status(200).json({ message: "Vote submitted successfully" });
-    } catch (err) {
-      res.status(500).json({ message: "Error submitting vote", error: err.message });
-    }
-  };
-  
+      const result = await Poll.updateOne({_id:pollId, "options.option":option, "votes.votedBy":{$ne:req.profile._id}},
+        {$inc:{"options.$.voteCount":1},$push:{votes:{option,votedBy:req.profile._id}}});
+      if (!result.modifiedCount) return res.status(409).json({message:"Vote already recorded or invalid option"});
+      res.json({message:"Vote submitted successfully"});
+    } catch (err) {res.status(400).json({message:"Invalid poll"});}
+};
 
 // Controller to fetch poll results
 exports.getPollById = async (req, res) => {
@@ -98,7 +59,7 @@ exports.getPollById = async (req, res) => {
     if (pollId) {
       // Fetch a specific poll by ID (if pollId is provided in the query)
       try {
-        const poll = await Poll.findById(pollId);
+        const poll = await Poll.findById(pollId).select("-votes");
         if (!poll) {
           return res.status(404).json({ message: "Poll not found" });
         }
@@ -109,7 +70,7 @@ exports.getPollById = async (req, res) => {
     } else {
       // Fetch all polls if no pollId is provided
       try {
-        const polls = await Poll.find(); // Fetch all polls from DB
+        const polls = await Poll.find().select("-votes"); // Fetch all polls from DB
         res.status(200).json({ polls });
       } catch (err) {
         res.status(500).json({ message: "Error fetching polls", error: err.message });
@@ -120,7 +81,7 @@ exports.getPollById = async (req, res) => {
 
 // exports.getAllPolls = async (req, res) => {
 //     try {
-//       const polls = await Poll.find(); // Fetch all polls
+//       const polls = await Poll.find().select("-votes"); // Fetch all polls
 //       res.status(200).json({ polls });
 //     } catch (err) {
 //       res.status(500).json({ message: "Error fetching polls", error: err.message });
@@ -145,7 +106,7 @@ exports.deletePoll = async (req, res) => {
 // Get the results of a poll by ID
 exports.getPollResults = async (req, res) => {
   try {
-    const poll = await Poll.findById(req.params.id);
+    const poll = await Poll.findById(req.params.id).select("-votes");
 
     if (!poll) {
       return res.status(404).json({ message: "Poll not found" });
@@ -167,13 +128,13 @@ exports.getPollResults = async (req, res) => {
 
 // Fetch poll results by poll ID
 // exports.getPollResults = async (req, res) => {
-//     // const pollId = await Poll.findById(req.params.id);
+//     // const pollId = await Poll.findById(req.params.id).select("-votes");
 //     // console.log("pollId",pollId);
     
 
 //   try {
 //     // Find the poll by ID
-//     const poll = await Poll.findById(req.params.id);
+//     const poll = await Poll.findById(req.params.id).select("-votes");
 
 //     if (!poll) {
 //       return res.status(404).json({ error: "Poll not found" });
@@ -208,7 +169,7 @@ exports.getPoll = async (req, res) => {
   
     try {
       // Fetch the poll by its ID from the database
-      const poll = await Poll.findById(id);
+      const poll = await Poll.findById(id).select("-votes");
   
       // If poll is not found, return a 404 response
       if (!poll) {
