@@ -15,12 +15,12 @@ exports.login = wrap(async (req, res) => {
   }
   if (claims.email_verified !== true || typeof claims.email !== "string")
     return res.sendStatus(403);
-  const email = claims.email.toLowerCase();
-  const alumni = Boolean(await Alumni.exists({ email }));
-  if (!alumni && claims.hd !== "iiti.ac.in")
+  if (claims.hd !== "iiti.ac.in")
     return res
       .status(403)
       .json({ message: "An institute account is required" });
+  const email = claims.email.toLowerCase();
+  const alumni = Boolean(await Alumni.exists({ email }));
   // Only Google-managed addresses can safely claim a legacy email-only account automatically.
   const authoritative = Boolean(claims.hd) || email.endsWith("@gmail.com");
   const conditions = [{ googleSubject: claims.sub }];

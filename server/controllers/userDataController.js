@@ -1,7 +1,8 @@
+const path = require("node:path");
 const asyncHandler = require("express-async-handler");
 require("dotenv").config();
 const Users = require("../models/userModel");
-const cloudinary = require("../config/cloudinary");
+const storage = require("../config/storage");
 
 const getUsersData = asyncHandler(async (req, res) => {
   //Get all usersData from MongoDb
@@ -94,52 +95,52 @@ const createUsersData = asyncHandler(async (req, res) => {
     return res.json({ message: "Roll_No is already in use" });
   }
 
-  const uploadStream = cloudinary.uploader.upload_stream(
-    {
+  let uploadResult;
+  try {
+    const ext = path.extname(req.file.originalname || "").toLowerCase() || ".jpg";
+    uploadResult = await storage.uploadImage(req.file.buffer, {
       folder: "yearbook/signup",
-      resource_type: "image",
-    },
-    async (error, result) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Image upload failed" });
-      }
+      mimeType: req.file.mimetype || "image/jpeg",
+      ext,
+    });
+  } catch (error) {
+    console.error("Image upload failed:", error);
+    return res.status(500).json({ message: "Image upload failed" });
+  }
 
-      try { await Users.create({
-        indexedEnrollment: true,
-        email,
-        name,
-        roll_no,
-        academic_program,
-        department,
-        contact_details,
-        alternate_contact_details,
-        address,
-        personal_email_id,
-        current_company,
-        designation,
-        about,
-        profile_img: {
-          url: result.secure_url,
-          public_id: result.public_id,
-        },
-        question_1,
-        question_2,
-        one_step_verified: false,
-        two_step_verified: false,
-      });
-
-      } catch (err) {
-        await cloudinary.uploader.destroy(result.public_id).catch(() => {});
-        return res.status(err.code === 11000 ? 409 : 500).json({message:"Could not create profile"});
-      }
-      return res.json({
-        message: "Profile created",
-      });
-    },
-  );
-
-  uploadStream.end(req.file.buffer);
+  try {
+    await Users.create({
+      indexedEnrollment: true,
+      email,
+      name,
+      roll_no,
+      academic_program,
+      department,
+      contact_details,
+      alternate_contact_details,
+      address,
+      personal_email_id,
+      current_company,
+      designation,
+      about,
+      profile_img: {
+        url: uploadResult.url,
+        public_id: uploadResult.public_id,
+      },
+      question_1,
+      question_2,
+      one_step_verified: false,
+      two_step_verified: false,
+    });
+  } catch (err) {
+    await storage.deleteImage(uploadResult.public_id).catch(() => {});
+    return res
+      .status(err.code === 11000 ? 409 : 500)
+      .json({ message: "Could not create profile" });
+  }
+  return res.json({
+    message: "Profile created",
+  });
 });
 
 const {validEmail,validPhone} = require("../utils/otp");
@@ -186,25 +187,19 @@ const updateUser = asyncHandler(async (req, res) => {
 
   if (roll_no !== user.roll_no) return res.status(400).json({message:"Roll number cannot be changed"});
   let previousImage;
+  let newUploadedPublicId;
   if (req.file) {
-    const uploadResult = await new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          folder: "yearbook/signup",
-          resource_type: "image",
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-
-      streamifier.createReadStream(req.file.buffer).pipe(stream);
+    const ext = path.extname(req.file.originalname || "").toLowerCase() || ".jpg";
+    const uploadResult = await storage.uploadImage(req.file.buffer, {
+      folder: "yearbook/signup",
+      mimeType: req.file.mimetype || "image/jpeg",
+      ext,
     });
 
     previousImage = user.profile_img?.public_id;
+    newUploadedPublicId = uploadResult.public_id;
     user.profile_img = {
-      url: uploadResult.secure_url,
+      url: uploadResult.url,
       public_id: uploadResult.public_id,
     };
   }
@@ -220,8 +215,15 @@ const updateUser = asyncHandler(async (req, res) => {
   user.question_1 = question_1;
   user.question_2 = question_2;
 
-  await user.save();
-  if (previousImage?.startsWith("yearbook/signup/")) await cloudinary.uploader.destroy(previousImage).catch(() => {});
+  try {
+    await user.save();
+  } catch (err) {
+    if (newUploadedPublicId) {
+      await storage.deleteImage(newUploadedPublicId).catch(() => {});
+    }
+    throw err;
+  }
+  if (previousImage) await storage.deleteImage(previousImage).catch(() => {});
 
   res.status(200).json({
     message: "User data updated successfully",

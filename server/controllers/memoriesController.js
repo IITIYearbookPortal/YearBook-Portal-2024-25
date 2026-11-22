@@ -1,8 +1,8 @@
+const path = require("node:path");
 const asyncHandler = require("express-async-handler");
 const Memory = require("../models/memories");
 const { randomUUID } = require("crypto");
-const cloudinary = require("../config/cloudinary");
-const streamifier = require("streamifier");
+const storage = require("../config/storage");
 const PendingMemory = require("../models/pendingMemories.js");
 
 const getMemories = asyncHandler(async (req, res) => {
@@ -27,6 +27,7 @@ const getMemories = asyncHandler(async (req, res) => {
     locationId: m.locationId,
     seniorId: m.seniorId,
     authorName: m.authorName,
+    authorEmail: m.authorEmail,
     groupId: m.groupId,
     content: m.content,
     images: m.images,
@@ -38,6 +39,7 @@ const getMemories = asyncHandler(async (req, res) => {
 const createMemory = asyncHandler(async (req, res) => {
   const { locationId, content } = req.body;
   const authorName = req.user.name;
+  const authorEmail = req.user.email;
   let { seniorIds } = req.body;
 
   //seniorsId is an array consisting targeting seniors emails as strings
@@ -56,21 +58,16 @@ const createMemory = asyncHandler(async (req, res) => {
   let imageUrls = [];
 
   if (req.files && req.files.length > 0) {
-    const uploadPromises = req.files.map((file) => {
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: "yearbook/memories",
-            resource_type: "image",
-          },
-          (error, result) => {
-            if (error) return reject(error);
-            resolve(result.secure_url);
-          },
-        );
-
-        streamifier.createReadStream(file.buffer).pipe(stream);
-      });
+    const uploadPromises = req.files.map((file, idx) => {
+      const ext = path.extname(file.originalname || "").toLowerCase() || ".jpg";
+      return storage
+        .uploadImage(file.buffer, {
+          folder: "yearbook/memories",
+          mimeType: file.mimetype || "image/jpeg",
+          ext,
+          index: idx,
+        })
+        .then((res) => res.url);
     });
 
     imageUrls = await Promise.all(uploadPromises);
@@ -83,6 +80,7 @@ const createMemory = asyncHandler(async (req, res) => {
     seniorId,
     content,
     authorName,
+    authorEmail,
     images: imageUrls,
     groupId,
     // isVerified : false,
@@ -103,6 +101,7 @@ const createMemory = asyncHandler(async (req, res) => {
     locationId: m.locationId,
     seniorId: m.seniorId,
     authorName: m.authorName,
+    authorEmail: m.authorEmail,
     content: m.content,
     images: m.images,
     createdAt: m.createdAt,
@@ -139,6 +138,7 @@ const getPendingRequests = asyncHandler(async (req, res) => {
     locationId: m.locationId,
     seniorId: m.seniorId,
     authorName: m.authorName,
+    authorEmail: m.authorEmail,
     content: m.content,
     images: m.images,
     createdAt: m.createdAt,
@@ -204,8 +204,8 @@ const deleteRequest = asyncHandler(async (req, res) => {
   const removed = await Memory.deleteMany({groupId: memoryGroupId, toBeAcceptedBy: email});
   if (!removed.deletedCount) return res.status(409).json({message:"Decision already recorded"});
   await PendingMemory.updateMany({memoryGroupIds:memoryGroupId}, {$pull:{memoryGroupIds:memoryGroupId}});
-  const assets = new Set(memories.flatMap(memory => memory.images || []).map(getPublicIdFromUrl));
-  await Promise.all(Array.from(assets, id => cloudinary.uploader.destroy(id)));
+  const assets = new Set(memories.flatMap((memory) => memory.images || []));
+  await Promise.all(Array.from(assets, (idOrUrl) => storage.deleteImage(idOrUrl)));
   res.status(200).json({
     message: "Memory rejected",
     deletedCount: removed.deletedCount,

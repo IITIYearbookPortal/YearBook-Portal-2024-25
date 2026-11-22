@@ -126,8 +126,12 @@ app.use((err, req, res, next) => {
 });
 
 async function start() {
-  await mongoose.connect(mongodbLink);
-  await Promise.all([User.init(), require("./models/authModel").init()]);
+  await mongoose.connect(mongodbLink, {
+    autoIndex: process.env.AUTO_INDEX === "true",
+  });
+  if (process.env.AUTO_INDEX === "true") {
+    await Promise.all([User.init(), require("./models/authModel").init()]);
+  }
   await configureAdmin();
   return app.listen(port);
 }

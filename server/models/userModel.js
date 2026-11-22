@@ -99,6 +99,6 @@ const userSchema = new mongoose.Schema({
 
 });
 
-// Legacy duplicate rolls need reconciliation before a full unique index can be built.
-userSchema.index({roll_no:1}, {unique:true, partialFilterExpression:{indexedEnrollment:true}});
+// Full unique index on roll_no across all profile records.
+userSchema.index({ roll_no: 1 }, { unique: true });
 module.exports = mongoose.models.Users || mongoose.model("Users", userSchema);

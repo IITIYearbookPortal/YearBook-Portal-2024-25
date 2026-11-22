@@ -47,7 +47,7 @@ function MemoryMapPage() {
   const myRelatedMemories = useMemo(() => {
     return memories.filter(
       (m) =>
-        m.authorName === authorName || // written by me
+        (m.authorEmail ? m.authorEmail === userEmail : m.authorName === authorName) || // stable author check for new, fallback for historical
         m.seniorId === userEmail, // written for me
     );
   }, [memories, authorName, userEmail]);

@@ -20,6 +20,11 @@ const MemorySchema = new mongoose.Schema(
       index: true,
     },
 
+    authorEmail: {
+      type: String,
+      index: true,
+    },
+
     content: {
       type: String,
       required: true,
