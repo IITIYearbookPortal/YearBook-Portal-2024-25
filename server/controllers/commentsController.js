@@ -13,8 +13,8 @@ const comments = asyncHandler(async (req, res) => {
   const status = "new";
   const isStudent = !req.user.alumni;
 
-  if(comment === ""){
-    return res.status(406).send({ statusmessage: "Comment cannot be empty" });
+  if (typeof comment !== "string" || !comment.trim() || comment.length > 300) {
+    return res.status(400).send({ statusmessage: "Enter a comment of up to 300 characters" });
   }
   //finding id of receiver
   const receiver = await Users.findOne({
@@ -572,7 +572,7 @@ const editComment = asyncHandler(async (req, res) => {
   try {
     const { comment, comment_id_edit, comment_reciever_id_edit } = req.body;
 
-    if (!comment?.trim()) {
+    if (typeof comment !== "string" || !comment.trim() || comment.length > 300) {
       return res.status(400).json({ message: "Comment cannot be empty" });
     }
 

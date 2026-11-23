@@ -4,12 +4,10 @@ import OtpForm from "../OtpForm";
 export default function Verification() {
   const { profile } = useContext(LoginContext);
   return (
-    <main className="min-h-screen bg-gray-900 grid place-items-center">
-      <OtpForm
-        purpose="signup-phone"
-        initialDestination={profile.pendingPhone}
-        onVerified={() => window.location.replace("/")}
-      />
-    </main>
+    <OtpForm
+      purpose="signup-phone"
+      initialDestination={profile.pendingPhone}
+      onVerified={() => window.location.replace("/")}
+    />
   );
 }

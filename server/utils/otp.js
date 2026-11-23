@@ -81,4 +81,45 @@ async function deliver(purpose, destination, code) {
       ". It expires in five minutes. Do not share this code.",
   });
 }
-module.exports = { validEmail, validPhone, lifetime, fail, hash, deliver };
+function widgetConfig() {
+  const widgetId = process.env.MSG91_WIDGET_ID;
+  const tokenAuth = process.env.MSG91_WIDGET_TOKEN;
+  return widgetId && tokenAuth ? { widgetId, tokenAuth } : null;
+}
+
+async function verifyWidgetPhone(accessToken, destination) {
+  const authkey = process.env.MSG91_AUTH_KEY;
+  if (!widgetConfig() || !authkey)
+    throw fail(503, "MSG91 phone verification is not configured");
+  if (
+    typeof accessToken !== "string" ||
+    accessToken.length > 4096 ||
+    !/^[\w-]+\.[\w-]+\.[\w-]+$/.test(accessToken)
+  )
+    throw fail(400, "Invalid phone verification token");
+
+  let response, result;
+  try {
+    response = await fetch("https://api.msg91.com/api/v5/widget/verifyAccessToken", {
+      method: "POST",
+      headers: { authkey, "content-type": "application/json" },
+      body: JSON.stringify({ "access-token": accessToken }),
+      redirect: "error",
+      signal: AbortSignal.timeout(10000),
+    });
+    result = await response.json();
+  } catch {
+    throw fail(503, "MSG91 phone verification is unavailable");
+  }
+  if (!response.ok || /authkey|authentication failure/i.test(String(result?.message)))
+    throw fail(503, "MSG91 phone verification is unavailable");
+  if (
+    result?.type !== "success" ||
+    (result.message !== destination && result.message !== destination.slice(1))
+  )
+    throw fail(403, "Verification did not match this phone number or has expired");
+}
+
+module.exports = {
+  validEmail, validPhone, lifetime, fail, hash, deliver, widgetConfig, verifyWidgetPhone,
+};

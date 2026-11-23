@@ -20,6 +20,7 @@ const alumniSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    roll_no: String,
   },
   {
     collection: "alumniData",

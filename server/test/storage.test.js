@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-test("Cloudflare R2 storage: generates timestamp-only keys and executes S3 commands", async () => {
+test("Cloudflare R2 storage: checks image content and creates distinct object keys", async () => {
   // Preserve original env
   const origEnv = { ...process.env };
   try {
@@ -27,12 +27,12 @@ test("Cloudflare R2 storage: generates timestamp-only keys and executes S3 comma
     };
 
     try {
-      const buffer = Buffer.from("fake-image-bytes");
+      const buffer = Buffer.concat([Buffer.from("89504e470d0a1a0a", "hex"), Buffer.alloc(16)]);
+      await assert.rejects(storage.uploadImage(Buffer.from("text document")), { status: 415 });
+      assert.equal(sentCommands.length, 0);
       const beforeTime = Date.now();
       const res = await storage.uploadImage(buffer, {
         folder: "yearbook/profiles",
-        mimeType: "image/png",
-        ext: ".png",
       });
       const afterTime = Date.now();
 
@@ -43,17 +43,15 @@ test("Cloudflare R2 storage: generates timestamp-only keys and executes S3 comma
       assert.equal(putCmd.input.ContentType, "image/png");
       assert.equal(putCmd.input.Body, buffer);
 
-      // Verify strict requirement: Key MUST contain ONLY timestamp, NO original filename
       const key = putCmd.input.Key;
       assert.ok(key.startsWith("yearbook/profiles/"), `Unexpected key prefix: ${key}`);
       assert.ok(key.endsWith(".png"), `Unexpected key extension: ${key}`);
       const filenamePart = key.slice("yearbook/profiles/".length, -4);
       assert.match(
         filenamePart,
-        /^\d+$/,
-        `Key must contain ONLY numeric timestamp, got: ${filenamePart}`,
+        /^\d+-[a-f0-9-]{36}$/,
       );
-      const keyTimestamp = Number(filenamePart);
+      const keyTimestamp = Number(filenamePart.split("-")[0]);
       assert.ok(
         keyTimestamp >= beforeTime && keyTimestamp <= afterTime,
         `Timestamp ${keyTimestamp} out of range [${beforeTime}, ${afterTime}]`,
@@ -61,6 +59,8 @@ test("Cloudflare R2 storage: generates timestamp-only keys and executes S3 comma
 
       assert.equal(res.public_id, key);
       assert.equal(res.url, `https://cdn.yearbook.example.com/${key}`);
+      const second = await storage.uploadImage(buffer, { folder: "yearbook/profiles" });
+      assert.notEqual(second.public_id, res.public_id);
 
       // Test deleteImage via public URL
       sentCommands = [];
@@ -129,14 +129,12 @@ test("Cloudflare R2 storage: falls back to Cloudinary when R2 is unconfigured", 
     };
 
     try {
-      const buffer = Buffer.from("fallback-image-bytes");
+      const buffer = Buffer.from([0xff, 0xd8, 0xff, 0x00]);
       const res = await storage.uploadImage(buffer, { folder: "yearbook/signup" });
 
-      // In fallback mode, public_id must still be ONLY timestamp
       assert.match(
         uploadStreamOptions.public_id,
-        /^\d+$/,
-        `Cloudinary public_id must be numeric timestamp only, got: ${uploadStreamOptions.public_id}`,
+        /^\d+-[a-f0-9-]{36}$/,
       );
       assert.equal(uploadStreamOptions.folder, "yearbook/signup");
       assert.ok(res.url.includes("yearbook/signup"));

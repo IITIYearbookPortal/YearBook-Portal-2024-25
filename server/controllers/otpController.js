@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const wrap = require("express-async-handler");
 const Users = require("../models/userModel");
 const otp = require("../utils/otp");
+const enrollment = require("../utils/enrollment");
 
 const Budgets = mongoose.model(
   "OtpBudget",
@@ -12,6 +13,20 @@ const Budgets = mongoose.model(
     expires: { type: Date, expires: 0 },
   }),
 );
+
+async function checkBudget(key, now) {
+  const hour = Math.floor(now / 3600000);
+  const budget = await Budgets.findByIdAndUpdate(
+    key + ":" + hour,
+    {
+      $inc: { count: 1 },
+      $setOnInsert: { expires: new Date((hour + 2) * 3600000) },
+    },
+    { upsert: true, new: true },
+  );
+  if (budget.count > 10)
+    throw otp.fail(429, "Hourly verification limit reached.");
+}
 
 function destinationFor(purpose, profile, requested) {
   if (!profile) throw otp.fail(403, "Save your signup details first");
@@ -41,6 +56,16 @@ function destinationFor(purpose, profile, requested) {
       : profile.email;
   throw otp.fail(403, "Verification is unavailable for this action");
 }
+
+exports.getWidget = (req, res) => {
+  if (!req.profile || req.profile.one_step_verified)
+    throw otp.fail(403, "Phone verification is unavailable for this profile");
+  const widget = otp.widgetConfig();
+  if (!widget) return res.sendStatus(204);
+  if (!process.env.MSG91_AUTH_KEY)
+    throw otp.fail(503, "MSG91 phone verification is not configured");
+  res.json(widget);
+};
 
 exports.send = wrap(async (req, res) => {
   const { purpose, destination: requested } = req.body;
@@ -72,19 +97,7 @@ exports.send = wrap(async (req, res) => {
     return res
       .status(429)
       .json({ message: "Wait one minute before requesting another code." });
-  const hour = Math.floor(now / 3600000);
-  const budget = await Budgets.findByIdAndUpdate(
-    req.profile._id + ":" + hour,
-    {
-      $inc: { count: 1 },
-      $setOnInsert: { expires: new Date((hour + 2) * 3600000) },
-    },
-    { upsert: true, new: true },
-  );
-  if (budget.count > 10)
-    return res
-      .status(429)
-      .json({ message: "Hourly verification limit reached." });
+  await checkBudget(req.profile._id, now);
   try {
     await otp.deliver(purpose, destination, code);
   } catch {
@@ -120,7 +133,12 @@ async function consume(req, purpose, code) {
   )
     .select("+otp")
     .lean();
-  if (!doc?.otp?.hash || otp.hash(doc.otp.nonce, code) !== doc.otp.hash)
+  const savedHash = doc?.otp?.hash;
+  if (!savedHash || !/^[a-f0-9]{64}$/.test(savedHash) ||
+      !crypto.timingSafeEqual(
+        Buffer.from(otp.hash(doc.otp.nonce, code), "hex"),
+        Buffer.from(savedHash, "hex"),
+      ))
     throw otp.fail(403, "Invalid or expired code");
   const changes = { $unset: { otp: 1 } };
   if (purpose === "signup-phone")
@@ -147,11 +165,30 @@ async function consume(req, purpose, code) {
     throw otp.fail(403, "Code already used or superseded");
 }
 exports.verifySignup = wrap(async (req, res) => {
-  const { purpose, code } = req.body;
+  const { purpose, code, widgetToken } = req.body;
   if (!["signup-phone", "signup-email"].includes(purpose))
     return res.sendStatus(400);
-  destinationFor(purpose, req.profile, req.body.destination);
-  await consume(req, purpose, code);
+  const destination = destinationFor(purpose, req.profile, req.body.destination);
+  await enrollment.requireEnrollment(req.user.email, req.profile.roll_no);
+  if (purpose === "signup-phone" && widgetToken !== undefined) {
+    await checkBudget("widget:" + req.profile._id, Date.now());
+    await otp.verifyWidgetPhone(widgetToken, destination);
+    const applied = await Users.updateOne(
+      {
+        _id: req.profile._id,
+        one_step_verified: { $ne: true },
+        contact_details: req.profile.contact_details,
+      },
+      {
+        $set: { contact_details: destination, one_step_verified: true },
+        $unset: { otp: 1 },
+      },
+    );
+    if (!applied.modifiedCount)
+      throw otp.fail(409, "Phone verification was already completed or the profile changed");
+  } else {
+    await consume(req, purpose, code);
+  }
   res.sendStatus(204);
 });
 exports.verifyEdit = wrap(async (req, res, next) => {

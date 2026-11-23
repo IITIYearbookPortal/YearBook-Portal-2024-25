@@ -1,12 +1,15 @@
-const path = require("node:path");
 const asyncHandler = require("express-async-handler");
 require("dotenv").config();
 const Users = require("../models/userModel");
 const storage = require("../config/storage");
+const { requireEnrollment } = require("../utils/enrollment");
 
 const getUsersData = asyncHandler(async (req, res) => {
   //Get all usersData from MongoDb
-  const User = await Users.find({one_step_verified:true,two_step_verified:true});
+  const User = await Users.find(
+    { one_step_verified: true, two_step_verified: true },
+    "email name roll_no department academic_program profile_img",
+  );
 
   //If no usersData
   if (!User?.length) {
@@ -57,6 +60,7 @@ const createUsersData = asyncHandler(async (req, res) => {
 
   const email = req.user.email;
   if (req.profile) return res.status(409).json({message:"Profile already exists"});
+  await requireEnrollment(email, roll_no);
   if (!validEmail(personal_email_id) || !validPhone(contact_details)) return res.status(400).json({message:"Invalid contact details"});
   if (!req.file) {
     return res.status(400).json({ message: "Profile image is required" });
@@ -79,16 +83,12 @@ const createUsersData = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All fields are required." });
   }
 
-  if (await Users.findOne({ personal_email_id })) {
+  if (await Users.exists({ personal_email_id, two_step_verified: true })) {
     return res.json({ message: "Personal Email Id is already in use" });
   }
 
-  if (await Users.findOne({ contact_details })) {
+  if (await Users.exists({ contact_details, one_step_verified: true })) {
     return res.json({ message: "Mobile Number is already in use" });
-  }
-
-  if (!/^\d+$/.test(roll_no)) {
-    return res.json({ message: "Roll No. should be in Digits" });
   }
 
   if (await Users.findOne({ roll_no })) {
@@ -97,14 +97,12 @@ const createUsersData = asyncHandler(async (req, res) => {
 
   let uploadResult;
   try {
-    const ext = path.extname(req.file.originalname || "").toLowerCase() || ".jpg";
     uploadResult = await storage.uploadImage(req.file.buffer, {
       folder: "yearbook/signup",
-      mimeType: req.file.mimetype || "image/jpeg",
-      ext,
     });
   } catch (error) {
-    console.error("Image upload failed:", error);
+    if (error.status === 415) throw error;
+    console.error("Image upload failed:", error.name);
     return res.status(500).json({ message: "Image upload failed" });
   }
 
@@ -144,9 +142,6 @@ const createUsersData = asyncHandler(async (req, res) => {
 });
 
 const {validEmail,validPhone} = require("../utils/otp");
-const streamifier = require("streamifier");
-
-
 const updateUser = asyncHandler(async (req, res) => {
   const {
     email,
@@ -189,11 +184,8 @@ const updateUser = asyncHandler(async (req, res) => {
   let previousImage;
   let newUploadedPublicId;
   if (req.file) {
-    const ext = path.extname(req.file.originalname || "").toLowerCase() || ".jpg";
     const uploadResult = await storage.uploadImage(req.file.buffer, {
       folder: "yearbook/signup",
-      mimeType: req.file.mimetype || "image/jpeg",
-      ext,
     });
 
     previousImage = user.profile_img?.public_id;

@@ -1,4 +1,4 @@
-const path = require("node:path");
+const { randomUUID } = require("node:crypto");
 const { S3Client, PutObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const cloudinary = require("./cloudinary");
 
@@ -27,18 +27,23 @@ function getR2Client() {
   return s3Client;
 }
 
-/**
- * Uploads an image buffer to Cloudflare R2 (or fallback Cloudinary).
- * Strict requirement: only a timestamp (never the original file name) is used.
- */
-async function uploadImage(
-  buffer,
-  { folder = "yearbook", mimeType = "image/jpeg", ext = ".jpg", index = 0 } = {},
-) {
-  // Only timestamp - never original name
-  const timestamp = Date.now() + (index > 0 ? `_${index}` : "");
-  const extension = ext ? (ext.startsWith(".") ? ext : `.${ext}`) : ".jpg";
-  const key = `${folder}/${timestamp}${extension}`;
+function detectImage(buffer) {
+  if (buffer.length >= 4 && buffer.subarray(0, 3).equals(Buffer.from([0xff, 0xd8, 0xff])))
+    return ["image/jpeg", ".jpg"];
+  if (buffer.length >= 24 && buffer.subarray(0, 8).equals(Buffer.from("89504e470d0a1a0a", "hex")))
+    return ["image/png", ".png"];
+  if (buffer.length >= 13 && /^GIF8[79]a$/.test(buffer.toString("ascii", 0, 6)))
+    return ["image/gif", ".gif"];
+  if (buffer.length >= 20 && buffer.toString("ascii", 0, 4) === "RIFF" &&
+      buffer.toString("ascii", 8, 12) === "WEBP")
+    return ["image/webp", ".webp"];
+  throw Object.assign(new Error("Upload a JPEG, PNG, GIF, or WebP image"), { status: 415 });
+}
+
+async function uploadImage(buffer, { folder = "yearbook" } = {}) {
+  const [mimeType, extension] = detectImage(buffer);
+  const objectId = `${Date.now()}-${randomUUID()}`;
+  const key = `${folder}/${objectId}${extension}`;
 
   if (isR2Configured()) {
     const client = getR2Client();
@@ -61,7 +66,7 @@ async function uploadImage(
     const stream = cloudinary.uploader.upload_stream(
       {
         folder,
-        public_id: String(timestamp), // only timestamp
+        public_id: objectId,
         resource_type: "image",
       },
       (error, result) => {

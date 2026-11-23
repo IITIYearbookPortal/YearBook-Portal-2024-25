@@ -8,6 +8,7 @@ const { app } = require("../server");
 const mongoose = require("mongoose");
 const Auth = require("../models/authModel");
 const User = require("../models/userModel");
+const Alumni = require("../models/alumniData");
 const { googleIdentity } = require("../utils/token.util");
 const { digest } = require("../middlewares/identity");
 const Session = mongoose.model("PortalSession");
@@ -51,7 +52,10 @@ test("Google credentials are restricted to this portal and valid lifetimes", asy
 test("signed-out requests cannot reach private records, moderation, uploads or votes", async () => {
   for (const [method, path] of [
     ["GET", "/auth/session"],
+    ["GET", "/otp/widget"],
+    ["POST", "/otp/verify"],
     ["GET", "/getUsersData"],
+    ["GET", "/memories"],
     ["POST", "/editComment"],
     ["POST", "/userData"],
     ["POST", "/create-memory"],
@@ -63,6 +67,94 @@ test("signed-out requests cannot reach private records, moderation, uploads or v
     });
     assert.equal(res.status, 401, path);
   }
+});
+
+test("MSG91 Widget confirms only the phone number proved by the provider", async (t) => {
+  const env = {
+    MSG91_WIDGET_ID: "fixture-widget",
+    MSG91_WIDGET_TOKEN: "fixture-widget-token",
+    MSG91_AUTH_KEY: "fixture-account-key",
+  };
+  const originalEnv = Object.fromEntries(
+    Object.keys(env).map((key) => [key, process.env[key]]),
+  );
+  Object.assign(process.env, env);
+  t.after(() => {
+    for (const [key, value] of Object.entries(originalEnv)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  });
+
+  const profile = { _id: "fixture-profile", roll_no: "001", contact_details: "+919000000001" };
+  t.mock.method(Session, "findOne", () => ({
+    lean: async () => ({ account: "fixture-account", alumni: true }),
+  }));
+  t.mock.method(Auth, "findById", () => ({
+    lean: async () => ({ _id: "fixture-account", email: "owner@example.invalid" }),
+  }));
+  t.mock.method(User, "findOne", () => ({ lean: async () => profile }));
+  t.mock.method(Alumni, "findOne", () => ({
+    select: () => ({ lean: async () => ({ roll_no: "001" }) }),
+  }));
+  const update = t.mock.method(User, "updateOne", async () => ({ modifiedCount: 1 }));
+  let attempts = 0;
+  t.mock.method(mongoose.model("OtpBudget"), "findByIdAndUpdate", async (key) => {
+    assert.match(key, /^widget:fixture-profile:\d+$/);
+    return { count: ++attempts };
+  });
+
+  const accessToken = "fixture.header.signature";
+  let verifiedNumber = "919000000002";
+  const originalFetch = global.fetch;
+  const provider = t.mock.method(global, "fetch", async (url, options) => {
+    if (String(url).startsWith(origin + "/")) return originalFetch(url, options);
+    assert.equal(url, "https://api.msg91.com/api/v5/widget/verifyAccessToken");
+    assert.equal(options.headers.authkey, env.MSG91_AUTH_KEY);
+    assert.deepEqual(JSON.parse(options.body), { "access-token": accessToken });
+    return Response.json({ type: "success", message: verifiedNumber });
+  });
+  const headers = {
+    Cookie: "yearbook_session=fixture-session",
+    Origin: process.env.CLIENT_LINK,
+    "X-Yearbook-Request": "1",
+    "Content-Type": "application/json",
+  };
+  const response = await fetch(origin + "/otp/widget", { headers });
+  assert.deepEqual(await response.json(), {
+    widgetId: env.MSG91_WIDGET_ID,
+    tokenAuth: env.MSG91_WIDGET_TOKEN,
+  });
+  const verify = (widgetToken) => fetch(origin + "/otp/verify", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      purpose: "signup-phone",
+      destination: profile.contact_details,
+      widgetToken,
+    }),
+  });
+  assert.equal((await verify("invalid")).status, 400);
+  assert.equal(provider.mock.calls.length, 2);
+  assert.equal((await verify(accessToken)).status, 403);
+  assert.equal(update.mock.calls.length, 0);
+  verifiedNumber = profile.contact_details.slice(1);
+  assert.equal((await verify(accessToken)).status, 204);
+  assert.deepEqual(update.mock.calls[0].arguments, [
+    {
+      _id: profile._id,
+      one_step_verified: { $ne: true },
+      contact_details: profile.contact_details,
+    },
+    {
+      $set: { contact_details: profile.contact_details, one_step_verified: true },
+      $unset: { otp: 1 },
+    },
+  ]);
+  attempts = 10;
+  const beforeLimit = provider.mock.calls.length;
+  assert.equal((await verify(accessToken)).status, 429);
+  assert.equal(provider.mock.calls.length, beforeLimit + 1);
 });
 
 test("cookie-authenticated writes require the portal origin and request header", async () => {
@@ -185,6 +277,9 @@ test("signup email codes update only their proved destination and can be consume
   const otp = require("../utils/otp");
   const controller = require("../controllers/otpController");
   process.env.OTP_SECRET = "test-only-fixture-secret-for-verification";
+  t.mock.method(Alumni, "findOne", () => ({
+    select: () => ({ lean: async () => ({ roll_no: "001" }) }),
+  }));
   const challenge = {
     nonce: "fixture",
     destination: "personal@example.invalid",
@@ -215,10 +310,12 @@ test("signup email codes update only their proved destination and can be consume
   const req = {
     profile: {
       _id: "fixture-profile",
+      roll_no: "001",
       one_step_verified: true,
       personal_email_id: challenge.destination,
     },
     sessionHash: "session-digest",
+    user: { email: "owner@example.invalid" },
     body: { purpose: "signup-email", code: "123456" },
   };
   let status;
@@ -238,6 +335,19 @@ test("signup email codes update only their proved destination and can be consume
   assert.equal(status, 204);
   await invoke();
   assert.equal(status, 403);
+});
+
+test("enrollment lookup binds the roster’s roll number and preserves leading zeros", async (t) => {
+  const { requireEnrollment } = require("../utils/enrollment");
+  t.mock.method(Alumni, "findOne", ({ email }) => ({
+    select: () => ({
+      lean: async () => email === "alias@iiti.ac.in" ? { roll_no: "007" } : {},
+    }),
+  }));
+  await requireEnrollment("student001234567@iiti.ac.in", "001234567");
+  await requireEnrollment("alias@iiti.ac.in", "007");
+  await assert.rejects(requireEnrollment("alias@iiti.ac.in", "008"), { status: 403 });
+  await assert.rejects(requireEnrollment("unknown@iiti.ac.in", "007"), { status: 403 });
 });
 
 test("MSG91 delivery uses the direct SendOTP API and the configured template", async (t) => {

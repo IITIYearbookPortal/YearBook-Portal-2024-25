@@ -1,9 +1,11 @@
-const path = require("node:path");
 const asyncHandler = require("express-async-handler");
 const Memory = require("../models/memories");
 const { randomUUID } = require("crypto");
 const storage = require("../config/storage");
 const PendingMemory = require("../models/pendingMemories.js");
+const Users = require("../models/userModel");
+const { validEmail } = require("../utils/otp");
+const maxRecipients = 25;
 
 const getMemories = asyncHandler(async (req, res) => {
   const { seniorId, seniorIds } = req.query;
@@ -18,7 +20,10 @@ const getMemories = asyncHandler(async (req, res) => {
   }
 
   if (seniorIds) {
-    filter.seniorId = { $in: seniorIds.split(",") };
+    const recipients = seniorIds.split(",");
+    if (recipients.length > maxRecipients || recipients.some((id) => !validEmail(id)))
+      return res.status(400).json({ error: "Invalid senior IDs" });
+    filter.seniorId = { $in: recipients };
   }
 
   const memories = await Memory.find(filter).sort({ createdAt: -1 });
@@ -46,31 +51,43 @@ const createMemory = asyncHandler(async (req, res) => {
 
   // console.log(req.body);
 
-  if (!locationId || !content || !authorName || !seniorIds) {
+  if (typeof locationId !== "string" || !locationId || locationId.length > 80 ||
+      typeof content !== "string" || !content.trim() || content.length > 500 ||
+      !authorName || typeof seniorIds !== "string") {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  seniorIds = JSON.parse(seniorIds);
-  if (!Array.isArray(seniorIds) || seniorIds.length === 0) {
+  try {
+    seniorIds = JSON.parse(seniorIds);
+  } catch {
     return res.status(400).json({ error: "Invalid seniorIds" });
   }
+  if (!Array.isArray(seniorIds) || seniorIds.length === 0 ||
+      seniorIds.length > maxRecipients || seniorIds.some((id) => !validEmail(id))) {
+    return res.status(400).json({ error: "Invalid seniorIds" });
+  }
+  seniorIds = [...new Set(seniorIds)];
+  const recipients = await Users.countDocuments({
+    email: { $in: seniorIds },
+    one_step_verified: true,
+    two_step_verified: true,
+  });
+  if (recipients !== seniorIds.length)
+    return res.status(400).json({ error: "Select verified alumni as recipients" });
 
   let imageUrls = [];
 
   if (req.files && req.files.length > 0) {
-    const uploadPromises = req.files.map((file, idx) => {
-      const ext = path.extname(file.originalname || "").toLowerCase() || ".jpg";
-      return storage
-        .uploadImage(file.buffer, {
-          folder: "yearbook/memories",
-          mimeType: file.mimetype || "image/jpeg",
-          ext,
-          index: idx,
-        })
-        .then((res) => res.url);
-    });
-
-    imageUrls = await Promise.all(uploadPromises);
+    const uploads = await Promise.allSettled(req.files.map((file) =>
+      storage.uploadImage(file.buffer, { folder: "yearbook/memories" }),
+    ));
+    const failure = uploads.find((result) => result.status === "rejected");
+    const uploaded = uploads.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
+    if (failure) {
+      await Promise.allSettled(uploaded.map((file) => storage.deleteImage(file.public_id)));
+      throw failure.reason;
+    }
+    imageUrls = uploaded.map((file) => file.url);
   }
 
   const groupId = randomUUID();

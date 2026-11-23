@@ -4,9 +4,9 @@ const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const userDataRoutes = require("./routes/userDataRoutes");
 const authRoutes = require("./routes/authRoutes");
-const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { requireUser, requireMember } = require("./middlewares/identity");
+const { byPeer } = require("./middlewares/rateLimit");
 const basicAuth = require("express-basic-auth");
 const User = require("./models/userModel");
 const Comments = require("./models/comments");
@@ -16,6 +16,8 @@ const pollRoutes = require("./routes/pollRoutes");
 const previousYrBookRoute = require("./routes/previousYrBook")
 
 const app = express();
+app.disable("x-powered-by");
+app.set("query parser", "simple");
 
 const port = process.env.PORT || 5000;
 
@@ -40,7 +42,9 @@ app.use(cookieParser());
 
 const morgan = require("morgan");
 
-app.use(morgan("dev"));
+app.use(morgan((tokens, req, res) =>
+  [req.method, req.route?.path || "[unmatched]", tokens.status(req, res)].join(" "),
+));
 
 app.get("/", (req, res) => {
   res.send("Hello from server");
@@ -65,17 +69,16 @@ async function configureAdmin() {
     res.set("Cache-Control","no-store");
     if (!["GET","HEAD","OPTIONS"].includes(req.method) && req.headers.origin !== new URL(process.env.SERVER_LINK).origin) return res.sendStatus(403);
     next();
-  }, basicAuth({users:{[username]:password},challenge:true}), buildRouter(admin));
+  }, byPeer(300), basicAuth({users:{[username]:password},challenge:true}), buildRouter(admin));
 }
-
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req,res,next) => {
   if (!["GET","HEAD","OPTIONS"].includes(req.method) &&
       (req.headers.origin !== clientLink || req.get("X-Yearbook-Request") !== "1")) return res.sendStatus(403);
   next();
 });
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 // JSON identities and selectors must be scalars. The reorder contract is the only
 // structured mutation besides the array of poll option labels.
 app.use((req,res,next) => {
@@ -85,7 +88,7 @@ app.use((req,res,next) => {
     if (value === null) return res.sendStatus(400);
     if (typeof value !== "object") continue;
     if (key === "options" && Array.isArray(value) && value.every(v => typeof v === "string")) continue;
-    if (key === "updatedOrder" && Array.isArray(value) && value.every(v =>
+    if (key === "updatedOrder" && Array.isArray(value) && value.length <= 300 && value.every(v =>
       v && typeof v._id === "string" && /^[a-f0-9]{24}$/i.test(v._id))) continue;
     return res.status(400).json({message:"Invalid request field"});
   }
@@ -115,7 +118,7 @@ app.use("*", (req, res, next) => {
 
 // global error handling middleware
 app.use((err, req, res, next) => {
-  const status = err.status || 500;
+  const status = err.status || (err.name === "MulterError" ? 413 : 500);
   const message = status >= 500 ? "Internal server error" : err.message;
   const data = null;
   res.status(status).json({
@@ -133,7 +136,10 @@ async function start() {
     await Promise.all([User.init(), require("./models/authModel").init()]);
   }
   await configureAdmin();
-  return app.listen(port);
+  const server = app.listen(port);
+  server.requestTimeout = 30000;
+  server.headersTimeout = 15000;
+  return server;
 }
 if (require.main === module) start().catch(err => {
   console.error("Yearbook startup failed:", err.name);

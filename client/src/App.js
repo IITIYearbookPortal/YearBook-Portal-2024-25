@@ -184,7 +184,7 @@ const App = ({ location }) => {
         {!/^\/fill\/.+$/.test(window.location.pathname) &&
           !/^\/otpVerificationnew\/.+$/.test(window.location.pathname) &&
           !/^\/Fill_Details3\/.+$/.test(window.location.pathname) &&
-          !/^\/emailverificaton\/.+$/.test(window.location.pathname) &&
+          !/^\/emailverification\/.+$/.test(window.location.pathname) &&
           !/^\/otpVerification\/.+$/.test(window.location.pathname) &&
           window.location.pathname !== "*" && <Navbar />}
 

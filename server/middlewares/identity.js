@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const wrap = require("express-async-handler");
 const Users = require("../models/userModel");
 const Auth = require("../models/authModel");
+const { enrollmentFromEmail, requireEnrollment } = require("../utils/enrollment");
 
 const Session = mongoose.model(
   "PortalSession",
@@ -74,14 +75,19 @@ const requireUser = wrap(async (req, res, next) => {
   req.actorId = session.alumni ? req.profile?._id : account._id;
   next();
 });
-function requireMember(req, res, next) {
+const requireMember = wrap(async (req, res, next) => {
   if (
     req.user.alumni &&
     !(req.profile?.one_step_verified && req.profile?.two_step_verified)
   )
     return res.status(403).json({ message: "Complete account verification" });
+  if (req.user.alumni) {
+    const expected = enrollmentFromEmail(req.user.email);
+    if (expected && req.profile.roll_no !== expected)
+      await requireEnrollment(req.user.email, req.profile.roll_no);
+  }
   next();
-}
+});
 function requireAlumni(req, res, next) {
   if (!req.user.alumni) return res.sendStatus(403);
   next();

@@ -24,7 +24,8 @@ async function verifyIdentity(token, audience, issuer) {
       status: 503,
     });
   const header =
-    typeof token === "string" && jwt.decode(token, { complete: true })?.header;
+    typeof token === "string" && token.length <= 8192 &&
+    jwt.decode(token, { complete: true })?.header;
   if (!header || header.alg !== "RS256" || typeof header.kid !== "string")
     throw new Error("Invalid credential");
   const entry = await getCertificates();

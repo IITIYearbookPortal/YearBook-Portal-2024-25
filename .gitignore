@@ -29,6 +29,8 @@ server/node_modules
 node_modules
 
 server/.env
+/.env
+/server/alumniData.json
 client/.env
 
 client/node_modules/

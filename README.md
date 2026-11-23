@@ -136,7 +136,8 @@ Create environment files in `client/.env` and `server/.env`. Do not commit real 
 | `CLIENT_LINK` | `server.js`, user controller | Allowed client origin and redirect target after email verification. |
 | `SERVER_LINK` | user controller | Public API URL for secure cookie settings and the admin origin check. |
 | `GOOGLE_CLIENT_ID` | Google sign-in | Must match the OAuth client ID configured in the browser. |
-| `MSG91_AUTH_KEY`, `MSG91_TEMPLATE_ID` | Alumni SMS | Direct SendOTP API with your approved template and sender. |
+| `MSG91_WIDGET_ID`, `MSG91_WIDGET_TOKEN`, `MSG91_AUTH_KEY` | Alumni SMS via Widget | Configure an SMS widget with a four-digit OTP and CAPTCHA. The browser uses the widget ID and widget token. Keep the account Authkey on the server for token verification. The widget can use MSG91's default SMS template. |
+| `MSG91_AUTH_KEY`, `MSG91_TEMPLATE_ID` | Alumni SMS via SendOTP | Used when the widget is unconfigured. Requires an approved template and sender. |
 | `OTP_SECRET` | OTP storage | Random secret of at least 32 bytes, shared across API replicas. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Email OTP | Authenticated SMTP relay. Port 587 uses STARTTLS and port 465 uses TLS. |
 | `POLL_ADMIN_EMAILS` | Poll administration | Comma-separated account emails. |
@@ -208,7 +209,9 @@ Most client state is local component state. Shared login and profile state is st
 
 The browser exchanges a Google credential at `POST /auth/login` and restores the signed-in user through `GET /auth/session`. The server verifies the credential, checks the alumni roster or the institute's Google hosted domain, and binds the Google subject to the existing account. Third-party email identities outside Google-managed domains require a reviewed subject binding.
 
-Alumni save their profile details, confirm a phone code sent through the MSG91 SendOTP API, then confirm a personal email code sent by the configured SMTP relay. A refresh resumes the outstanding step. The portal keeps the verification form and throttles code delivery per profile. Firebase is used only for existing analytics. Existing verified profiles retain their records and links. Sign in again after upgrading from the old browser token.
+Alumni save their profile details, confirm their phone through MSG91, then confirm a personal email code sent by the configured SMTP relay. The portal renders its own verification form and checks the verified phone number on the server. The widget manages its phone-code challenges. The portal throttles code delivery for SMTP and direct SendOTP. A refresh resumes the outstanding step. Firebase is used only for existing analytics. Existing verified profiles retain their records and links. Sign in again after upgrading from the old browser token.
+
+Signup checks the enrollment number against the signed-in institute account. Keep roster files private. Administrators can import a private JSON array of email strings or records with `email` and `roll_no` using `node server/importAlumni.js <private-roster.json>`. Store enrollment numbers as strings to preserve leading zeroes. For accounts without a numeric institute email suffix, enter the confirmed enrollment number in the roster record. The import updates supplied entries and preserves the rest of the roster.
 
 ### Data Flow
 
