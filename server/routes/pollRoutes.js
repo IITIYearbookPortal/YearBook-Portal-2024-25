@@ -1,9 +1,11 @@
 const express = require('express');
+const { requireAlumni } = require('../middlewares/identity');
 function admin(req,res,next) {
   if (!req.user.pollAdmin) return res.sendStatus(403);
   next();
 }
 const router = express.Router();
+router.use(requireAlumni);
 const {
   createPoll,
   votePoll,

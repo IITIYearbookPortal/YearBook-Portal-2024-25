@@ -25,7 +25,7 @@ export const Timeline = ({
 
   return (
     <div
-      className="w-full bg-[#222831] px-2 sm:px-4 md:px-10"
+      className="w-full bg-pagebg px-2 sm:px-4 md:px-10"
       ref={containerRef}
     >
       <div className="max-w-7xl mx-auto py-8 sm:py-12 md:py-20 px-4 text-center">
@@ -36,7 +36,7 @@ export const Timeline = ({
 
         <p
           className="text-[18px] sm:text-base md:text-lg text-white font-bold text-md px-2 sm:px-8 md:px-16 lg:px-44">
-          This is a website where you can create your profile that will be shown in the Yearbook'26. Comment on your friends, choose which comments you wish to show on your handle in the yearbook, and much more!! Feeling lost? Here's what you can do:
+          This is a website where you can create your profile that will be shown in the Yearbook'27. Comment on your friends, choose which comments you wish to show on your handle in the yearbook, and much more!! Feeling lost? Here's what you can do:
 
         </p>
       </div>

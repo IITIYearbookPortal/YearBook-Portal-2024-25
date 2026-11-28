@@ -1,0 +1,257 @@
+.ilb-root {
+  position: fixed;
+  inset: 0;
+  z-index: 135000;
+  background: rgba(15, 18, 22, 0.94);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  color: #e5e7eb;
+  animation: ilb-fade 160ms ease-out;
+}
+
+@keyframes ilb-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Top Toolbar */
+.ilb-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(31, 34, 40, 0.85);
+  border-bottom: 1px solid rgba(118, 171, 174, 0.22);
+  flex-shrink: 0;
+}
+
+.ilb-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.ilb-caption {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f3f4f6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ilb-counter {
+  font-size: 0.82rem;
+  color: #76abae;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ilb-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.ilb-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ilb-btn:hover:not(:disabled) {
+  background: rgba(118, 171, 174, 0.2);
+  border-color: rgba(118, 171, 174, 0.55);
+  color: #ffffff;
+}
+
+.ilb-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ilb-close:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+}
+
+.ilb-zoom-readout {
+  min-width: 46px;
+  text-align: center;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  color: #d1d5db;
+}
+
+.ilb-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 0 0.25rem;
+}
+
+/* Main Stage */
+.ilb-stage {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 1rem 3.5rem;
+  touch-action: none;
+}
+
+.ilb-stage.grab {
+  cursor: grab;
+}
+
+.ilb-stage.grabbing {
+  cursor: grabbing;
+}
+
+.ilb-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6);
+  transform-origin: center center;
+}
+
+.ilb-error {
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  background: #1f2228;
+  border: 1px solid rgba(118, 171, 174, 0.25);
+  color: rgba(229, 231, 235, 0.7);
+  font-size: 0.95rem;
+}
+
+/* Side Navigation Arrows */
+.ilb-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  border-radius: 9999px;
+  border: 1px solid rgba(118, 171, 174, 0.3);
+  background: rgba(31, 34, 40, 0.82);
+  color: #e5e7eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.ilb-nav:hover {
+  background: rgba(118, 171, 174, 0.25);
+  border-color: #76abae;
+  color: #ffffff;
+}
+
+.ilb-prev {
+  left: 1rem;
+}
+
+.ilb-next {
+  right: 1rem;
+}
+
+/* Bottom Strip */
+.ilb-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem 0.9rem;
+  flex-shrink: 0;
+}
+
+.ilb-thumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ilb-thumb {
+  width: 52px;
+  height: 38px;
+  padding: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  opacity: 0.55;
+  cursor: pointer;
+  background: #1f2228;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.ilb-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ilb-thumb:hover {
+  opacity: 0.85;
+}
+
+.ilb-thumb.active {
+  opacity: 1;
+  border-color: #76abae;
+}
+
+.ilb-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: rgba(229, 231, 235, 0.5);
+}
+
+@media (max-width: 640px) {
+  .ilb-toolbar {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .ilb-stage {
+    padding: 0.75rem 0.75rem;
+  }
+
+  .ilb-nav {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ilb-prev {
+    left: 0.5rem;
+  }
+
+  .ilb-next {
+    right: 0.5rem;
+  }
+}

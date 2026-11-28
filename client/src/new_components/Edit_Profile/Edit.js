@@ -113,7 +113,7 @@ function Edit({ isDarkMode }) {
 
       fields.forEach((field) => {
         let value = userData[field] ?? "";
-        if (field === "name") {
+        if (field === "name" || field === "about") {
           value = value.trim();
         }
         formData.append(field, value);
@@ -196,7 +196,17 @@ function Edit({ isDarkMode }) {
             <input className="inped mb-4" name="current_company" value={userData.current_company || ""} onChange={handleChange} placeholder="Current Company" />
             <input className="inped mb-4" name="designation" value={userData.designation || ""} onChange={handleChange} placeholder="Designation" />
 
-            <textarea className="inped mb-2" name="about" value={userData.about || ""} onChange={handleChange} placeholder="About Me (50–60 words)" />
+            <textarea
+              className="inped mb-1"
+              name="about"
+              maxLength={300}
+              value={userData.about || ""}
+              onChange={handleChange}
+              placeholder="About Me (up to 300 characters)"
+            />
+            <p className="text-xs text-gray-400 text-right mb-2">
+              {(userData.about || "").length}/300
+            </p>
 
             <p className="mb-2 text-white">Q1. What will you miss the most after graduating?</p>
             <input className="inped mb-4" name="question_1" value={userData.question_1 || ""} onChange={handleChange} />
@@ -207,7 +217,18 @@ function Edit({ isDarkMode }) {
             {confirming ? <OtpForm purpose="edit-profile" onVerified={onUpdate}/> : <div className="btn-wrapper">
               <button
                 className="sbmit1 mt-5"
-                onClick={()=>setConfirming(true)}
+                onClick={() => {
+                  const aboutLen = (userData.about || "").trim().length;
+                  if (!aboutLen) {
+                    toast.error("Please fill in your About section.", { theme: "dark" });
+                    return;
+                  }
+                  if (aboutLen > 300) {
+                    toast.error("About section must be 300 characters or fewer.", { theme: "dark" });
+                    return;
+                  }
+                  setConfirming(true);
+                }}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Updating..." : "Update"}

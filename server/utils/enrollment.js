@@ -5,6 +5,18 @@ function enrollmentFromEmail(email) {
   return /^[a-z]+(\d{9,10})@iiti\.ac\.in$/.exec(email)?.[1];
 }
 
+async function getAcademicDetails(email) {
+  const record = await Alumni.findOne({ email })
+    .select("roll_no department academic_program")
+    .lean();
+  if (!record) return null;
+  return {
+    roll_no: record.roll_no || enrollmentFromEmail(email) || "",
+    department: record.department || "",
+    academic_program: record.academic_program || "",
+  };
+}
+
 async function requireEnrollment(email, rollNumber) {
   if (typeof rollNumber !== "string" || !/^\d{1,10}$/.test(rollNumber))
     throw fail(400, "Enter a valid enrollment number");
@@ -19,4 +31,4 @@ async function requireEnrollment(email, rollNumber) {
     throw fail(403, "The enrollment number does not match your institute account");
 }
 
-module.exports = { enrollmentFromEmail, requireEnrollment };
+module.exports = { enrollmentFromEmail, getAcademicDetails, requireEnrollment };

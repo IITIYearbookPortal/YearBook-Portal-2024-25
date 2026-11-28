@@ -159,7 +159,7 @@ const PollPage = () => {
   }
 
   return (
-    <div className="bg-gray-800 min-h-screen px-4 py-8">
+    <div className="bg-pagebg min-h-screen px-4 py-8">
       <ToastContainer />
 
       <div className="max-w-7xl mx-auto">

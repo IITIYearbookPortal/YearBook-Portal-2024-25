@@ -32,9 +32,10 @@ function MemoryMapPage() {
     return allUsers.map((u) => ({
       id: u.email,
       name: u.name,
+      roll_no: u.roll_no,
       department: u.department,
       avatar: u.profile_img,
-      graduationYear: 2026,
+      graduationYear: 2027,
     }));
   }, [allUsers]);
 
@@ -150,7 +151,7 @@ function MemoryMapPage() {
                 <div>
                   <h1 className="mm-title">Memory Map</h1>
 
-                  <p className="mm-sub">College Yearbook • Class of 2026</p>
+                  <p className="mm-sub">College Yearbook • Class of 2027</p>
                 </div>
               </div>
 

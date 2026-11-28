@@ -2,7 +2,8 @@ const asyncHandler = require("express-async-handler");
 require("dotenv").config();
 const Users = require("../models/userModel");
 const storage = require("../config/storage");
-const { requireEnrollment } = require("../utils/enrollment");
+const { getAcademicDetails, requireEnrollment } = require("../utils/enrollment");
+const { validEmail, validPhone } = require("../utils/otp");
 
 const getUsersData = asyncHandler(async (req, res) => {
   //Get all usersData from MongoDb
@@ -40,13 +41,27 @@ const getUsersCompleteData = asyncHandler(async (req, res) => {
   return res.json({ user });
 });
 
+const ABOUT_MAX_LENGTH = 300;
+const isAboutTooLong = (text) => String(text || "").trim().length > ABOUT_MAX_LENGTH;
+
+// Return pre-stored roll_no, department, and academic_program linked to the logged-in alumni email.
+const getAcademicProfile = asyncHandler(async (req, res) => {
+  const details = await getAcademicDetails(req.user.email);
+  if (!details) {
+    return res
+      .status(403)
+      .json({ message: "Ask the Alumni Cell to confirm your academic details" });
+  }
+  return res.status(200).json(details);
+});
+
 //Add a New User
 const createUsersData = asyncHandler(async (req, res) => {
   const {
     name,
-    roll_no,
-    academic_program,
-    department,
+    roll_no: bodyRollNo,
+    academic_program: bodyProgram,
+    department: bodyDepartment,
     personal_email_id,
     contact_details,
     alternate_contact_details,
@@ -60,6 +75,12 @@ const createUsersData = asyncHandler(async (req, res) => {
 
   const email = req.user.email;
   if (req.profile) return res.status(409).json({message:"Profile already exists"});
+
+  const preStored = await getAcademicDetails(email);
+  const roll_no = preStored?.roll_no || bodyRollNo;
+  const academic_program = preStored?.academic_program || bodyProgram;
+  const department = preStored?.department || bodyDepartment;
+
   await requireEnrollment(email, roll_no);
   if (!validEmail(personal_email_id) || !validPhone(contact_details)) return res.status(400).json({message:"Invalid contact details"});
   if (!req.file) {
@@ -81,6 +102,12 @@ const createUsersData = asyncHandler(async (req, res) => {
     !question_2
   ) {
     return res.status(400).json({ message: "All fields are required." });
+  }
+
+  if (isAboutTooLong(about)) {
+    return res.status(400).json({
+      message: `About section must be ${ABOUT_MAX_LENGTH} characters or fewer.`,
+    });
   }
 
   if (await Users.exists({ personal_email_id, two_step_verified: true })) {
@@ -141,7 +168,6 @@ const createUsersData = asyncHandler(async (req, res) => {
   });
 });
 
-const {validEmail,validPhone} = require("../utils/otp");
 const updateUser = asyncHandler(async (req, res) => {
   const {
     email,
@@ -169,6 +195,12 @@ const updateUser = asyncHandler(async (req, res) => {
     !question_2
   ) {
     return res.status(400).json({ message: "All fields are required" });
+  }
+
+  if (isAboutTooLong(about)) {
+    return res.status(400).json({
+      message: `About section must be ${ABOUT_MAX_LENGTH} characters or fewer.`,
+    });
   }
 
   if (!/^\d+$/.test(roll_no)) {
@@ -329,6 +361,7 @@ const getSearchWord = asyncHandler(async (req, res) => {
 module.exports = {
   getUsersCompleteData,
   getUsersData,
+  getAcademicProfile,
   createUsersData,
   updateUser,
   getProfileData,

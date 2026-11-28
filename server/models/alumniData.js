@@ -1,16 +1,3 @@
-// const mongoose = require("mongoose");
-
-// const alumniSchema = new mongoose.Schema({
-//   email: {
-//     type: String,
-//     required: true,
-//     unique: true,
-//     trim: true,
-//   },
-// });
-
-// module.exports = mongoose.model("Alumni", alumniSchema);
-
 const mongoose = require("mongoose");
 
 const alumniSchema = new mongoose.Schema(
@@ -19,8 +6,21 @@ const alumniSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
     },
-    roll_no: String,
+    roll_no: {
+      type: String,
+      trim: true,
+    },
+    department: {
+      type: String,
+      trim: true,
+    },
+    academic_program: {
+      type: String,
+      trim: true,
+    },
   },
   {
     collection: "alumniData",

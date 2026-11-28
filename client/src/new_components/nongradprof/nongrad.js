@@ -15,24 +15,9 @@ const Nongrad = () => {
   const token = user;
 
   useEffect(() => {
-    if (!loading && !loggedin) {
-      window.location.href = "/login";
-    }
-
-    if (!loading && !isStudent) {
-      window.location.href = "/error";
-    }
-
-    if (!loading && (email !== token.email || name !== token.name)) {
-      window.location.href = "/error";
-    }
-  });
-
-  useEffect(() => {
     if (email) {
       axios
         .post(process.env.REACT_APP_API_URL + "/ungradmycomment", {
-          // comment_reciever_id: profile._id,
           comment_reciever_email: email,
         })
         .then((res) => {
@@ -40,60 +25,77 @@ const Nongrad = () => {
             setMessage2(res.data.message);
             setComments([]);
           } else {
-            setComments(res.data.User);
+            setComments(res.data.User || []);
           }
         })
-        .catch((err) => {});
+        .catch(() => {});
     }
-  }, []);
+  }, [email]);
 
   const HandlEdit = (val) => {
     navigate(`/comment/edit/${val.comment_reciever_roll_no}/${val.comment_id}`);
-    // navigate(`/comment/edit/${val.user_comment_reciever_id}-${val.comment_id}-${val.comment}`);
   };
   return (
-    <div className="w-screen h-screen flex flex-col gap-y-4 justify-start items-center text-white bg-[#1F2937]">
-       <div className="flex text-center rounded-2xl border-4 justify center gap-x-4 py-5 lg:gap-x-0 text-[#6ccf59] lg:flex-col lg:relative  lg:top-[50px] border-black w-80 bg-[#111827] border-black ">
-        <div className="name3 ">
-          <h3>Name: {token.name}</h3>
-        </div>
-        <div className="name3 mt-4">
-          <h3>Email: {token.email}</h3>
-        </div>
+    <div className="min-h-screen w-full px-4 sm:px-6 lg:px-10 py-8 sm:py-12 flex flex-col items-center text-white bg-pagebg">
+      <div className="w-full max-w-md bg-[#111827] border border-gray-700/80 rounded-2xl px-6 py-5 shadow-lg text-center space-y-2 text-[#6ccf59]">
+        <h3 className="text-base sm:text-lg font-semibold break-words">
+          Name: {token.name}
+        </h3>
+        <h3 className="text-sm sm:text-base font-medium break-all text-[#6ccf59]/90">
+          Email: {token.email}
+        </h3>
       </div>
-      <h1 className="text-center p-1 mt-10 font-extrabold text-4xl">
+
+      <h1 className="text-center mt-8 sm:mt-10 font-extrabold text-3xl sm:text-4xl tracking-tight">
         My Comments
       </h1>
-      <p className="text-lg text-center">
-        Start Commenting on other people to view your comments here.{" "}
-        <a href="/userlist" className="hover:underline">
+      <p className="text-sm sm:text-base lg:text-lg text-center text-gray-300 mt-2 mb-8 max-w-xl px-2">
+        Start commenting on graduating seniors to view your comments here.{" "}
+        <a
+          href="/userlist"
+          className="text-[#6ccf59] font-semibold hover:underline"
+        >
           Comment Now
         </a>
       </p>
 
       <div
         id="commentsscroll"
-        className="flex-row flex gap-x-4 flex-wrap w-full justify-center"
+        className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
       >
-        {comments && comments.length !== 0 && (
-          <>
-            {comments.map((val) => (
-              <div id="comment" className="w-96 bg-[#111827] border-none">
-                <p id="commentp">{val.comment}</p>
+        {comments &&
+          comments.length > 0 &&
+          comments.map((val, idx) => (
+            <div
+              key={val.comment_id || idx}
+              id="comment"
+              className="w-full bg-[#111827] border border-gray-700/70 rounded-2xl p-5 shadow-md flex flex-col justify-between gap-4 transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              <p
+                id="commentp"
+                className="text-gray-200 text-sm sm:text-base leading-relaxed break-words"
+              >
+                {val.comment}
+              </p>
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-800">
                 <button
                   id="ebtn"
-                  className="rounded-2xl border-2 border-dashed border-black bg-white px-6 py-1 font-semibold uppercase text-black transition-all duration-300 hover:translate-x-[-4px] hover:translate-y-[-4px] hover:rounded-md hover:shadow-[4px_4px_0px_black] active:translate-x-[0px] active:translate-y-[0px] active:rounded-2xl active:shadow-none"
+                  className="w-full sm:w-auto rounded-xl border-2 border-dashed border-black bg-white px-4 py-2 text-xs sm:text-sm font-semibold uppercase text-black transition-all duration-200 hover:-translate-y-0.5 hover:rounded-lg hover:shadow-[3px_3px_0px_black] active:translate-y-0 active:shadow-none whitespace-nowrap"
                   onClick={() => {
                     HandlEdit(val);
                   }}
                 >
                   Edit Comment
                 </button>
-                <p id="commentby">-{val.comment_reciever_name}</p>
+                <p
+                  id="commentby"
+                  className="text-xs sm:text-sm text-gray-400 font-medium break-words"
+                >
+                  — {val.comment_reciever_name}
+                </p>
               </div>
-            ))}
-          </>
-        )}
+            </div>
+          ))}
       </div>
     </div>
   );

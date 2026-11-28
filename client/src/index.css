@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --yb-page-bg: #1f2937;
+}
+
+body {
+  background-color: var(--yb-page-bg);
+}
+
 @font-face {
   font-family: "Light";   /*Can be any text*/
   src: local("KGTakeOnTheWorld"),
     url("./fonts/ComicNeue-Regular.ttf") format("truetype");
+}
+
+.font-yearbook-fun {
+  font-family: "Pacifico", "Caveat", "Shantell Sans", cursive;
+  letter-spacing: 0.01em;
+  font-weight: 400;
 }

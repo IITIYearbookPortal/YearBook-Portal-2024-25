@@ -11,8 +11,6 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@firebase/analytics": "0.10.19",
-    "@firebase/app": "0.14.6",
     "@fontsource/quantico": "^4.5.10",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",

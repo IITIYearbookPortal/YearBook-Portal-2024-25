@@ -5,9 +5,9 @@
   min-height: 100vh;
   min-height: 100dvh;
   padding: clamp(4rem, 22vh, 12rem) 1rem 4rem;
-  border-bottom: 2px solid white;
-  background: #222831;
-  color: white;
+  border-bottom: 2px solid #374151;
+  background: var(--yb-page-bg);
+  color: #eeeeee;
   text-align: center;
 }
 
@@ -45,17 +45,33 @@
   font-size: 1.125rem;
 }
 
+.delivery {
+  max-width: 32rem;
+  overflow-wrap: anywhere;
+}
+
+.recovery {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  margin-top: -0.75rem;
+}
+
 .input {
   box-sizing: border-box;
   width: min(18rem, 100%);
   min-height: 2.75rem;
-  border: 2px solid #080b10;
+  border: 2px solid #eeeeee;
   border-radius: 1rem;
   padding: 0.35rem 0.75rem;
-  background: white;
-  color: #111827;
+  background: #111827;
+  color: #eeeeee;
   text-align: center;
   font-size: 1.15rem;
+}
+
+.input::placeholder {
+  color: #9ca3af;
 }
 
 .code {
@@ -65,19 +81,57 @@
 
 .phone {
   --react-international-phone-height: 2.75rem;
-  --react-international-phone-font-size: 1.25rem;
-  --react-international-phone-background-color: #ededed;
-  --react-international-phone-border-color: #080b10;
+  --react-international-phone-font-size: 1.05rem;
+  --react-international-phone-background-color: #111827;
+  --react-international-phone-border-color: #eeeeee;
   --react-international-phone-border-radius: 0.75rem;
-  --react-international-phone-text-color: #111827;
-  --react-international-phone-country-selector-arrow-color: #222831;
+  --react-international-phone-text-color: #eeeeee;
+  --react-international-phone-country-selector-background-color: #111827;
+  --react-international-phone-country-selector-background-color-hover: #1f2937;
+  --react-international-phone-country-selector-arrow-color: #eeeeee;
+  --react-international-phone-country-selector-arrow-size: 5px;
+  --react-international-phone-dropdown-item-background-color: #111827;
+  --react-international-phone-dropdown-item-text-color: #eeeeee;
+  --react-international-phone-dropdown-item-dial-code-color: #9ca3af;
+  --react-international-phone-dropdown-item-height: 36px;
+  --react-international-phone-dropdown-item-font-size: 14px;
+  --react-international-phone-selected-dropdown-item-background-color: #374151;
+  --react-international-phone-selected-dropdown-item-text-color: #ffffff;
+  --react-international-phone-selected-dropdown-item-dial-code-color: #76abae;
+  --react-international-phone-dropdown-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
   justify-content: center;
   max-width: 100%;
+}
+
+.phone :global(.react-international-phone-country-selector-button),
+.phone :global(.react-international-phone-input) {
+  background-color: #111827;
+  color: #eeeeee;
+  border-width: 2px;
+  border-color: #eeeeee;
+}
+
+.phone :global(.react-international-phone-country-selector-button) {
+  padding: 0 10px;
+}
+
+.phone :global(.react-international-phone-country-selector-button:hover) {
+  background-color: #1f2937;
 }
 
 .phone :global(.react-international-phone-input) {
   min-width: 0;
   width: 13rem;
+  padding: 0 12px;
+}
+
+.phone :global(.react-international-phone-country-selector-dropdown) {
+  background-color: #111827;
+  color: #eeeeee;
+  border: 1px solid #4b5563;
+  border-radius: 12px;
+  text-align: left;
+  z-index: 50;
 }
 
 .captcha {
@@ -105,24 +159,23 @@
 .resend {
   min-width: 8rem;
   min-height: 2.7rem;
-  padding: 0.35rem 1rem;
-  border: 2px dashed #080b10;
+  padding: 0.35rem 1.25rem;
+  border: 2px dashed #eeeeee;
   border-radius: 2rem;
-  background: #fff;
-  color: #111827;
+  background: transparent;
+  color: #eeeeee;
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
 .resend {
-  border-color: #aeb8c7;
-  background: transparent;
-  color: #fff;
+  border-color: #76abae;
+  color: #eeeeee;
 }
 
 .continue:hover:not(:disabled),
 .resend:hover:not(:disabled) {
   transform: translate(-3px, -3px);
-  box-shadow: 3px 3px #080b10;
+  box-shadow: 3px 3px #eeeeee;
 }
 
 .form button:disabled {
@@ -131,21 +184,19 @@
 }
 
 .form button:focus-visible,
-.form input:focus-visible {
+.form input:focus-visible,
+.form a:focus-visible {
   outline: 2px solid #ffd166;
   outline-offset: 3px;
 }
 
-.back {
-  position: absolute;
-  top: clamp(1rem, 4vw, 2.5rem);
-  right: clamp(1rem, 4vw, 2.5rem);
-  width: clamp(2.75rem, 7vw, 4.5rem);
-  padding: 0.25rem;
-  border-radius: 0.5rem;
+.change {
+  min-height: 2.7rem;
+  padding: 0.35rem 0.75rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
-.back img,
 .illustration {
   filter: invert(1);
 }

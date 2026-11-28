@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import PreviousYrBook from "./pages/PreviousYrBook.jsx";
 import Navbar from "./new_components/Navbar/Navbar";
@@ -17,7 +17,7 @@ import Error from "./new_components/Error/Error";
 // import alumniData from "./new_components/Navbar/alumniData.js";
 import UserList from "./new_components/UserList.js";
 // import UserList from "./components/navbar/UserList.js";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { LoginContext } from "./helpers/Context";
 import axios from "axios";
@@ -34,7 +34,7 @@ import PollPage from "./new_components/PollPage/PollPage.js";
 import PollResultsPage from "./new_components/PollPage/PollResultsPage";
 import PreviousYrBookSenior from "./pages/PreviousYrBookSenior.jsx";
 import { Toaster } from "./components/ui/toaster";
-import { Toaster as Sonner } from "./components/ui/sonner";
+import { Toaster as Sonner, toast } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
@@ -42,11 +42,22 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import VerifyMemories from "./pages/VerifyMemories.jsx";
 import CampusMapPage from "./pages/CampusMapPage.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
+import TermsOfService from "./pages/TermsOfService.jsx";
+import Footer from "./new_components/New_homepage/footer";
 
 const queryClient = new QueryClient();
 
 const App = ({ location }) => {
   const navigate = useNavigate();
+  const { pathname, hash } = useLocation();
+  const pendingNoticeRef = useRef("");
+  useEffect(() => {
+    if (["/login", "/footer"].includes(pathname) || hash) return;
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.getElementById("root2")?.scrollTo(0, 0);
+  }, [pathname, hash]);
 
   const [user, setUser] = useState({});
   const [loggedin, setLoggedin] = useState(false);
@@ -123,7 +134,7 @@ const App = ({ location }) => {
     const renderButton = () => {
       if (!window.google?.accounts || !button.isConnected || button.firstChild) return;
       window.google.accounts.id.initialize({client_id: process.env.REACT_APP_CLIENT_ID, callback: handleCallbackResponse});
-      window.google.accounts.id.renderButton(button, {theme:"dark",size:"large",width:"large"});
+      window.google.accounts.id.renderButton(button, {theme:"outline",size:"large",shape:"pill"});
     };
     renderButton();
     const script = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
@@ -136,17 +147,119 @@ const App = ({ location }) => {
     return storedThemeMode === "dark";
   });
 
-  if (loading) return <div role="status">Loading yearbook…</div>;
-  const path = window.location.pathname;
-  const publicPath = ["/","/login","/logout","/about","/footer","/team","/issue","/map","/nav","/error"].includes(path) || path.startsWith("/previous-yrbook");
+  const publicPaths = new Set([
+    "/",
+    "/login",
+    "/logout",
+    "/about",
+    "/footer",
+    "/team",
+    "/issue",
+    "/error",
+    "/privacy-policy",
+    "/terms",
+  ]);
+  const isPublic = publicPaths.has(pathname);
+  const isOnboarding =
+    pathname.startsWith("/fill/") ||
+    pathname.startsWith("/otpVerificationnew/") ||
+    pathname.startsWith("/emailverification/");
+  const isStudentOnly =
+    pathname === "/goldcard" ||
+    pathname === "/Newp2" ||
+    pathname.startsWith("/profile/nongrad/");
+  const isAlumniOnly =
+    pathname === "/polls" ||
+    pathname.startsWith("/polls/results/") ||
+    pathname === "/memory" ||
+    pathname === "/verifyMemories" ||
+    pathname.startsWith("/edit/") ||
+    pathname === "/blackcard" ||
+    pathname === "/Newp1" ||
+    (pathname.startsWith("/profile/") && !pathname.startsWith("/profile/nongrad/"));
+
   let redirect;
-  if (!publicPath && !loggedin) redirect = "/login";
-  if (loggedin && user.alumni && !verified && !["/logout","/about"].includes(path)) {
-    const step = !profile._id ? "fill" : !oneTimeVerified ? "otpVerificationnew" : "emailverification";
-    const target = "/" + step + "/" + user.jti;
-    if (path !== target) redirect = target;
+  let guardNotice = "";
+  if (!loading) {
+    if (!loggedin) {
+      if (!isPublic) {
+        redirect = "/login";
+        guardNotice = "You are not authorized. Please sign in first.";
+      }
+    } else if (user.alumni && !verified) {
+      const step = !profile._id
+        ? "fill"
+        : !oneTimeVerified
+          ? "otpVerificationnew"
+          : "emailverification";
+      const target = "/" + step + "/" + user.jti;
+      const allowedMidSignup = new Set([
+        "/",
+        "/logout",
+        "/about",
+        "/privacy-policy",
+        "/terms",
+        "/team",
+        "/footer",
+      ]);
+      const canLeaveSignup = step === "otpVerificationnew"
+        ? pathname === "/logout"
+        : allowedMidSignup.has(pathname);
+      if (pathname !== target && !canLeaveSignup) {
+        redirect = target;
+        if (pathname !== "/login" && pathname !== "/") {
+          guardNotice = "Complete verification before accessing portal pages.";
+        }
+      }
+    } else if (!user.alumni) {
+      const nongradEmail = pathname.startsWith("/profile/nongrad/")
+        ? decodeURIComponent(pathname.split("/")[4] || "")
+        : null;
+      if (
+        isOnboarding ||
+        isAlumniOnly ||
+        (nongradEmail !== null && nongradEmail !== user.email)
+      ) {
+        redirect = "/goldcard";
+        guardNotice = "You are not authorized to access this page.";
+      }
+    } else {
+      const homeProfile =
+        "/profile/" + profile.roll_no + "/" + encodeURIComponent(profile.name || "");
+      const targetRoll =
+        pathname.startsWith("/profile/") || pathname.startsWith("/edit/")
+          ? decodeURIComponent(pathname.split("/")[2] || "")
+          : null;
+      if (
+        isOnboarding ||
+        isStudentOnly ||
+        (targetRoll !== null && targetRoll !== profile.roll_no)
+      ) {
+        redirect = homeProfile;
+        guardNotice = "You are not authorized to access this page.";
+      }
+    }
   }
+
+  if (guardNotice) pendingNoticeRef.current = guardNotice;
+
+  useEffect(() => {
+    if (!loading && !redirect && pendingNoticeRef.current) {
+      toast.error(pendingNoticeRef.current, { id: "auth-guard" });
+      pendingNoticeRef.current = "";
+    }
+  }, [loading, redirect, pathname]);
+
+  if (loading) return <div role="status">Loading yearbook…</div>;
   if (redirect) return <Navigate replace to={redirect} />;
+  const hideChromeOnOnboarding =
+    /^\/fill\/.+$/.test(pathname) ||
+    /^\/otpVerificationnew\/.+$/.test(pathname) ||
+    /^\/Fill_Details3\/.+$/.test(pathname) ||
+    /^\/emailverification\/.+$/.test(pathname) ||
+    /^\/otpVerification\/.+$/.test(pathname);
+  const isHomepageRoute = ["/", "/login", "/footer", "/logout"].includes(pathname);
+
   return (
     <LoginContext.Provider
       value={{
@@ -176,28 +289,32 @@ const App = ({ location }) => {
     >
       <div
         id="root2"
-        className={`App overflow-x-hidden bg-cover ${
-          isDarkMode ? "bg-bg-dark text-white" : "bg-bg-white text-black"
+        className={`App flex flex-col min-h-screen overflow-x-clip ${
+          isHomepageRoute
+            ? isDarkMode
+              ? "bg-cover bg-bg-dark text-white"
+              : "bg-cover bg-bg-white text-black"
+            : "bg-pagebg text-white"
         }`}
       >
         {loginError && <p role="alert">{loginError}</p>}
-        {!/^\/fill\/.+$/.test(window.location.pathname) &&
-          !/^\/otpVerificationnew\/.+$/.test(window.location.pathname) &&
-          !/^\/Fill_Details3\/.+$/.test(window.location.pathname) &&
-          !/^\/emailverification\/.+$/.test(window.location.pathname) &&
-          !/^\/otpVerification\/.+$/.test(window.location.pathname) &&
-          window.location.pathname !== "*" && <Navbar />}
+        {!hideChromeOnOnboarding && pathname !== "*" && <Navbar />}
 
+        <div className="flex-1 flex flex-col">
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
             <Toaster />
-            <Sonner />
+            <Sonner position="top-right" richColors />
 
             <Routes>
               {/* Homepage */}
               <Route exact path="/" element={<Homepage2 />} />
 
               <Route exact path="/about" element={<About />} />
+
+              <Route exact path="/privacy-policy" element={<PrivacyPolicy />} />
+
+              <Route exact path="/terms" element={<TermsOfService />} />
 
               <Route
                 exact
@@ -368,8 +485,13 @@ const App = ({ location }) => {
             </Routes>
           </TooltipProvider>
         </QueryClientProvider>
+        </div>
 
-        {/* {!loading && <Footer />} */}
+        {!loading &&
+          !isHomepageRoute &&
+          !hideChromeOnOnboarding &&
+          pathname !== "/nav" &&
+          pathname !== "/map" && <Footer />}
       </div>
     </LoginContext.Provider>
   );

@@ -67,17 +67,60 @@
   margin-top: 1rem;
 }
 
+.mc-image-grid-single {
+  grid-template-columns: 1fr;
+}
+
 .mc-image-box {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid rgba(118, 171, 174, 0.2);
   aspect-ratio: 16/9;
   overflow: hidden;
   border-radius: 0.5rem;
-  background: rgba(255,255,255,0.05); /* subtle dark placeholder */
+  background: rgba(255, 255, 255, 0.05); /* subtle dark placeholder */
+  cursor: zoom-in;
+  transition: border-color 0.2s ease;
+}
+
+.mc-image-box:hover {
+  border-color: rgba(118, 171, 174, 0.65);
 }
 
 .mc-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.mc-image-box:hover .mc-image {
+  transform: scale(1.02);
+}
+
+.mc-image-expand {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(15, 18, 22, 0.72);
+  color: #e5e7eb;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.mc-image-box:hover .mc-image-expand,
+.mc-image-box:focus-visible .mc-image-expand {
+  opacity: 1;
 }
 
 /* ---- QUOTE DECORATION ---- */

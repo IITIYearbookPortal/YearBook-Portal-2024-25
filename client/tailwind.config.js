@@ -17,6 +17,7 @@ module.exports = {
         "3xl": "60px 60px 60px 60px rgba(0, 0, 0, 0.3)",
       },
       colors: {
+        pagebg: "var(--yb-page-bg)",
         darkbg: "#222831",
         greyish:"#31363F",
         lightgreen: "#76ABAE",

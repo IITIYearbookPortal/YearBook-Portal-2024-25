@@ -5,7 +5,7 @@ const getSeniors = async (req, res) => {
         // Only return required fields
         const seniors = await previousSeniors.find({}, "full_name roll_no department");
 
-        res.set("Cache-Control", "public, max-age=300");
+        res.set("Cache-Control", "private, no-store");
         res.status(200).json({
             success: true,
             count: seniors.length,
@@ -35,7 +35,7 @@ const getSenior = async (req, res) => {
       });
     }
 
-    res.set("Cache-Control", "public, max-age=300");
+    res.set("Cache-Control", "private, no-store");
     res.status(200).json({
       success: true,
       data: senior,

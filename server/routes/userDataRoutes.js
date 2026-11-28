@@ -13,6 +13,7 @@ const {requireUser,requireAlumni,requireMember} = require("../middlewares/identi
 const otp = require("../controllers/otpController");
 router.get("/getUsersData", requireUser, requireMember, userDataController.getUsersData);
 router.get("/userData", requireUser, requireMember, userDataController.getUsersData);
+router.get("/userData/academic-profile", requireUser, requireAlumni, userDataController.getAcademicProfile);
 router.post("/userData", requireUser, requireAlumni, uploadLimit, limitConcurrentUploads, upload.single("profile_img"), scalarForm, userDataController.createUsersData);
 router.post("/otp/send", requireUser, requireAlumni, otp.send);
 router.get("/otp/widget", requireUser, requireAlumni, otp.getWidget);

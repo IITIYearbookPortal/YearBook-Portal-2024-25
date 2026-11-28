@@ -1,12 +1,14 @@
 import { useEffect, useState, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import {LoginContext} from "../helpers/Context";
+import { LoginContext } from "../helpers/Context";
+import ImageLightbox from "../components/memory-map/ImageLightbox";
 
 const API_BASE = process.env.REACT_APP_API_URL;
 
 const VerifyMemories = () => {
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lightbox, setLightbox] = useState(null);
 
   const navigate = useNavigate();
   const {user} = useContext(LoginContext);
@@ -102,12 +104,25 @@ const VerifyMemories = () => {
               {m.images?.length > 0 && (
                 <div className="flex flex-wrap gap-3 mt-4">
                   {m.images.map((img, i) => (
-                    <img
+                    <button
                       key={i}
-                      src={img}
-                      alt="Memory"
-                      className="h-32 rounded-lg border border-gray-800 object-cover"
-                    />
+                      type="button"
+                      onClick={() =>
+                        setLightbox({
+                          images: m.images,
+                          index: i,
+                          caption: `Memory by ${m.authorName}`,
+                        })
+                      }
+                      className="rounded-lg border border-gray-700 hover:border-[#76ABAE] overflow-hidden cursor-zoom-in transition-colors"
+                      aria-label={`View full memory image ${i + 1}`}
+                    >
+                      <img
+                        src={img}
+                        alt="Memory"
+                        className="h-32 w-auto object-cover block"
+                      />
+                    </button>
                   ))}
                 </div>
               )}
@@ -130,6 +145,15 @@ const VerifyMemories = () => {
             </div>
           ))}
         </div>
+      )}
+
+      {lightbox && (
+        <ImageLightbox
+          images={lightbox.images}
+          initialIndex={lightbox.index}
+          caption={lightbox.caption}
+          onClose={() => setLightbox(null)}
+        />
       )}
     </div>
   );

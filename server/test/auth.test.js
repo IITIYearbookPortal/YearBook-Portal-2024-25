@@ -55,7 +55,10 @@ test("signed-out requests cannot reach private records, moderation, uploads or v
     ["GET", "/otp/widget"],
     ["POST", "/otp/verify"],
     ["GET", "/getUsersData"],
+    ["GET", "/previousYrBook/getSeniors"],
+    ["GET", "/previousYrBook/getSenior/101"],
     ["GET", "/memories"],
+    ["GET", "/polls"],
     ["POST", "/editComment"],
     ["POST", "/userData"],
     ["POST", "/create-memory"],
@@ -228,6 +231,29 @@ test("session restores the owner and limits profile, inbox and poll administrati
     (await fetch(origin + "/getUsersData", { headers })).status,
     403,
   );
+  assert.equal(
+    (await fetch(origin + "/previousYrBook/getSeniors", { headers })).status,
+    403,
+  );
+  // Student sessions (alumni: false) pass member archive checks but are blocked from alumni-only routes.
+  t.mock.method(Session, "findOne", (filter) => ({
+    lean: async () =>
+      filter._id === digest("fixture-session") &&
+      filter.expires.$gt instanceof Date
+        ? { account: account._id, alumni: false }
+        : null,
+  }));
+  for (const [method, path] of [
+    ["GET", "/polls"],
+    ["GET", "/memories"],
+    ["POST", "/userData"],
+  ]) {
+    assert.equal(
+      (await fetch(origin + path, { method, headers })).status,
+      403,
+      `student blocked on ${method} ${path}`,
+    );
+  }
 });
 
 test("logout expires the cookie and removes its server-side digest", async (t) => {

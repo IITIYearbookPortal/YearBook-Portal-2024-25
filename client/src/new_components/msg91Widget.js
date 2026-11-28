@@ -44,7 +44,12 @@ export function widgetRequest(method, value, requestId) {
       return;
     }
     const timeout = setTimeout(() => {
-      reject(new Error("MSG91 did not respond. Try again shortly."));
+      reject(widgetError(
+        "timeout",
+        method === "verifyOtp"
+          ? "Verification timed out. Try again."
+          : "We couldn’t confirm the SMS request. Wait for a text before trying again.",
+      ));
     }, 20000);
     const success = (data) => {
       clearTimeout(timeout);
@@ -52,17 +57,31 @@ export function widgetRequest(method, value, requestId) {
     };
     const failure = (data) => {
       clearTimeout(timeout);
-      const message = typeof data === "string" ? data : data?.message;
-      reject(new Error(
-        /captcha/i.test(message)
-          ? "Complete the CAPTCHA to continue."
-          : "MSG91 could not complete the request. Check your details and try again.",
-      ));
+      reject(widgetFailure(method, data));
     };
     try {
-      window[method](value, success, failure, requestId);
-    } catch {
-      failure();
+      Promise.resolve(window[method](value, success, failure, requestId)).catch(failure);
+    } catch (error) {
+      failure(error);
     }
   });
+}
+
+function widgetError(code, message) {
+  return Object.assign(new Error(message), { code });
+}
+
+function widgetFailure(method, data) {
+  const detail = typeof data === "string" ? data : data?.message || data?.error?.message || "";
+  if (/captcha/i.test(detail))
+    return widgetError("captcha", "Complete the CAPTCHA and try again.");
+  if (method === "retryOtp" && /retry (?:count|limit).*exceed|maximum.*retr/i.test(detail))
+    return widgetError("retry-limit", "Resend limit reached. You can still enter the latest code if it arrives.");
+  if (/expir|otp not found|invalid request id|request (?:id )?(?:not found|invalid)|verification limit/i.test(detail))
+    return widgetError("new-request", "This code can no longer be used. Request a new SMS.");
+  if (/too many|rate limit|throttl|wait/i.test(detail))
+    return widgetError("rate-limit", "Too many requests. Wait before requesting another code.");
+  if (method === "verifyOtp")
+    return widgetError("verify", "Could not verify that code. Check the latest SMS and try again.");
+  return widgetError("send", "MSG91 couldn’t request the SMS. Check the number and try again.");
 }

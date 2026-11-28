@@ -1,24 +1,23 @@
 import React, { useState, useMemo } from 'react';
 import { cn } from '../../lib/utils';
-import { Check, GraduationCap, Search } from 'lucide-react';
+import { Check, GraduationCap } from 'lucide-react';
+import SearchBar from '../SearchBar';
+import { matchesMemberQuery } from '../../utils/memberSearch';
 import './SeniorSelector.css';
 
 function SeniorSelector({ seniors = [], selectedSeniors = [], onChange, loggedInUser }) {
   const [query, setQuery] = useState('');
 
-  // Filter seniors based on search query
+  // Filter seniors across name, roll no, and department (including short forms)
   const filteredSeniors = useMemo(() => {
     if (!seniors.length) return [];
 
-    if (query) {
-      // Search filtering
-      return seniors.filter((s) =>
-        s?.name?.toLowerCase().includes(query.toLowerCase())
-      );
+    if (query.trim()) {
+      return seniors.filter((s) => matchesMemberQuery(s, query));
     }
 
-    // No search: sort all seniors by createdAt
-    return seniors.sort((a, b) => b.createdAt - a.createdAt);
+    // No search: sort a shallow copy by createdAt
+    return [...seniors].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   }, [seniors, query]);
 
   const isAllSelected = selectedSeniors.length === 0;
@@ -48,48 +47,47 @@ function SeniorSelector({ seniors = [], selectedSeniors = [], onChange, loggedIn
         Search and select one or more graduating seniors
       </p>
 
-      {/* Search input */}
+      {/* Search input (matches Friends Directory unified search) */}
       <div className="ss-search">
-        <Search className="ss-search-icon" />
-        <input
-          type="text"
+        <SearchBar
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search seniors..."
-          className="ss-search-input"
+          onChange={setQuery}
+          onClear={() => setQuery('')}
+          placeholder="Search name, roll no, or dept..."
         />
       </div>
 
       {/* Senior list */}
       <div className="ss-list">
-        {/* "All Seniors" button */}
-        <button
-          type="button"
-          onClick={() => onChange([])}
-          className={cn(
-            'ss-item',
-            isAllSelected ? 'ss-item-selected' : 'ss-item-default'
-          )}
-        >
-          <div
+        {!query.trim() && (
+          <button
+            type="button"
+            onClick={() => onChange([])}
             className={cn(
-              'ss-avatar',
-              isAllSelected ? 'ss-avatar-selected' : 'ss-avatar-muted'
+              'ss-item',
+              isAllSelected ? 'ss-item-selected' : 'ss-item-default'
             )}
           >
-            <span className="ss-avatar-text">All</span>
-          </div>
+            <div
+              className={cn(
+                'ss-avatar',
+                isAllSelected ? 'ss-avatar-selected' : 'ss-avatar-muted'
+              )}
+            >
+              <span className="ss-avatar-text">All</span>
+            </div>
 
-          <div className="ss-meta">
-            <p className="ss-name">All Seniors</p>
-            <p className="ss-note">View memories for everyone</p>
-          </div>
+            <div className="ss-meta">
+              <p className="ss-name">All Seniors</p>
+              <p className="ss-note">View memories for everyone</p>
+            </div>
 
-          {isAllSelected && <Check className="ss-check" />}
-        </button>
+            {isAllSelected && <Check className="ss-check" />}
+          </button>
+        )}
 
-        {/* Logged-in user (always visible after All Seniors) */}
-        {loggedInUser && (
+        {/* Logged-in user */}
+        {loggedInUser && matchesMemberQuery(loggedInUser, query) && (
           <button
             type="button"
             onClick={() => toggleSenior(loggedInUser)}
@@ -162,7 +160,8 @@ function SeniorSelector({ seniors = [], selectedSeniors = [], onChange, loggedIn
               <div className="ss-meta">
                 <p className="ss-name">{senior.name}</p>
                 <p className="ss-note">
-                  {senior.department} • Class of {senior.graduationYear}
+                  {senior.department}
+                  {senior.roll_no ? ` • ${senior.roll_no}` : ''} • Class of {senior.graduationYear}
                 </p>
               </div>
 
@@ -170,6 +169,12 @@ function SeniorSelector({ seniors = [], selectedSeniors = [], onChange, loggedIn
             </button>
           );
         })}
+
+        {query.trim() &&
+          otherSeniors.length === 0 &&
+          !(loggedInUser && matchesMemberQuery(loggedInUser, query)) && (
+            <div className="ss-empty">No matching seniors found.</div>
+          )}
       </div>
     </div>
   );

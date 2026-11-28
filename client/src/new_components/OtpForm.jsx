@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import axios from "axios";
 import { loadWidget, widgetRequest } from "./msg91Widget";
 import SignupOtpForm from "./SignupOtpForm";
@@ -14,12 +14,17 @@ export default function OtpForm({
   const [destination, setDestination] = useState(initialDestination);
   const [sentTo, setSentTo] = useState("");
   const [code, setCode] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [action, setAction] = useState("");
+  const inFlight = useRef(false);
+  const lastRequestedTo = useRef("");
   const [message, setMessage] = useState("");
   const [phoneMode, setPhoneMode] = useState(phone ? "loading" : "portal");
   const [requestId, setRequestId] = useState("");
   const [resendAt, setResendAt] = useState(0);
+  const [needsNewCode, setNeedsNewCode] = useState(false);
+  const [resendExhausted, setResendExhausted] = useState(false);
   const widget = phone && phoneMode === "widget";
+  const busy = Boolean(action);
   const codeLength = widget ? 4 : 6;
   const loading = phoneMode === "loading";
   const unavailable = phoneMode === "unavailable";
@@ -85,13 +90,22 @@ export default function OtpForm({
     setRequestId("");
     setCode("");
     setMessage("");
+    setNeedsNewCode(false);
+    setResendExhausted(false);
   }
 
   async function send(retry = false) {
-    setBusy(true);
+    if (inFlight.current) return;
+    const phoneNumber = destination.trim();
+    if (widget && lastRequestedTo.current === phoneNumber && Date.now() < resendAt) {
+      setMessage("Wait a minute before requesting another SMS to this number.");
+      return;
+    }
+    inFlight.current = true;
+    setAction(retry ? "resend" : "send");
+    setMessage("");
     try {
       if (widget) {
-        const phoneNumber = destination.trim();
         if (!/^\+[1-9]\d{6,14}$/.test(phoneNumber))
           throw new Error("Use an international phone number including +.");
         if (retry) {
@@ -106,6 +120,7 @@ export default function OtpForm({
           setRequestId(id);
         }
         setSentTo(phoneNumber);
+        lastRequestedTo.current = phoneNumber;
         setCode("");
         setResendAt(Date.now() + 60000);
         setMessage("");
@@ -117,23 +132,32 @@ export default function OtpForm({
       setResendAt(Date.now() + 60000);
       setMessage(editing ? "Code sent to " + data.destination + ". It expires in five minutes." : "");
     } catch (err) {
+      if (widget && (err.code === "timeout" || err.code === "rate-limit")) {
+        lastRequestedTo.current = phoneNumber;
+        setResendAt(Date.now() + 60000);
+      }
+      if (widget && retry && err.code === "new-request") setNeedsNewCode(true);
+      if (widget && retry && err.code === "retry-limit") setResendExhausted(true);
       setMessage(
         err.response?.data?.message ||
           (widget && err.message) ||
           "Could not send the code.",
       );
     } finally {
-      setBusy(false);
+      inFlight.current = false;
+      setAction("");
     }
   }
   async function confirm(event) {
     event.preventDefault();
-    if (busy || loading || unavailable) return;
+    if (inFlight.current || loading || unavailable || needsNewCode) return;
     if (!sentTo) {
       await send();
       return;
     }
-    setBusy(true);
+    inFlight.current = true;
+    setAction("verify");
+    setMessage("");
     try {
       if (widget) {
         const data = await widgetRequest("verifyOtp", code, requestId);
@@ -153,13 +177,15 @@ export default function OtpForm({
       }
       await onVerified(code);
     } catch (err) {
+      if (widget && err.code === "new-request") setNeedsNewCode(true);
       setMessage(
         err.response?.data?.message ||
           (widget && err.message) ||
           "Verification failed. Request a new code if needed.",
       );
     } finally {
-      setBusy(false);
+      inFlight.current = false;
+      setAction("");
     }
   }
 
@@ -170,7 +196,7 @@ export default function OtpForm({
     pattern: `[0-9]{${codeLength}}`,
     maxLength: codeLength,
     value: code,
-    onChange: (event) => setCode(event.target.value),
+    onChange: (event) => setCode(event.target.value.replace(/\D/g, "").slice(0, codeLength)),
   };
 
   if (editing) {
@@ -201,8 +227,12 @@ export default function OtpForm({
       sentTo={sentTo}
       codeInput={codeInput}
       captchaId={phone && phoneMode !== "portal" ? captchaId : undefined}
+      widget={widget}
       busy={busy}
+      action={action}
       disabled={busy || loading || unavailable}
+      needsNewCode={needsNewCode}
+      resendExhausted={resendExhausted}
       status={loading ? "Loading phone verification…" : message}
       resendAt={resendAt}
       onDestinationChange={changeDestination}

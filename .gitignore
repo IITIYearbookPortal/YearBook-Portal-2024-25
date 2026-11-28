@@ -60,3 +60,6 @@ client/node_modules/.cache/.eslintcache
 # backups
 backup/
 server/backup/
+
+# local dev scripts
+server/scripts/local/

@@ -1,10 +1,31 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
+const R2_ENV_KEYS = [
+  "R2_ENDPOINT",
+  "R2_ACCOUNT_ID",
+  "R2_ACCESS_KEY_ID",
+  "R2_SECRET_ACCESS_KEY",
+  "R2_BUCKET_NAME",
+  "R2_PUBLIC_URL",
+  "R2_KEY_PREFIX",
+];
+
+function clearR2Env() {
+  for (const k of R2_ENV_KEYS) delete process.env[k];
+}
+
+function restoreEnv(origEnv) {
+  for (const k of R2_ENV_KEYS) {
+    if (origEnv[k] !== undefined) process.env[k] = origEnv[k];
+    else delete process.env[k];
+  }
+}
+
 test("Cloudflare R2 storage: checks image content and creates distinct object keys", async () => {
-  // Preserve original env
   const origEnv = { ...process.env };
   try {
+    clearR2Env();
     process.env.R2_ACCOUNT_ID = "test-account-id";
     process.env.R2_ACCESS_KEY_ID = "test-access-key";
     process.env.R2_SECRET_ACCESS_KEY = "test-secret-key";
@@ -41,6 +62,7 @@ test("Cloudflare R2 storage: checks image content and creates distinct object ke
       assert.ok(putCmd instanceof PutObjectCommand);
       assert.equal(putCmd.input.Bucket, "yearbook-test-bucket");
       assert.equal(putCmd.input.ContentType, "image/png");
+      assert.equal(putCmd.input.CacheControl, storage.IMMUTABLE_CACHE_CONTROL);
       assert.equal(putCmd.input.Body, buffer);
 
       const key = putCmd.input.Key;
@@ -76,15 +98,18 @@ test("Cloudflare R2 storage: checks image content and creates distinct object ke
       await storage.deleteImage(key);
       assert.equal(sentCommands.length, 1);
       assert.equal(sentCommands[0].input.Key, key);
+      // Test optional R2_KEY_PREFIX isolation
+      process.env.R2_KEY_PREFIX = "yearbook-portal";
+      sentCommands = [];
+      const prefixed = await storage.uploadImage(buffer, { folder: "yearbook/profiles" });
+      assert.ok(prefixed.public_id.startsWith("yearbook-portal/yearbook/profiles/"));
+      assert.equal(prefixed.url, `https://cdn.yearbook.example.com/${prefixed.public_id}`);
+      delete process.env.R2_KEY_PREFIX;
     } finally {
       S3Client.prototype.send = origSend;
     }
   } finally {
-    // Restore env
-    for (const k of ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME", "R2_PUBLIC_URL"]) {
-      if (origEnv[k] !== undefined) process.env[k] = origEnv[k];
-      else delete process.env[k];
-    }
+    restoreEnv(origEnv);
     delete require.cache[require.resolve("../config/storage")];
   }
 });
@@ -92,11 +117,7 @@ test("Cloudflare R2 storage: checks image content and creates distinct object ke
 test("Cloudflare R2 storage: falls back to Cloudinary when R2 is unconfigured", async () => {
   const origEnv = { ...process.env };
   try {
-    delete process.env.R2_ACCOUNT_ID;
-    delete process.env.R2_ACCESS_KEY_ID;
-    delete process.env.R2_SECRET_ACCESS_KEY;
-    delete process.env.R2_BUCKET_NAME;
-    delete process.env.R2_PUBLIC_URL;
+    clearR2Env();
 
     delete require.cache[require.resolve("../config/storage")];
     const storage = require("../config/storage");
@@ -147,10 +168,7 @@ test("Cloudflare R2 storage: falls back to Cloudinary when R2 is unconfigured", 
       cloudinary.uploader.destroy = origDestroy;
     }
   } finally {
-    for (const k of ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME", "R2_PUBLIC_URL"]) {
-      if (origEnv[k] !== undefined) process.env[k] = origEnv[k];
-      else delete process.env[k];
-    }
+    restoreEnv(origEnv);
     delete require.cache[require.resolve("../config/storage")];
   }
 });

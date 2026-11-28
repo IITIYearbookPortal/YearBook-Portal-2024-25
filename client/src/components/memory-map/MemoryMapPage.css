@@ -1,6 +1,6 @@
 /* ---- Basic page layout and container ---- */
 .mm-page { 
-  background: #111827; /* dark background like PollPage */
+  background: var(--yb-page-bg);
   min-height: 100vh; 
   color: #e5e7eb; /* light text */
 }

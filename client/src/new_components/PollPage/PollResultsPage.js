@@ -99,7 +99,7 @@ const PollResultsPage = () => {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#222831]">
+      <div className="min-h-screen flex items-center justify-center bg-pagebg">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#76ABAE] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-lg text-[#EEEEEE]">Loading poll results...</p>
@@ -111,7 +111,7 @@ const PollResultsPage = () => {
   // No poll found
   if (!poll) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-[#222831]">
+      <div className="min-h-screen flex items-center justify-center p-4 bg-pagebg">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -134,7 +134,7 @@ const PollResultsPage = () => {
 
 
   return (
-    <div className="min-h-screen bg-[#222831] py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-pagebg py-8 px-4 sm:px-6 lg:px-8">
       <ToastContainer />
 
       <motion.div
