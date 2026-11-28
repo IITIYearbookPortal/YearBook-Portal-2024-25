@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
-const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -17,8 +16,9 @@ const userSchema = new mongoose.Schema({
   roll_no: {
     type: String,
     required: [true, "Roll Number is required"],
-    // unique: true,
+    immutable: true,
   },
+  indexedEnrollment: {type:Boolean, select:false},
 
   academic_program: {
     type: String,
@@ -61,6 +61,8 @@ const userSchema = new mongoose.Schema({
   about: {
     type: String,
     required: true,
+    trim: true,
+    maxlength: 300,
   },
 
   profile_img: {
@@ -90,16 +92,15 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 
-  phoneOTP: String,
+  phoneOTP: {type:String,select:false},
+  otp: {type: new mongoose.Schema({
+    purpose:String, destination:String, session:String, nonce:String, hash:String,
+    remaining:Number, expires:Date, issued:Date
+  }, {_id:false}), select:false},
+  emailOtpVerifiedAt: {type:Date},
+
 });
 
-userSchema.methods.generateVerificationToken = function () {
-  const user = this;
-  const verificationToken = jwt.sign({ ID: user._id }, process.env.SECRET, {
-    expiresIn: "7d",
-  });
-
-  return verificationToken;
-};
-
+// Full unique index on roll_no across all profile records.
+userSchema.index({ roll_no: 1 }, { unique: true });
 module.exports = mongoose.models.Users || mongoose.model("Users", userSchema);

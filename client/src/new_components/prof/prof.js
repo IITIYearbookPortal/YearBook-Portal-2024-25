@@ -6,6 +6,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { arrayMove } from "@dnd-kit/sortable";
 import { toast, ToastContainer } from "react-toastify";
+import Avatar from "../../components/Avatar";
+import ConfirmDialog, { useConfirmDialog } from "../../components/ConfirmDialog";
 
 import {
   Clock,
@@ -56,6 +58,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
   const [error, setError] = useState("");
   const [protectionmsg, setProtectionMsg] = useState("");
   const [rejectedComments, setRejectedComments] = useState([]);
+  const { openConfirm, dialogProps } = useConfirmDialog();
 
   // useEffect(() => {
   // }, [isDarkMode]);
@@ -105,11 +108,6 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
       order: index,
     }));
 
-    const previousOrderMap = {};
-    approvedComments.forEach((comment, index) => {
-      previousOrderMap[comment._id] = index;
-    });
-
     // Make API call to update order in the database
     axios
       .post(process.env.REACT_APP_API_URL + "/updateCommentOrder", {
@@ -117,7 +115,6 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
         comment_reciever_roll_no: comment_reciever_roll_no,
         // comment_reciever_id: profile._id,
         updatedOrder: updatedOrder,
-        previousOrderMap: previousOrderMap,
       })
       .then((res) => {})
       .catch((error) => {
@@ -169,7 +166,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
     }
   }, [profile]);
 
-  const token = window.localStorage.getItem("token");
+
 
   // useEffect(() => {
   //   const fetchProfile = async () => {
@@ -329,78 +326,81 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
     },
   ]);
   return (
-    <div className="min-h-screen bg-gray-800 p-6">
+    <div className="min-h-screen bg-pagebg px-3 sm:px-6 py-5 sm:py-8">
       <ToastContainer />
-      <div className="mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Profile Card */}
-        <div className="bg-gray-900 max-w-4xl mt-5 mb-5 mx-auto rounded-2xl p-6 text-white">
-          <div className="flex justify-between items-start mb-6">
-            <div className="text-emerald-400 font-medium">Student Details</div>
+        <div className="bg-gray-900 max-w-4xl mx-auto rounded-2xl p-4 sm:p-6 text-white shadow-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="text-emerald-400 font-semibold text-base sm:text-lg">
+              Student Details
+            </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2.5 sm:gap-3 w-full sm:w-auto">
               <button
                 onClick={() => (window.location.href = "/verifyMemories")}
-                className="px-4 py-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 transition-colors"
+                className="flex-1 sm:flex-none px-4 py-2 text-sm sm:text-base bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/90 active:scale-[0.98] transition-all whitespace-nowrap text-center"
               >
                 Verify Memories
               </button>
 
               <button
-                onClick={() => {
-                  const ans = window.confirm(
-                    "Are you sure you want to edit your Profile?",
-                  );
-                  if (ans) {
-                    navigate(`/edit/${profile.roll_no}/${profile.name}`);
-                  }
-                }}
-                className="px-4 py-2 bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/80 transition-colors"
+                onClick={() =>
+                  openConfirm({
+                    title: "Edit Profile",
+                    message: "Are you sure you want to edit your Profile?",
+                    confirmLabel: "Edit Profile",
+                    onConfirm: () =>
+                      navigate(`/edit/${profile.roll_no}/${profile.name}`),
+                  })
+                }
+                className="flex-1 sm:flex-none px-4 py-2 text-sm sm:text-base bg-emerald-500 font-medium rounded-xl hover:bg-emerald-600/90 active:scale-[0.98] transition-all whitespace-nowrap text-center"
               >
                 Edit Profile
               </button>
             </div>
           </div>
 
-          <div className="flex gap-6 items-start">
-            <img
+          <div className="flex flex-col sm:flex-row gap-5 sm:gap-6 items-center sm:items-start text-center sm:text-left">
+            <Avatar
               src={profile.profile_img}
               alt="Profile"
-              className="w-24 h-24 rounded-full object-cover border-4 border-gray-700"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-gray-700"
             />
-            <div className="flex-1">
-              <h2 className="text-2xl text-white font-semibold mb-1">
+            <div className="flex-1 min-w-0 w-full">
+              <h2 className="text-xl sm:text-2xl text-white font-semibold mb-1 break-words">
                 {profile.name}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <Building2 className="w-4 h-4" />
-                    <span>{profile.academic_program}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-4 text-sm sm:text-base">
+                <div className="space-y-2 min-w-0">
+                  <div className="flex items-center justify-center sm:justify-start gap-2 text-gray-300">
+                    <Building2 className="w-4 h-4 shrink-0 text-gray-400" />
+                    <span className="break-words">{profile.academic_program}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <GraduationCapIcon className="w-4 h-4" />
-                    <span>{profile.dpeartment}</span>
+                  <div className="flex items-center justify-center sm:justify-start gap-2 text-gray-300">
+                    <GraduationCapIcon className="w-4 h-4 shrink-0 text-gray-400" />
+                    <span className="break-words">{profile.department}</span>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <Mail className="w-4 h-4" />
-                    <span>{profile.email}</span>
+                <div className="space-y-2 min-w-0">
+                  <div className="flex items-center justify-center sm:justify-start gap-2 text-gray-300">
+                    <Mail className="w-4 h-4 shrink-0 text-gray-400" />
+                    <span className="break-all">{profile.email}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <User className="w-4 h-4" />
-                    <span>{profile.roll_no}</span>
+                  <div className="flex items-center justify-center sm:justify-start gap-2 text-gray-300">
+                    <User className="w-4 h-4 shrink-0 text-gray-400" />
+                    <span className="break-words">{profile.roll_no}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="w-full gap-4 mt-8">
+          <div className="w-full mt-6 sm:mt-8">
             <div className="bg-gray-800 rounded-xl p-4">
-              <div className="flex flex-col px-2">
-                <div className="text-2xl font-bold">About</div>
-                <div className="text-gray-400 text-sm mt-2 break-words overflow-auto max-h-48">
+              <div className="flex flex-col px-1 sm:px-2">
+                <div className="text-lg sm:text-2xl font-bold">About</div>
+                <div className="text-gray-300 text-sm sm:text-base mt-2 break-words overflow-auto max-h-48 leading-relaxed">
                   {profile.about}
                 </div>
               </div>
@@ -409,19 +409,17 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
         </div>
 
         {/* Approved Comments Section */}
-        <div className="bg-gray-900 max-w-4xl mx-auto h-[55vh] overflow-y-scroll rounded-2xl px-6 py-3 text-white">
-          <div className="flex justify-between items-center mb-6">
-            <div className="">
-              <div className="text-emerald-400 font-bold">
-                Approved Comments{" "}
-              </div>
-              <div className="text-gray-300 font-medium">
-                Top eight comments will be featured in the final yearbook (Drag
-                to reorder comments). Additionally, you'll receive a digital
-                version of the yearbook that contains all your approved
-                comments. We will try to include as many comments as we can for
-                publication in the yearbook.
-              </div>
+        <div className="bg-gray-900 max-w-4xl mx-auto max-h-[55vh] overflow-y-auto rounded-2xl p-4 sm:p-6 text-white shadow-lg">
+          <div className="mb-5">
+            <div className="text-emerald-400 font-bold text-base sm:text-lg mb-1">
+              Approved Comments
+            </div>
+            <div className="text-gray-300 text-xs sm:text-sm font-medium leading-relaxed">
+              Top eight comments will be featured in the final yearbook (Drag to
+              reorder comments). Additionally, you'll receive a digital version
+              of the yearbook that contains all your approved comments. We will
+              try to include as many comments as we can for publication in the
+              yearbook.
             </div>
           </div>
 
@@ -431,7 +429,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="space-y-4"
+                  className="space-y-3 sm:space-y-4"
                 >
                   {approvedComments &&
                     approvedComments.map((val, index) => (
@@ -447,43 +445,42 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                             {...provided.dragHandleProps}
                             className="bg-gray-800 rounded-xl p-4"
                           >
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-start gap-3">
-                                <img
-                                  src={
-                                    val?.id?.profile_img?.url ||
-                                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                                  }
-                                  className="w-10 h-10 rounded-full object-cover"
-                                />
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <h4 className="font-medium">{val.name}</h4>
-                                  </div>
-                                  <p className="text-gray-300 mt-1">
-                                    {val.comment}
-                                  </p>
-                                  <div className="flex items-center gap-3 mt-2">
-                                    <button
-                                      onClick={() => {
-                                        const ans = window.confirm(
+                            <div className="flex items-start gap-3">
+                              <Avatar
+                                src={val?.id?.profile_img?.url}
+                                alt={val.name}
+                                className="w-10 h-10 rounded-full"
+                              />
+                              <div className="min-w-0 flex-1">
+                                <h4 className="font-medium break-words">
+                                  {val.name}
+                                </h4>
+                                <p className="text-gray-300 text-sm sm:text-base mt-1 break-words">
+                                  {val.comment}
+                                </p>
+                                <div className="flex flex-wrap items-center gap-2 mt-3">
+                                  <button
+                                    onClick={() =>
+                                      openConfirm({
+                                        title: "Remove Comment",
+                                        message:
                                           "Are you sure you want to remove your Approved Comment?",
-                                        );
-                                        if (ans) {
+                                        confirmLabel: "Remove",
+                                        variant: "danger",
+                                        onConfirm: () =>
                                           removeApprovedComment(
                                             val.order,
                                             val.comment,
                                             val.who,
                                             index,
-                                          );
-                                        }
-                                      }}
-                                      className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors"
-                                    >
-                                      <X className="w-4 h-4" />
-                                      <span>Remove</span>
-                                    </button>
-                                  </div>
+                                          ),
+                                      })
+                                    }
+                                    className="px-3 py-1.5 text-sm flex gap-1.5 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 active:scale-[0.98] transition-all"
+                                  >
+                                    <X className="w-4 h-4 shrink-0" />
+                                    <span>Remove</span>
+                                  </button>
                                 </div>
                               </div>
                             </div>
@@ -499,46 +496,44 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
         </div>
 
         {/* Comments Section */}
-        <div className="w-[95vw] mx-auto rounded-2xl p-6 text-white flex flex-wrap">
-          <div className="gap-2 rounded-2xl text-white grid md:grid-cols-3 grid-cols-1">
+        <div className="w-full max-w-7xl mx-auto text-white">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* My Comments Section */}
-            <div className="h-[70vh] overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
-              <div className="mb-6">
-                <div className="text-emerald-400 font-bold">My Comments</div>
-                <div className="text-gray-300 font-medium">
+            <div className="max-h-[65vh] lg:h-[70vh] overflow-y-auto bg-gray-900 p-4 sm:p-6 rounded-2xl shadow-lg">
+              <div className="mb-5">
+                <div className="text-emerald-400 font-bold text-base sm:text-lg">
+                  My Comments
+                </div>
+                <div className="text-gray-300 text-xs sm:text-sm font-medium mt-1">
                   Comment on other people to view them here
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {comments &&
                   comments.map((val, index) => (
                     <div key={index} className="bg-gray-800 rounded-xl p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start gap-3">
-                          <img
-                            src={
-                              val.comment_receiver_image ||
-                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                            }
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-medium">
-                                {val.comment_reciever_name}
-                              </h4>
-                            </div>
-                            <p className="text-gray-300 mt-1">{val.comment}</p>
-                            <div className="flex items-center gap-3 mt-2">
-                              <button
-                                onClick={() => HandlEdit(val)}
-                                className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
-                              >
-                                <Pencil className="w-4 h-4" />
-                                <span>Edit</span>
-                              </button>
-                            </div>
+                      <div className="flex items-start gap-3">
+                        <Avatar
+                          src={val.comment_receiver_image}
+                          alt={val.comment_reciever_name}
+                          className="w-10 h-10 rounded-full"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-medium break-words">
+                            {val.comment_reciever_name}
+                          </h4>
+                          <p className="text-gray-300 text-sm sm:text-base mt-1 break-words">
+                            {val.comment}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-2 mt-3">
+                            <button
+                              onClick={() => HandlEdit(val)}
+                              className="px-3 py-1.5 text-sm flex gap-1.5 items-center rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 active:scale-[0.98] transition-all"
+                            >
+                              <Pencil className="w-4 h-4 shrink-0" />
+                              <span>Edit</span>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -548,43 +543,42 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
             </div>
 
             {/* New Comments Section */}
-            <div className="h-[70vh]  overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
-              <div className="mb-6">
-                <div className="text-emerald-400 font-bold">New Comments</div>
-                <div className="text-gray-300 font-medium">
+            <div className="max-h-[65vh] lg:h-[70vh] overflow-y-auto bg-gray-900 p-4 sm:p-6 rounded-2xl shadow-lg">
+              <div className="mb-5">
+                <div className="text-emerald-400 font-bold text-base sm:text-lg">
+                  New Comments
+                </div>
+                <div className="text-gray-300 text-xs sm:text-sm font-medium mt-1">
                   Comments that your friends make on you will be shown here
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {newComments &&
                   newComments.map((val, index) => (
                     <div key={index} className="bg-gray-800 rounded-xl p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start gap-3">
-                          <img
-                            src={
-                              val?.id?.profile_img?.url ||
-                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                            }
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                          <div className="w-full">
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-medium">{val.name}</h4>
-                            </div>
-                            <p className="text-gray-300 mt-1 flex max-w-full break-words">
-                              {val.comment}
-                            </p>
-                            <div className="flex pt-3 gap-2 flex-wrap">
-                              <button
-                                disabled={state}
-                                onClick={async (e) => {
-                                  e.preventDefault();
-                                  const confirmed = window.confirm(
+                      <div className="flex items-start gap-3">
+                        <Avatar
+                          src={val?.id?.profile_img?.url}
+                          alt={val.name}
+                          className="w-10 h-10 rounded-full"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-medium break-words">{val.name}</h4>
+                          <p className="text-gray-300 text-sm sm:text-base mt-1 break-words">
+                            {val.comment}
+                          </p>
+                          <div className="flex pt-3 gap-2 flex-wrap">
+                            <button
+                              disabled={state}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                openConfirm({
+                                  title: "Approve Comment",
+                                  message:
                                     "Are you sure you want to approve this comment?",
-                                  );
-                                  if (confirmed) {
+                                  confirmLabel: "Approve",
+                                  onConfirm: async () => {
                                     await axios.put(
                                       process.env.REACT_APP_API_URL +
                                         "/setApprovedComments",
@@ -602,21 +596,25 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                                       setState(false);
                                     }, 7000);
                                     window.location.reload();
-                                  }
-                                }}
-                                className="p-2 flex items-center gap-2 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
-                              >
-                                <Check className="w-4 h-4" />
-                                <span>Approve</span>
-                              </button>
-                              <button
-                                disabled={state}
-                                onClick={async (e) => {
-                                  e.preventDefault();
-                                  const confirmed = window.confirm(
+                                  },
+                                });
+                              }}
+                              className="flex-1 sm:flex-none justify-center px-3 py-1.5 text-sm flex items-center gap-1.5 rounded-lg bg-gray-700 hover:bg-emerald-500/20 text-emerald-400 active:scale-[0.98] transition-all whitespace-nowrap"
+                            >
+                              <Check className="w-4 h-4 shrink-0" />
+                              <span>Approve</span>
+                            </button>
+                            <button
+                              disabled={state}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                openConfirm({
+                                  title: "Reject Comment",
+                                  message:
                                     "Are you sure you want to reject this comment?",
-                                  );
-                                  if (confirmed) {
+                                  confirmLabel: "Reject",
+                                  variant: "danger",
+                                  onConfirm: async () => {
                                     await axios.post(
                                       process.env.REACT_APP_API_URL +
                                         "/setRejectedComments",
@@ -634,14 +632,14 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
                                       setState(false);
                                     }, 20000);
                                     window.location.reload();
-                                  }
-                                }}
-                                className="p-2 flex gap-2 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 transition-colors"
-                              >
-                                <X className="w-4 h-4" />
-                                <span>Reject</span>
-                              </button>
-                            </div>
+                                  },
+                                });
+                              }}
+                              className="flex-1 sm:flex-none justify-center px-3 py-1.5 text-sm flex gap-1.5 items-center rounded-lg bg-gray-700 hover:bg-red-500/20 text-red-400 active:scale-[0.98] transition-all whitespace-nowrap"
+                            >
+                              <X className="w-4 h-4 shrink-0" />
+                              <span>Reject</span>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -651,36 +649,32 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
             </div>
 
             {/* Rejected Comments Section */}
-            <div className="h-[70vh] overflow-y-scroll bg-gray-900 p-6 m-2 rounded-2xl">
-              <div className="mb-6">
-                <div className="text-emerald-400 font-bold">
+            <div className="max-h-[65vh] lg:h-[70vh] overflow-y-auto bg-gray-900 p-4 sm:p-6 rounded-2xl shadow-lg">
+              <div className="mb-5">
+                <div className="text-emerald-400 font-bold text-base sm:text-lg">
                   Rejected Comments
                 </div>
-                <div className="text-gray-300 font-medium">
+                <div className="text-gray-300 text-xs sm:text-sm font-medium mt-1">
                   Comments you reject will be shown here. (Remember, you cannot
                   restore these comments!)
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {rejectedComments &&
                   rejectedComments.map((val, index) => (
                     <div key={index} className="bg-gray-800 rounded-xl p-4">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start gap-3">
-                          <img
-                            src={
-                              val?.id?.profile_img?.url ||
-                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                            }
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="font-medium">{val.name}</h4>
-                            </div>
-                            <p className="text-gray-300 mt-1">{val.comment}</p>
-                          </div>
+                      <div className="flex items-start gap-3">
+                        <Avatar
+                          src={val?.id?.profile_img?.url}
+                          alt={val.name}
+                          className="w-10 h-10 rounded-full"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-medium break-words">{val.name}</h4>
+                          <p className="text-gray-300 text-sm sm:text-base mt-1 break-words">
+                            {val.comment}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -690,6 +684,7 @@ export const Prof = ({ isDarkMode, setIsDarkMode }) => {
           </div>
         </div>
       </div>
+      <ConfirmDialog {...dialogProps} />
     </div>
   );
 };

@@ -1,47 +1,68 @@
-const Auth = require('../models/authModel')
-const asyncHandler = require('express-async-handler')
+const Auth = require("../models/authModel");
+const Alumni = require("../models/alumniData");
+const identity = require("../middlewares/identity");
+const { googleIdentity } = require("../utils/token.util");
+const wrap = require("express-async-handler");
 
-const getAllusers = asyncHandler(async (rq, res) => {
-  //Get all users from mongodb
-  const auths = await Auth.find().lean()
-
-  // if no users
-  if (!auths?.length) {
-    return res.send({ message: 'No users found' })
+exports.login = wrap(async (req, res) => {
+  let claims;
+  try {
+    claims = await googleIdentity(req.body.credential);
+  } catch (err) {
+    return res
+      .status(err.status || 401)
+      .json({ message: "Google sign-in could not be verified" });
   }
-  res.json(auths)
-})
-
-//Make the below two functions as one
-const createUsers = asyncHandler(async (req, res) => {
-  const { email, name } = req.body
-
-  //Create and store user
-  const auths = await Auth.create({ email, name })
-
-  if (auths) {
-    //created
-    res.send({ message: 'New User Created' })
-  } else {
-    res.send({ message: 'Invalid user data recieved' })
+  if (claims.email_verified !== true || typeof claims.email !== "string")
+    return res.sendStatus(403);
+  if (claims.hd !== "iiti.ac.in")
+    return res
+      .status(403)
+      .json({ message: "An institute account is required" });
+  const email = claims.email.toLowerCase();
+  const alumni = Boolean(await Alumni.exists({ email }));
+  // Only Google-managed addresses can safely claim a legacy email-only account automatically.
+  const authoritative = Boolean(claims.hd) || email.endsWith("@gmail.com");
+  const conditions = [{ googleSubject: claims.sub }];
+  if (authoritative) conditions.push({ googleSubject: { $exists: false } });
+  let account;
+  try {
+    account = await Auth.findOneAndUpdate(
+      { email, $or: conditions },
+      { $set: { googleSubject: claims.sub, name: claims.name || email } },
+      { new: true, upsert: authoritative, runValidators: true },
+    );
+  } catch (err) {
+    if (err.code !== 11000) throw err;
   }
-})
-
-//Check if the user logged in second time or first time
-const checkAuth = asyncHandler(async (req, res) => {
-  const email = req.body.email
-
-  const User = await Auth.find({ email: email }).exec()
-
-  if (!User.length) {
-    res.send({ message: 'false' })
-  } else {
-    res.send({ message: 'true' })
-  }
-})
-
-module.exports = {
-  getAllusers,
-  createUsers,
-  checkAuth,
-}
+  if (!account)
+    return res
+      .status(403)
+      .json({ message: "Account linking requires administrator review" });
+  await identity.login(req, res, account._id, alumni, claims.picture);
+  res.sendStatus(204);
+});
+exports.session = (req, res) => {
+  const p = req.profile;
+  res.json({
+    user: req.user,
+    profile: p && {
+      _id: p._id,
+      email: p.email,
+      name: p.name,
+      roll_no: p.roll_no,
+      profile_img: p.profile_img?.url,
+      department: p.department,
+      about: p.about,
+      academic_program: p.academic_program,
+      pendingPhone: p.one_step_verified ? undefined : p.contact_details,
+      pendingEmail: p.two_step_verified ? undefined : p.personal_email_id,
+      one_step_verified: p.one_step_verified,
+      two_step_verified: p.two_step_verified,
+    },
+  });
+};
+exports.logout = wrap(async (req, res) => {
+  await identity.logout(req, res);
+  res.sendStatus(204);
+});

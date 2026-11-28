@@ -15,12 +15,28 @@ import { LoginContext } from "../../helpers/Context";
 import { useContext } from "react";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
-import jwt_decode from "jwt-decode";
 import { useParams } from "react-router-dom";
 
-// ─── EDITABLE REDIRECT URL ────────────────────────────────────────────────────
-const REDIRECT_URL = "https://yearbook.iiti.ac.in";
-// ──────────────────────────────────────────────────────────────────────────────
+
+const SELECT_FIELD_CLASS =
+  "w-full appearance-none pl-4 pr-11 py-2 text-sm sm:text-base text-center rounded-xl border-2 border-white bg-[#111827] text-[#EEEEEE] focus:outline-none focus:border-[#76ABAE] transition-colors cursor-pointer";
+
+const EXTRA_FIELD_CLASS =
+  "w-full px-3.5 py-2.5 rounded-xl bg-[#1f2937]/80 border border-gray-500 text-[#EEEEEE] placeholder-gray-400 text-sm focus:outline-none focus:border-[#76ABAE] focus:ring-1 focus:ring-[#76ABAE] transition-colors";
+
+/** Downward chevron spaced cleanly away from the right border of <select> inputs. */
+const SelectChevron = () => (
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 20 20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2.5}
+    className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-[#EEEEEE]"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 8l4 4 4-4" />
+  </svg>
+);
 
 function Fill3({ isDarkMode, setIsDarkMode }) {
   const {
@@ -34,11 +50,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     profile,
   } = useContext(LoginContext);
 
-  let user;
-  if (window.localStorage.getItem("token") !== null) {
-    user = jwt_decode(window.localStorage.getItem("token"));
-  }
-
+  const {user} = useContext(LoginContext);
   const jti = useParams();
 
   useEffect(() => {
@@ -51,6 +63,31 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
       }
     }
   });
+
+  useEffect(() => {
+    if (loading || !loggedin || isStudent) return;
+    let active = true;
+    axios
+      .get(process.env.REACT_APP_API_URL + "/userData/academic-profile", {
+        withCredentials: true,
+      })
+      .then(({ data }) => {
+        if (!active || !data) return;
+        setUserData((prev) => ({
+          ...prev,
+          roll_no: data.roll_no || prev.roll_no,
+          department: data.department || prev.department,
+          academic_program: data.academic_program || prev.academic_program,
+        }));
+        if (data.roll_no) setRollNo(data.roll_no);
+        if (data.department) setDeprt(data.department);
+        if (data.academic_program) setAcadP(data.academic_program);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [loading, loggedin, isStudent]);
 
   const [message, setMessage] = useState("");
   const [state, setState] = useState(false);
@@ -103,7 +140,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     setRollNo(event.target.value);
   };
 
-  // ─── SUBMIT: save directly, mark verified=true, redirect ──────────────────
+  // Save a pending profile before requesting the verification codes.
   const onSubmit = () => {
     setState(true);
 
@@ -123,303 +160,387 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
     formData.append("question_1", userData.question_1);
     formData.append("question_2", userData.question_2);
     formData.append("profile_img", profileImage);
-    // Skip OTP/email — mark both verification steps as done
-    formData.append("one_step_verified", true);
-    formData.append("two_step_verified", true);
-
     axios
       .post(process.env.REACT_APP_API_URL + "/userData", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then(() => {
-        setFill(true);
-        toast.success("Details saved! Redirecting...", { autoClose: 1500 });
-        setTimeout(() => {
-          window.location.href = REDIRECT_URL;
-        }, 1600);
+      .then(({data}) => {
+        if (data.message !== "Profile created") throw new Error(data.message);
+        window.location.assign("/otpVerificationnew/" + user.jti);
       })
-      .catch(() => {
+      .catch((err) => {
         setState(false);
-        toast.error("Something went wrong. Please try again.", { theme: "dark", autoClose: 3000 });
+        toast.error(
+          err?.response?.data?.message || err?.message || "Something went wrong. Please try again.",
+          { theme: "dark", autoClose: 3000 },
+        );
       });
   };
   // ──────────────────────────────────────────────────────────────────────────
 
   return (
     <>
-      <div class="h-fit w-screen">
+      <div className="min-h-screen w-full overflow-x-hidden bg-pagebg">
 
         {/* Page 1 – Name */}
         <div
-          class={
+          className={
             hid == 1
-              ? "h-screen w-screen flex justify-center text-2xl relative border-b-2 bg-[#222831]"
+              ? "min-h-screen w-full flex flex-col items-center justify-center px-4 sm:px-8 py-12 relative border-b-2 border-gray-700 bg-pagebg text-center"
               : "hidden"
           }
         >
-          <div class="h-12 top-44 absolute text-[30px] md:text-5xl lg:text-6xl lg:top-60 flex justify-center afu text-[#EEEEEE]">
-            Just To Verify Your Name Is ?
-          </div>
+          <div className="w-full max-w-3xl mx-auto flex flex-col items-center gap-8 afu">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-[#EEEEEE] leading-tight">
+              Just To Verify Your Name Is ?
+            </h1>
 
-          <div class="h-10 top-72 absolute md:top-80 lg:mt-20 afu">
             <input
               type="text"
-              placeholder="name"
+              placeholder="Enter your name"
               name="name"
               value={userData.name}
-              class="text-center p-0 m-0 border-2 rounded-[11px] border-white bg-transparent text-[#EEEEEE]"
+              className="w-full max-w-xs px-4 py-2 text-base sm:text-lg text-center border-2 rounded-xl border-white bg-transparent text-[#EEEEEE] placeholder-gray-400 focus:outline-none focus:border-[#76ABAE] transition-colors"
               onChange={(e) => {
                 setUserData({ ...userData, [e.target.name]: e.target.value });
                 setName(e.target.value);
               }}
             />
-          </div>
 
-          <button
-            onClick={() => {
-              setUserData({ ...userData, ["name"]: Name.trimEnd() });
-              setName(Name.trimEnd());
-              HandleEmpty(Name);
-              Name != "" ? setHid(2) : setHid(1);
-            }}
-            class="border-2 border-white bg-transparent text-white flex justify-center items-center h-[35px] w-[130px] lg:h-10 lg:w-32 top-[26rem] absolute p-0 mb-1 text-base leading-none text-center afu rounded-3xl md:top-96 md:mt-14 md:w-32 md:h-10 lg:mt-36 btnh border-dashed"
-          >
-            Continue
-          </button>
+            <button
+              onClick={() => {
+                const cleanName = (Name || userData.name || "").trim();
+                setUserData({ ...userData, name: cleanName });
+                setName(cleanName);
+                HandleEmpty(cleanName);
+                if (cleanName) setHid(2);
+              }}
+              className="border-2 border-white bg-transparent text-white flex justify-center items-center px-8 py-3 text-base leading-none text-center rounded-3xl btnh border-dashed cursor-pointer"
+            >
+              Continue
+            </button>
+          </div>
         </div>
 
-        {/* Page 2 – Academic Details */}
+        {/* Page 2 – Academic Details (pre-filled from AlumniData by email; user verifies & presses Continue) */}
         <div
-          class={
+          className={
             hid == 2
-              ? "h-screen w-screen flex justify-center text-1xl relative border-b-2 bg-[#222831]"
+              ? "min-h-screen w-full flex flex-col items-center justify-center px-4 sm:px-8 py-16 relative border-b-2 border-gray-700 bg-pagebg text-[#EEEEEE]"
               : "hidden"
           }
         >
-          <div class="h-12 top-36 left-4 absolute text-2xl md:text-3xl md:top-40 md:ml-20 lg:text-4xl lg:top-36 lg:left-44 afr text-[#EEEEEE]">
-            Right, of course we knew that 🙄
-          </div>
-
-          <div class="h-10 top-48 left-12 absolute text-2xl md:text-3xl md:top-56 md:w-100 md:ml-40 lg:mt-0 lg:text-4xl lg:left-64 afr text-[#EEEEEE]">
-            Verify your academic details to continue
-          </div>
-
-          <div class="h-52 w-full mb-10 absolute top-64 flex justify-center items-center flex-col md:flex-row md:mt-4 lg:mt-10 lg:text-xl afr">
-            <div class="h-12 w-64 flex flex-col md:w-56 lg:w-80 mt-1 mb-4 items-center afr">
-              <h1 class="text-base text-center lg:text-2xl text-[#EEEEEE]">Enrollment number</h1>
-              <input
-                type="text"
-                maxLength={10}
-                placeholder="Enter"
-                name="roll_no"
-                value={userData.roll_no}
-                class="text-center rounded-[9px] h-6 w-[210px] border-2 border-white bg-transparent mt-1 p-2 md:w-40 md:mt-4 lg:w-52 lg:mt-4 xl:h-7"
-                onChange={(e) => {
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                  setRollNo(e.target.value);
-                  HandleDigitsOnly(e);
-                }}
-              />
-            </div>
-
-            <div class="h-12 w-64 flex flex-col md:w-56 md:mt-0 lg:w-80 mt-3 lg:mt-0 mb-4 items-center">
-              <h1 class="text-base text-center lg:text-2xl text-[#EEEEEE]">Academic Program</h1>
-              <select
-                name="academic_program"
-                defaultValue={userData.academic_program}
-                class="text-center rounded-[9px] text-[13.5px] h-7 lg:h-8 w-[210px] border-2 border-white bg-transparent text-[#EEEEEE] mt-1 p-1 md:w-40 lg:w-60 lg:mt-4 lg:text-[15px] xl:h-9 xl:text-[16px] md:mt-4"
-                onChange={(e) => {
-                  setAcadP(e.target.value);
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                }}
-              >
-                <option value="" disabled selected class="selct bg-[#222831]">Academic Program</option>
-                <option value="Bachelor of Technology (BTech)" class="selct bg-[#222831]">Bachelor of Technology (BTech)</option>
-                <option value="Master of Technology (MTech)" class="selct bg-[#222831]">Master of Technology (MTech)</option>
-                <option value="Master of Science (MSc)" class="selct bg-[#222831]">Master of Science (MSc)</option>
-                <option value="Five Year BTech + MTech" class="selct bg-[#222831]">Five Year BTech + MTech</option>
-                <option value="MS (Research)" class="selct bg-[#222831]">MS (Research)</option>
-                <option value="Doctor of Philosophy" class="selct bg-[#222831]">Doctor of Philosophy</option>
-                <option value="MS-DSM" class="selct bg-[#222831]">MS-DSM</option>
-              </select>
-            </div>
-
-            <div class="h-12 w-64 flex flex-col mt-4 md:w-56 md:mb-5 md:mt-0 lg:w-80 lg:mt-0 lg:mb-4 items-center">
-              <h1 class="text-base text-center lg:text-2xl text-[#EEEEEE]">Department</h1>
-              <select
-                name="department"
-                defaultValue={userData.department}
-                class="text-center rounded-[9px] text-[13.5px] h-7 lg:h-8 w-[210px] border-2 border-white bg-transparent text-[#EEEEEE] mt-1 p-1 md:w-40 lg:w-60 lg:mt-4 lg:text-[15px] xl:h-9 xl:text-[16px] md:mt-4"
-                onChange={(e) => {
-                  setDeprt(e.target.value);
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                }}
-              >
-                <option value="" disabled selected class="selct bg-[#222831]">Department</option>
-                <option value="Computer Science and Engineering" class="selct bg-[#222831]">Computer Science and Engineering</option>
-                <option value="Electrical Engineering" class="selct bg-[#222831]">Electrical Engineering</option>
-                <option value="Mechanical Engineering" class="selct bg-[#222831]">Mechanical Engineering</option>
-                <option value="Civil Engineering" class="selct bg-[#222831]">Civil Engineering</option>
-                <option value="Metallurgical Engineering and Materials Science" class="selct bg-[#222831]">Metallurgical Engineering and Materials Science</option>
-                <option value="Astronomy, Astrophysics and Space Engineering" class="selct bg-[#222831]">Astronomy, Astrophysics and Space Engineering</option>
-                <option value="Biosciences and Biomedical Engineering" class="selct bg-[#222831]">Biosciences and Biomedical Engineering</option>
-                <option value="Physics" class="selct bg-[#222831]">Physics</option>
-                <option value="Chemistry" class="selct bg-[#222831]">Chemistry</option>
-                <option value="Mathematics" class="selct bg-[#222831]">Mathematics</option>
-                <option value="Humanities and Social Sciences" class="selct bg-[#222831]">Humanities and Social Sciences</option>
-                <option value="Electric Vehicle Technology" class="selct bg-[#222831]">Electric Vehicle Technology</option>
-                <option value="MS-DSM" class="selct bg-[#222831]">MS-DSM</option>
-                <option value="Center of Futuristic Defense and Space Technology(CFDST)" class="selct bg-[#222831]">Center of Futuristic Defense and Space Technology(CFDST)</option>
-              </select>
-            </div>
-          </div>
-
           <button
-            onClick={() => {
-              if (Deprt === "" || AcadP === "") {
-                setHid(2);
-                HandleEmpty("");
-              } else {
-                if (isValidR) {
+            onClick={() => setHid(1)}
+            aria-label="Back to Name"
+            className="absolute top-5 right-5 sm:top-7 sm:right-8 z-20"
+          >
+            <img
+              src={Bbtn}
+              alt="Back"
+              className={`h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-full btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-transparent"}`}
+            />
+          </button>
+
+          <div className="relative z-10 w-full max-w-4xl mx-auto flex flex-col items-center text-center gap-4 pt-8 afr">
+            <p className="text-xl sm:text-3xl lg:text-4xl font-medium">
+              Right, of course we knew that 🙄
+            </p>
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-semibold">
+              Verify your academic details to continue
+            </h1>
+
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+              <div className="flex flex-col items-center gap-2">
+                <label className="text-sm sm:text-base lg:text-lg font-medium text-[#EEEEEE]">
+                  Enrollment number
+                </label>
+                <input
+                  type="text"
+                  maxLength={10}
+                  placeholder="Enter"
+                  name="roll_no"
+                  value={userData.roll_no || ""}
+                  className="w-full max-w-xs px-3.5 py-2 text-sm sm:text-base text-center rounded-xl border-2 border-white bg-transparent text-[#EEEEEE] placeholder-gray-400 focus:outline-none focus:border-[#76ABAE] transition-colors"
+                  onChange={(e) => {
+                    setUserData({ ...userData, [e.target.name]: e.target.value });
+                    setRollNo(e.target.value);
+                    HandleDigitsOnly(e);
+                  }}
+                />
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <label className="text-sm sm:text-base lg:text-lg font-medium text-[#EEEEEE]">
+                  Academic Program
+                </label>
+                <div className="relative w-full max-w-xs">
+                  <select
+                    name="academic_program"
+                    value={userData.academic_program || ""}
+                    className={SELECT_FIELD_CLASS}
+                    onChange={(e) => {
+                      setAcadP(e.target.value);
+                      setUserData({ ...userData, [e.target.name]: e.target.value });
+                    }}
+                  >
+                    <option value="" disabled className="bg-[#111827]">Academic Program</option>
+                    <option value="Bachelor of Technology (BTech)" className="bg-[#111827]">Bachelor of Technology (BTech)</option>
+                    <option value="Master of Technology (MTech)" className="bg-[#111827]">Master of Technology (MTech)</option>
+                    <option value="Master of Science (MSc)" className="bg-[#111827]">Master of Science (MSc)</option>
+                    <option value="Five Year BTech + MTech" className="bg-[#111827]">Five Year BTech + MTech</option>
+                    <option value="MS (Research)" className="bg-[#111827]">MS (Research)</option>
+                    <option value="Doctor of Philosophy" className="bg-[#111827]">Doctor of Philosophy</option>
+                    <option value="MS-DSM" className="bg-[#111827]">MS-DSM</option>
+                  </select>
+                  <SelectChevron />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <label className="text-sm sm:text-base lg:text-lg font-medium text-[#EEEEEE]">
+                  Department
+                </label>
+                <div className="relative w-full max-w-xs">
+                  <select
+                    name="department"
+                    value={userData.department || ""}
+                    className={SELECT_FIELD_CLASS}
+                    onChange={(e) => {
+                      setDeprt(e.target.value);
+                      setUserData({ ...userData, [e.target.name]: e.target.value });
+                    }}
+                  >
+                    <option value="" disabled className="bg-[#111827]">Department</option>
+                    <option value="Computer Science and Engineering" className="bg-[#111827]">Computer Science and Engineering</option>
+                    <option value="Electrical Engineering" className="bg-[#111827]">Electrical Engineering</option>
+                    <option value="Mechanical Engineering" className="bg-[#111827]">Mechanical Engineering</option>
+                    <option value="Civil Engineering" className="bg-[#111827]">Civil Engineering</option>
+                    <option value="Metallurgical Engineering and Materials Science" className="bg-[#111827]">Metallurgical Engineering and Materials Science</option>
+                    <option value="Astronomy, Astrophysics and Space Engineering" className="bg-[#111827]">Astronomy, Astrophysics and Space Engineering</option>
+                    <option value="Biosciences and Biomedical Engineering" className="bg-[#111827]">Biosciences and Biomedical Engineering</option>
+                    <option value="Physics" className="bg-[#111827]">Physics</option>
+                    <option value="Chemistry" className="bg-[#111827]">Chemistry</option>
+                    <option value="Mathematics" className="bg-[#111827]">Mathematics</option>
+                    <option value="Humanities and Social Sciences" className="bg-[#111827]">Humanities and Social Sciences</option>
+                    <option value="Electric Vehicle Technology" className="bg-[#111827]">Electric Vehicle Technology</option>
+                    <option value="MS-DSM" className="bg-[#111827]">MS-DSM</option>
+                    <option value="Center of Futuristic Defense and Space Technology(CFDST)" className="bg-[#111827]">Center of Futuristic Defense and Space Technology(CFDST)</option>
+                  </select>
+                  <SelectChevron />
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                const dept = userData.department || Deprt;
+                const prog = userData.academic_program || AcadP;
+                const rollVal = userData.roll_no || RollNo;
+                if (!dept || !prog || !rollVal) {
+                  setHid(2);
+                  HandleEmpty("");
+                } else if (/^\d{1,10}$/.test(rollVal)) {
                   setHid(3);
                 } else {
                   HandleROll();
                 }
-              }
-            }}
-            class="border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] flex justify-center items-center h-[35px] w-[130px] lg:h-10 lg:w-32 bottom-[5rem] absolute p-0 mb-1 text-base leading-none text-center afu rounded-3xl md:top-96 md:mt-14 md:w-32 md:h-10 lg:mt-36 btnh border-dashed"
-          >
-            Continue
-          </button>
-
-          <button onClick={() => setHid(1)}>
-            <img
-              src={Bbtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-[#222831]"}`}
-            />
-          </button>
-
-          <div class="afu w-full">
-            <img src={grad} alt="phone" class="lg:h-32 lg:w-32 ml-[80rem] mt-[35rem]" />
-          </div>
-        </div>
-
-        {/* Page 3 – Phone */}
-        <div
-          class={
-            hid == 3
-              ? "h-screen w-screen flex flex-col justify-center items-center text-1xl border-b-2 fadeInRight bg-[#222831]"
-              : "hidden"
-          }
-        >
-          <div class="h-12 text-[25px] md:text-3xl lg:text-4xl md:mt-32 flex justify-center items-center afu text-[#EEEEEE]">
-            We want to remember you forever 🤞
-          </div>
-
-          <div class="h-10 text-[25px] md:text-3xl md:top-64 lg:mt-2 lg:text-4xl flex justify-center items-center afu text-[#EEEEEE]">
-            Do tell us your <span class="text-red-600 ml-4">phone number</span>
-          </div>
-
-          <div class="flex w-full justify-center items-center h-10 mt-4 md:mt-14 text-[15px] lg:text-[20px] lg:mt-16 afu text-[#EEEEEE]">
-            Your Phone number will NOT be made public
-          </div>
-
-          <div class="w-full flex flex-col justify-center items-center afu pt-8 mb-6">
-            <PhoneInput
-              style={{ padding: "0px", fontSize: "25px", border: "0px solid black", width: "80px" }}
-              defaultCountry="in"
-              value={phone}
-              onChange={(phone) => {
-                setPhone(phone);
-                setUserData({ ...userData, ["contact_details"]: phone });
               }}
-              className="border-2 rounded-xl border-white p-2 w-full flex justify-center items-center pb-10"
-              inputStyle={{
-                width: "200px", height: "40px", fontSize: "23px",
-                borderWidth: "2px", borderColor: "white", borderRadius: "13px",
-                backgroundColor: "transparent", color: "white",
-              }}
-              countrySelectorStyleProps={{
-                style: {
-                  borderWidth: "2px", height: "40px", borderColor: "white",
-                  paddingRight: "10px", paddingLeft: "10px", borderRadius: "10px",
-                  backgroundColor: "white",
-                },
-              }}
-            />
-
-            <button
-              onClick={() => {
-                if (phone.length > 4) {
-                  setHid(4);
-                } else {
-                  setHid(3);
-                  toast("Make sure you entered all digits !", { theme: "dark", autoClose: 3000 });
-                }
-              }}
-              class="h-8 w-32 flex items-center justify-center border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] p-0 text-base leading-none text-center rounded-3xl md:w-32 md:h-10 btnh border-dashed afu mt-14"
+              className="mt-8 border-2 border-[#EEEEEE] bg-transparent text-[#EEEEEE] flex justify-center items-center px-8 py-3 text-base leading-none text-center rounded-3xl btnh border-dashed cursor-pointer"
             >
               Continue
             </button>
           </div>
 
-          <div class="afu w-full">
-            <img src={phoneimg} alt="phone" class="h-[90px] w-[90px] lg:h-40 lg:w-40 ml-8" />
-          </div>
+          <img
+            src={grad}
+            alt=""
+            className="hidden md:block absolute bottom-6 right-6 lg:bottom-8 lg:right-12 w-36 h-36 lg:w-44 lg:h-44 opacity-90 pointer-events-none"
+          />
+        </div>
 
-          <button onClick={() => setHid(2)}>
+        {/* Page 3 – Phone */}
+        <div
+          className={
+            hid == 3
+              ? "min-h-screen w-full flex flex-col justify-center items-center px-4 sm:px-8 py-16 relative border-b-2 border-gray-700 fadeInRight bg-pagebg text-center"
+              : "hidden"
+          }
+        >
+          <button
+            onClick={() => setHid(2)}
+            aria-label="Back to Academic Details"
+            className="absolute top-5 right-5 sm:top-7 sm:right-8 z-20"
+          >
             <img
               src={Bbtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-[#222831]"}`}
+              alt="Back"
+              className={`h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-full btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-transparent"}`}
             />
           </button>
+
+          <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-4 pt-8 afu">
+            <p className="text-2xl sm:text-3xl lg:text-4xl text-[#EEEEEE]">
+              We want to remember you forever 🤞
+            </p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl text-[#EEEEEE] font-semibold">
+              Do tell us your <span className="text-red-500">phone number</span>
+            </h1>
+            <p className="text-sm sm:text-base lg:text-lg text-gray-300 mt-2">
+              Your Phone number will NOT be made public
+            </p>
+
+            <div className="w-full flex flex-col justify-center items-center pt-4 gap-8">
+              <PhoneInput
+                defaultCountry="in"
+                value={phone}
+                onChange={(val) => {
+                  setPhone(val);
+                  setUserData({ ...userData, contact_details: val });
+                }}
+                className="flex items-center justify-center max-w-full"
+                style={{
+                  "--react-international-phone-height": "40px",
+                  "--react-international-phone-background-color": "#111827",
+                  "--react-international-phone-text-color": "#EEEEEE",
+                  "--react-international-phone-border-color": "#FFFFFF",
+                  "--react-international-phone-border-radius": "12px",
+                  "--react-international-phone-country-selector-background-color": "#111827",
+                  "--react-international-phone-country-selector-background-color-hover": "#1F2937",
+                  "--react-international-phone-country-selector-arrow-color": "#EEEEEE",
+                  "--react-international-phone-country-selector-arrow-size": "5px",
+                  "--react-international-phone-dropdown-item-background-color": "#111827",
+                  "--react-international-phone-dropdown-item-text-color": "#EEEEEE",
+                  "--react-international-phone-dropdown-item-dial-code-color": "#9CA3AF",
+                  "--react-international-phone-dropdown-item-height": "36px",
+                  "--react-international-phone-dropdown-item-font-size": "14px",
+                  "--react-international-phone-selected-dropdown-item-background-color": "#374151",
+                  "--react-international-phone-selected-dropdown-item-text-color": "#FFFFFF",
+                  "--react-international-phone-selected-dropdown-item-dial-code-color": "#76ABAE",
+                  "--react-international-phone-dropdown-shadow": "0 12px 28px rgba(0, 0, 0, 0.55)",
+                  "--react-international-phone-dropdown-top": "46px",
+                }}
+                inputStyle={{
+                  width: "200px",
+                  height: "40px",
+                  fontSize: "16px",
+                  borderWidth: "2px",
+                  borderColor: "white",
+                  borderRadius: "12px",
+                  backgroundColor: "#111827",
+                  color: "white",
+                  padding: "0 12px",
+                }}
+                countrySelectorStyleProps={{
+                  buttonStyle: {
+                    height: "40px",
+                    borderWidth: "2px",
+                    borderColor: "white",
+                    borderRadius: "12px",
+                    backgroundColor: "#111827",
+                    padding: "0 10px",
+                    marginRight: "8px",
+                  },
+                  flagStyle: {
+                    width: "22px",
+                    height: "16px",
+                  },
+                  dropdownStyleProps: {
+                    style: {
+                      backgroundColor: "#111827",
+                      color: "#EEEEEE",
+                      border: "1px solid #4B5563",
+                      borderRadius: "12px",
+                      padding: "6px 0",
+                      textAlign: "left",
+                      zIndex: 50,
+                    },
+                    listItemFlagStyle: {
+                      width: "22px",
+                      height: "16px",
+                      flexShrink: 0,
+                    },
+                  },
+                }}
+              />
+
+              <button
+                onClick={() => {
+                  if (/^\+[1-9]\d{6,14}$/.test(phone)) {
+                    setHid(4);
+                  } else {
+                    setHid(3);
+                    toast("Enter a valid phone number with country code", { theme: "dark", autoClose: 3000 });
+                  }
+                }}
+                className="flex items-center justify-center border-2 border-[#EEEEEE] bg-transparent text-[#EEEEEE] px-8 py-3 text-base leading-none text-center rounded-3xl btnh border-dashed cursor-pointer"
+              >
+                Continue
+              </button>
+            </div>
+
+            <img src={phoneimg} alt="phone" className="h-20 w-20 sm:h-28 sm:w-28 mt-2 self-start opacity-90" />
+          </div>
         </div>
 
         {/* Page 4 – Personal Email */}
         <div
-          class={
+          className={
             hid == 4
-              ? "min-h-screen w-screen overflow-y-auto flex flex-col lg:flex-row justify-start lg:justify-center items-center text-1xl relative border-b-2 bg-[#222831]"
+              ? "min-h-screen w-full flex flex-col justify-center items-center px-4 sm:px-8 py-16 relative border-b-2 border-gray-700 bg-pagebg text-center"
               : "hidden"
           }
         >
-          <div class="h-12 w-full top-44 left-4 absolute text-3xl flex-wrap md:text-3xl md:top-40 lg:text-4xl xl:text-3xl lg:top-48 flex justify-center items-center afd text-[#EEEEEE]">
-            And your <span class="text-red-600 flex-wrap ml-2 mr-2 text-5xl"> Personal </span> email ?
-          </div>
+          <button
+            onClick={() => setHid(3)}
+            aria-label="Back to Phone"
+            className="absolute top-5 right-5 sm:top-7 sm:right-8 z-20"
+          >
+            <img
+              src={Bbtn}
+              alt="Back"
+              className={`h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-full btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-transparent"}`}
+            />
+          </button>
 
-          <div class="h-14 w-48 lg:h-14 lg:w-72 absolute top-[310px] lg:top-72 mt-0 flex justify-center items-center flex-row lg:mt-0 lg:text-xl afd">
+          <div className="w-full max-w-2xl mx-auto flex flex-col items-center gap-6 pt-8 afd">
+            <h1 className="text-2xl sm:text-4xl text-[#EEEEEE] font-semibold leading-snug">
+              And your <span className="text-red-500 text-3xl sm:text-5xl mx-1">Personal</span> email ?
+            </h1>
+
             <input
-              type="text"
+              type="email"
               placeholder="Personal Email ID*"
               name="personal_email_id"
               value={userData.personal_email_id}
-              class="h-[32px] w-[200px] mb-10 max-w-xs lg:h-10 lg:w-64 lg:mt-12 border-2 border-white rounded-2xl text-center bg-[#222831] text-white"
+              className="w-full max-w-xs px-4 py-2 text-base text-center border-2 border-white rounded-xl bg-transparent text-white placeholder-gray-400 focus:outline-none focus:border-[#76ABAE] transition-colors"
               onChange={(e) => {
                 setEmailId(e.target.value);
                 setUserData({ ...userData, [e.target.name]: e.target.value });
               }}
             />
-          </div>
 
-          <button
-            onClick={() => {
-              HandleEmpty(EmailId);
-              EmailId != "" ? setHid(5) : setHid(4);
-            }}
-            class="border-2 border-[#EEEEEE] bg-[#222831] text-[#EEEEEE] h-8 w-32 mt-60 flex items-center justify-center lg:bottom-60 absolute bottom-10 lg:top-[400px] p-0 text-base leading-none text-center rounded-3xl md:top-96 md:mt-32 md:w-32 md:h-10 lg:mt-16 btnh border-dashed afd"
-          >
-            Continue
-          </button>
+            <button
+              onClick={() => {
+                const cleanEmail = (EmailId || userData.personal_email_id || "").trim();
+                if (!cleanEmail) {
+                  HandleEmpty("");
+                  return;
+                }
+                if (!/^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/.test(cleanEmail)) {
+                  toast("Enter a valid personal email address", { theme: "dark", autoClose: 3000 });
+                  return;
+                }
+                setEmailId(cleanEmail);
+                setUserData({ ...userData, personal_email_id: cleanEmail });
+                setHid(5);
+              }}
+              className="border-2 border-[#EEEEEE] bg-transparent text-[#EEEEEE] flex items-center justify-center px-8 py-3 text-base leading-none text-center rounded-3xl btnh border-dashed cursor-pointer"
+            >
+              Continue
+            </button>
 
-          <button onClick={() => setHid(3)}>
-            <img
-              src={Bbtn}
-              class={`h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${isDarkMode ? "bg-gray-400" : "bg-[#222831]"}`}
-            />
-          </button>
-
-          <div class="afu w-full flex sm:block justify-center items-center">
-            <img src={emailimg} alt="phone" class="h-[90px] w-[90px] lg:h-40 lg:w-40 mx-auto sm:ml-48 sm:mx-0" />
+            <img src={emailimg} alt="email" className="h-20 w-20 sm:h-28 sm:w-28 mt-2 opacity-90" />
           </div>
         </div>
 
@@ -427,26 +548,27 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
         <div
           className={
             hid == 5
-              ? "min-h-screen w-screen flex flex-col justify-center items-center bg-[#222831] text-white p-6 relative overflow-x-hidden"
+              ? "min-h-screen w-full flex flex-col justify-center items-center bg-pagebg text-white px-4 sm:px-8 pt-20 pb-12 relative overflow-x-hidden"
               : "hidden"
           }
         >
           <button
             onClick={() => setHid(4)}
-            className="absolute top-6 right-6 z-50 hover:scale-105 transition-transform"
+            aria-label="Back to Personal Email"
+            className="absolute top-5 right-5 sm:top-7 sm:right-8 z-20 hover:scale-105 transition-transform"
           >
             <img
               src={Bbtn}
               alt="Back"
-              className={`h-14 w-14 lg:h-20 lg:w-20 rounded-full ${isDarkMode ? "bg-gray-400" : ""}`}
+              className={`h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-full ${isDarkMode ? "bg-gray-400" : ""}`}
             />
           </button>
 
-          <div className="max-w-5xl w-full flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div className="max-w-5xl w-full flex flex-col lg:flex-row items-center justify-between gap-10">
             <div className="text-center lg:text-left space-y-4">
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold">
                 We wanna
-                <span className="text-red-600 px-4 animate-pulse">SEE</span>
+                <span className="text-red-500 px-3 animate-pulse">SEE</span>
                 you! please?
               </h1>
               <p className="text-lg md:text-2xl text-gray-400 font-light italic">
@@ -467,20 +589,20 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                 </div>
 
                 <label className="mt-6 flex flex-col items-center cursor-pointer group">
-                  <span className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full text-sm font-medium transition-colors shadow-lg">
+                  <span className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-colors shadow-lg">
                     Choose profile photo
                   </span>
                   <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                 </label>
               </div>
 
-              <p className="text-xs text-gray-500 mt-4 uppercase tracking-widest">
+              <p className="text-xs text-gray-400 mt-4 uppercase tracking-widest">
                 Image will be uploaded on final submit
               </p>
             </div>
           </div>
 
-          <div className="mt-16">
+          <div className="mt-12">
             <button
               onClick={() => {
                 if (profileImage) {
@@ -489,7 +611,7 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
                   toast("Please select a profile picture", { theme: "dark", autoClose: 3000 });
                 }
               }}
-              className="bg-white text-black px-12 py-3 rounded-full font-bold text-lg hover:bg-gray-200 transition-all active:scale-95 shadow-xl"
+              className="bg-white text-black px-12 py-3 rounded-full font-bold text-lg hover:bg-gray-200 transition-all active:scale-95 shadow-xl cursor-pointer"
             >
               Continue
             </button>
@@ -498,142 +620,208 @@ function Fill3({ isDarkMode, setIsDarkMode }) {
 
         {/* Page 6 – Extra Details + FINAL SUBMIT */}
         <div
-          class={
+          className={
             hid == 6
-              ? "min-h-screen w-screen relative border-b-2 bg-[#222831] text-white overflow-y-auto"
+              ? "min-h-screen w-full relative flex flex-col justify-center border-b-2 border-gray-700 bg-pagebg text-[#EEEEEE] px-4 sm:px-8 lg:px-12 pt-20 pb-14"
               : "hidden"
           }
         >
-          <div className="relative min-h-screen pb-32">
-            <div class="w-full text-[20px] mt-8 text-center md:text-4xl lg:text-[42px] xl:text-4xl">
-              Maybe, also fill these as well ?
-            </div>
-
-            <div class="w-full mt-4 text-center md:text-2xl px-4">
-              (Our design team was out on vacation at this, so we couldn't create individual pages for this) 😅
-            </div>
-
-            <div class="flex flex-col items-center mt-12 gap-4">
-              <input
-                type="text"
-                class="font-bold h-[35px] w-[225px] md:h-10 md:w-[270px] border-2 border-black text-black text-sm rounded-xl px-3"
-                placeholder="Alternate Contact Number"
-                name="alternate_contact_details"
-                value={userData.alternate_contact_details}
-                onChange={(e) => {
-                  setalternate_contact_details(e.target.value);
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                }}
-              />
-
-              <input
-                type="text"
-                class="font-bold h-[35px] w-[225px] md:h-10 md:w-[270px] border-2 border-black text-black text-sm rounded-xl px-3"
-                placeholder="Address"
-                name="address"
-                value={userData.address}
-                onChange={(e) => {
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                  setaddress(e.target.value);
-                }}
-              />
-
-              <input
-                type="text"
-                class="font-bold h-[35px] w-[225px] md:h-10 md:w-[270px] border-2 border-black text-black text-sm rounded-xl px-3"
-                placeholder="Current company (if any)"
-                name="current_company"
-                value={userData.current_company}
-                onChange={(e) => {
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                  setcurrent_company(e.target.value);
-                }}
-              />
-
-              <input
-                type="text"
-                class="font-bold h-[35px] w-[225px] md:h-10 md:w-[270px] border-2 border-black text-black text-sm rounded-xl px-3"
-                placeholder="Designation (if any)"
-                name="designation"
-                value={userData.designation}
-                onChange={(e) => {
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                  setdesignation(e.target.value);
-                }}
-              />
-            </div>
-
-            <div class="flex justify-center mt-10 relative">
-              <textarea
-                onInput={handleInputChange}
-                maxLength={300}
-                class="rounded-xl bg-white text-black font-bold h-[13rem] w-[16rem] md:h-80 max-h-[17rem] md:w-[270px] lg:mt-[-8rem] xl:mt-12 border-2 border-black text-base text-start p-2"
-                placeholder="    About Me (50 - 60 words)"
-                name="about"
-                value={userData.about}
-                onChange={(e) => {
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                  setabout(e.target.value);
-                }}
-              />
-            </div>
-
-            <div class="flex justify-center mt-10">
-              <textarea
-                class="rounded-xl bg-white text-black font-bold h-[8rem] max-h-[12rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black text-base text-start p-2"
-                placeholder=" what will you miss the most after graduating"
-                name="question_1"
-                value={userData.question_1}
-                onChange={(e) => {
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                  setquestion_1(e.target.value);
-                }}
-              />
-            </div>
-
-            <div class="flex justify-center mt-6">
-              <textarea
-                class="rounded-xl bg-white text-black font-bold h-[6rem] max-h-[13rem] w-[16rem] md:h-28 md:max-h-28 md:w-[270px] border-2 border-black text-base text-start p-2"
-                placeholder=" If you had power to implement a change in college what would it be?"
-                name="question_2"
-                value={userData.question_2}
-                onChange={(e) => {
-                  setUserData({ ...userData, [e.target.name]: e.target.value });
-                  setquestion_2(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-
-          {/* SUBMIT – no OTP, goes straight to DB + redirect */}
-          <div className="w-full flex justify-center py-8">
-            <button
-              disabled={state}
-              onClick={() => {
-                if (
-                  alternate_contact_details === "" ||
-                  address === "" ||
-                  about === "" ||
-                  question_1 === "" ||
-                  question_2 === ""
-                ) {
-                  HandleEmpty("");
-                } else {
-                  onSubmit();
-                }
-              }}
-              class="border-2 border-black bg-white text-black h-10 w-32 flex items-center justify-center text-base rounded-3xl border-dashed disabled:opacity-50"
-            >
-              {state ? "Saving..." : "Submit"}
-            </button>
-          </div>
-
-          <button onClick={() => setHid(5)}>
+          <button
+            onClick={() => setHid(5)}
+            aria-label="Back to Profile Photo"
+            className="absolute top-5 right-5 sm:top-7 sm:right-8 z-20"
+          >
             <img
               src={Bbtn}
-              class={`hidden sm:block h-[60px] w-[60px] lg:h-[83px] lg:w-[90px] bottom-12 absolute top-[23px] right-8 md:top-[24px] xl:top-[14px] lg:right-10 xl:w-[97px] xl:h-[97px] btnh2 afr ${isDarkMode ? "bg-gray-400" : ""}`}
+              alt="Back"
+              className={`h-12 w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 rounded-full btnh2 afr ${isDarkMode ? "bg-gray-400" : ""}`}
             />
           </button>
+
+          <div className="w-full max-w-6xl mx-auto">
+            <div className="text-center lg:text-left max-w-3xl mx-auto lg:mx-0">
+              <h1 className="text-2xl sm:text-4xl font-semibold">
+                Maybe, also fill these as well ?
+              </h1>
+              <p className="mt-2.5 text-sm sm:text-base text-gray-300">
+                (Our design team was out on vacation at this, so we couldn&apos;t create individual pages for this) 😅
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8 items-stretch">
+              {/* Left panel: Contact & Work */}
+              <div className="lg:col-span-5 bg-[#111827]/70 border border-gray-700 rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4">
+                <h2 className="text-base sm:text-lg font-semibold text-[#76ABAE] tracking-wide">
+                  Contact &amp; Current Role
+                </h2>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs sm:text-sm font-medium text-gray-300">
+                    Alternate Contact Number <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className={EXTRA_FIELD_CLASS}
+                    placeholder="e.g. +91 9876543210"
+                    name="alternate_contact_details"
+                    value={userData.alternate_contact_details}
+                    onChange={(e) => {
+                      setalternate_contact_details(e.target.value);
+                      setUserData({ ...userData, [e.target.name]: e.target.value });
+                    }}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs sm:text-sm font-medium text-gray-300">
+                    Address <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className={EXTRA_FIELD_CLASS}
+                    placeholder="City, State"
+                    name="address"
+                    value={userData.address}
+                    onChange={(e) => {
+                      setUserData({ ...userData, [e.target.name]: e.target.value });
+                      setaddress(e.target.value);
+                    }}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-3.5">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs sm:text-sm font-medium text-gray-300">
+                      Current Company
+                    </label>
+                    <input
+                      type="text"
+                      className={EXTRA_FIELD_CLASS}
+                      placeholder="Optional"
+                      name="current_company"
+                      value={userData.current_company}
+                      onChange={(e) => {
+                        setUserData({ ...userData, [e.target.name]: e.target.value });
+                        setcurrent_company(e.target.value);
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs sm:text-sm font-medium text-gray-300">
+                      Designation
+                    </label>
+                    <input
+                      type="text"
+                      className={EXTRA_FIELD_CLASS}
+                      placeholder="Optional"
+                      name="designation"
+                      value={userData.designation}
+                      onChange={(e) => {
+                        setUserData({ ...userData, [e.target.name]: e.target.value });
+                        setdesignation(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right panel: Yearbook Story */}
+              <div className="lg:col-span-7 bg-[#111827]/70 border border-gray-700 rounded-2xl p-5 sm:p-6 flex flex-col justify-between gap-4">
+                <div className="flex items-center justify-between gap-2">
+                  <h2 className="text-base sm:text-lg font-semibold text-[#76ABAE] tracking-wide">
+                    Your Yearbook Story
+                  </h2>
+                  <span className="text-xs text-gray-300">
+                    About: {(userData.about || "").length}/300
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs sm:text-sm font-medium text-gray-300">
+                    About Me (up to 300 characters) <span className="text-red-400">*</span>
+                  </label>
+                  <textarea
+                    onInput={handleInputChange}
+                    maxLength={300}
+                    rows={3}
+                    className={`${EXTRA_FIELD_CLASS} leading-relaxed resize-y`}
+                    placeholder="Share a quick intro or favorite memory..."
+                    name="about"
+                    value={userData.about}
+                    onChange={(e) => {
+                      setUserData({ ...userData, [e.target.name]: e.target.value });
+                      setabout(e.target.value);
+                    }}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs sm:text-sm font-medium text-gray-300">
+                      What will you miss most after graduating? <span className="text-red-400">*</span>
+                    </label>
+                    <textarea
+                      rows={4}
+                      className={`${EXTRA_FIELD_CLASS} leading-relaxed resize-y`}
+                      placeholder="Write your answer..."
+                      name="question_1"
+                      value={userData.question_1}
+                      onChange={(e) => {
+                        setUserData({ ...userData, [e.target.name]: e.target.value });
+                        setquestion_1(e.target.value);
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs sm:text-sm font-medium text-gray-300">
+                      One change you&apos;d implement in college? <span className="text-red-400">*</span>
+                    </label>
+                    <textarea
+                      rows={4}
+                      className={`${EXTRA_FIELD_CLASS} leading-relaxed resize-y`}
+                      placeholder="Write your answer..."
+                      name="question_2"
+                      value={userData.question_2}
+                      onChange={(e) => {
+                        setUserData({ ...userData, [e.target.name]: e.target.value });
+                        setquestion_2(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SUBMIT – creates pending profile, then redirects to Phone/Email OTP verification */}
+            <div className="w-full flex justify-center lg:justify-end pt-7">
+              <button
+                disabled={state}
+                onClick={() => {
+                  if (
+                    alternate_contact_details === "" ||
+                    address === "" ||
+                    about === "" ||
+                    question_1 === "" ||
+                    question_2 === ""
+                  ) {
+                    HandleEmpty("");
+                  } else if (about.trim().length > 300) {
+                    toast("About section must be 300 characters or fewer.", {
+                      theme: "dark",
+                      autoClose: 3000,
+                    });
+                  } else {
+                    onSubmit();
+                  }
+                }}
+                className="border-2 border-[#EEEEEE] bg-transparent text-[#EEEEEE] px-10 py-3 flex items-center justify-center text-base font-medium rounded-3xl btnh border-dashed cursor-pointer disabled:opacity-50"
+              >
+                {state ? "Saving..." : "Submit"}
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>

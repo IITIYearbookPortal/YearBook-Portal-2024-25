@@ -2,75 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../helpers/Context";
-import jwt_decode from "jwt-decode";
 
 function GoldCard() {
   const { profile, loggedin, loading } = useContext(LoginContext);
 
   const navigate = useNavigate();
 
-  // NEW: alumni data will come from backend
-  const [alumniData, setAlumniData] = useState([]);
-
-  // NEW: to know when API request is finished
-  const [alumniDataLoaded, setAlumniDataLoaded] = useState(false);
-
-  let userDetails = null;
-
-  if (window.localStorage.getItem("token") !== null) {
-    userDetails = jwt_decode(window.localStorage.getItem("token"));
-  }
-
-  /*
-   * Fetch alumni emails from backend
-   */
+  const {user:userDetails} = useContext(LoginContext);
   useEffect(() => {
-    const fetchAlumniData = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/getAlumniData`,
-        );
-
-        setAlumniData(res.data);
-        setAlumniDataLoaded(true);
-      } catch (err) {
-        console.error("Failed to fetch alumni data:", err);
-
-        setAlumniDataLoaded(true);
-      }
-    };
-
-    fetchAlumniData();
-  }, []);
-
-  /*
-   * Existing authentication / alumni check
-   */
-  useEffect(() => {
-    // Don't check until required data has loaded
-    if (loading || !alumniDataLoaded) {
-      return;
-    }
-
-    // User is not logged in
-    if (!loggedin) {
-      window.location.href = "/login";
-      return;
-    }
-
-    // No user details
-    if (!userDetails) {
-      window.location.href = "/";
-      return;
-    }
-
-    // GoldCard is for students/non-alumni.
-    // If the user is an alumni, redirect home.
-    if (alumniData.includes(userDetails.email)) {
-      window.location.href = "/";
-      return;
-    }
-  }, [loading, loggedin, alumniDataLoaded, alumniData]);
+    if (!loading && (!loggedin || userDetails.alumni)) navigate("/");
+  }, [loading,loggedin,userDetails,navigate]);
 
   const profile1 = () => {
     const profile = JSON.parse(window.localStorage.getItem("profile"));
@@ -81,7 +22,7 @@ function GoldCard() {
   };
 
   // Don't render until authentication + alumni check is complete
-  if (loading || !alumniDataLoaded) {
+  if (loading || !loggedin) {
     return null;
   }
 

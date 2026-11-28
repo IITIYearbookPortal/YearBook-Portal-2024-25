@@ -1,26 +1,17 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import jwt_decode from "jwt-decode";
+import { LoginContext } from "../helpers/Context";
+import ImageLightbox from "../components/memory-map/ImageLightbox";
 
 const API_BASE = process.env.REACT_APP_API_URL;
 
 const VerifyMemories = () => {
   const [memories, setMemories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lightbox, setLightbox] = useState(null);
 
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-
-  const user = useMemo(() => {
-    if (!token) return null;
-    try {
-      return jwt_decode(token);
-    } catch (err) {
-      console.error("Invalid token:", err);
-      return null;
-    }
-  }, [token]);
-
+  const {user} = useContext(LoginContext);
   const email = user?.email;
 
   const fetchPending = useCallback(async () => {
@@ -32,7 +23,7 @@ const VerifyMemories = () => {
       const res = await fetch(
         `${API_BASE}/memories/get-pending-requests/${email}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          credentials:"include", headers: {"X-Yearbook-Request":"1"},
         }
       );
 
@@ -45,15 +36,15 @@ const VerifyMemories = () => {
     } finally {
       setLoading(false);
     }
-  }, [token, email]);
+  }, [email]);
 
   useEffect(() => {
-    if (!token || !email) {
+    if (!email) {
       navigate("/login", { replace: true });
     } else {
       fetchPending();
     }
-  }, [token, email, navigate, fetchPending]);
+  }, [email, navigate, fetchPending]);
 
   const acceptMemory = async (memoryGroupId) => {
     try {
@@ -61,7 +52,7 @@ const VerifyMemories = () => {
         `${API_BASE}/memories/accept/${memoryGroupId}/${email}`,
         {
           method: "PATCH",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials:"include", headers: {"X-Yearbook-Request":"1"},
         }
       );
 
@@ -77,7 +68,7 @@ const VerifyMemories = () => {
         `${API_BASE}/memories/delete/${memoryGroupId}/${email}`,
         {
           method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
+          credentials:"include", headers: {"X-Yearbook-Request":"1"},
         }
       );
 
@@ -87,7 +78,7 @@ const VerifyMemories = () => {
     }
   };
 
-  if (!token || !email) return null;
+  if (!email) return null;
 
   return (
     <div className="container mx-auto px-6 py-8 text-white">
@@ -113,12 +104,25 @@ const VerifyMemories = () => {
               {m.images?.length > 0 && (
                 <div className="flex flex-wrap gap-3 mt-4">
                   {m.images.map((img, i) => (
-                    <img
+                    <button
                       key={i}
-                      src={img}
-                      alt="Memory"
-                      className="h-32 rounded-lg border border-gray-800 object-cover"
-                    />
+                      type="button"
+                      onClick={() =>
+                        setLightbox({
+                          images: m.images,
+                          index: i,
+                          caption: `Memory by ${m.authorName}`,
+                        })
+                      }
+                      className="rounded-lg border border-gray-700 hover:border-[#76ABAE] overflow-hidden cursor-zoom-in transition-colors"
+                      aria-label={`View full memory image ${i + 1}`}
+                    >
+                      <img
+                        src={img}
+                        alt="Memory"
+                        className="h-32 w-auto object-cover block"
+                      />
+                    </button>
                   ))}
                 </div>
               )}
@@ -141,6 +145,15 @@ const VerifyMemories = () => {
             </div>
           ))}
         </div>
+      )}
+
+      {lightbox && (
+        <ImageLightbox
+          images={lightbox.images}
+          initialIndex={lightbox.index}
+          caption={lightbox.caption}
+          onClose={() => setLightbox(null)}
+        />
       )}
     </div>
   );

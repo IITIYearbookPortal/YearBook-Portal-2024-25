@@ -1,11 +1,11 @@
 const previousSeniors = require('../models/previousYrBook.js');
 
 const getSeniors = async (req, res) => {
-    console.log("hi")
     try {
         // Only return required fields
         const seniors = await previousSeniors.find({}, "full_name roll_no department");
 
+        res.set("Cache-Control", "private, no-store");
         res.status(200).json({
             success: true,
             count: seniors.length,
@@ -22,6 +22,8 @@ const getSeniors = async (req, res) => {
 
 const getSenior = async (req, res) => {
   const roll_no = req.params.roll_no;
+    if (!/^\d{1,15}$/.test(roll_no))
+        return res.status(400).json({ success: false, message: "Invalid enrollment number" });
 
   try {
     const senior = await previousSeniors.findOne({ roll_no });
@@ -33,6 +35,7 @@ const getSenior = async (req, res) => {
       });
     }
 
+    res.set("Cache-Control", "private, no-store");
     res.status(200).json({
       success: true,
       data: senior,

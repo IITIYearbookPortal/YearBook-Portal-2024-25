@@ -8,6 +8,7 @@
 
 # testing
 /coverage
+/AUTH-SECURITY-REVIEW.md
 
 # production
 /build
@@ -28,6 +29,8 @@ server/node_modules
 node_modules
 
 server/.env
+/.env
+/server/alumniData.json
 client/.env
 
 client/node_modules/
@@ -53,3 +56,10 @@ client/node_modules/.cache/default-development/1.pack
 client/node_modules/.cache/default-development/0.pack
 client/node_modules/.cache/.eslintcache
 client/node_modules/.cache/.eslintcache
+
+# backups
+backup/
+server/backup/
+
+# local dev scripts
+server/scripts/local/

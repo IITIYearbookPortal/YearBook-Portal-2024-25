@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import PreviousYrBook from "./pages/PreviousYrBook.jsx";
 import Navbar from "./new_components/Navbar/Navbar";
@@ -17,8 +17,8 @@ import Error from "./new_components/Error/Error";
 // import alumniData from "./new_components/Navbar/alumniData.js";
 import UserList from "./new_components/UserList.js";
 // import UserList from "./components/navbar/UserList.js";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import jwt_decode from "jwt-decode";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { LoginContext } from "./helpers/Context";
 import axios from "axios";
 import EditAComment from "./new_components/Edit_a_Comment/EditAComment";
@@ -34,7 +34,7 @@ import PollPage from "./new_components/PollPage/PollPage.js";
 import PollResultsPage from "./new_components/PollPage/PollResultsPage";
 import PreviousYrBookSenior from "./pages/PreviousYrBookSenior.jsx";
 import { Toaster } from "./components/ui/toaster";
-import { Toaster as Sonner } from "./components/ui/sonner";
+import { Toaster as Sonner, toast } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
@@ -42,11 +42,22 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import VerifyMemories from "./pages/VerifyMemories.jsx";
 import CampusMapPage from "./pages/CampusMapPage.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
+import TermsOfService from "./pages/TermsOfService.jsx";
+import Footer from "./new_components/New_homepage/footer";
 
 const queryClient = new QueryClient();
 
 const App = ({ location }) => {
   const navigate = useNavigate();
+  const { pathname, hash } = useLocation();
+  const pendingNoticeRef = useRef("");
+  useEffect(() => {
+    if (["/login", "/footer"].includes(pathname) || hash) return;
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.getElementById("root2")?.scrollTo(0, 0);
+  }, [pathname, hash]);
 
   const [user, setUser] = useState({});
   const [loggedin, setLoggedin] = useState(false);
@@ -76,225 +87,178 @@ const App = ({ location }) => {
     question_2: "",
   });
 
-  // Get all users' name branch and email id
+  const [loginError, setLoginError] = useState("");
+  const installSession = ({user: identity, profile: record}) => {
+    setUser(identity);
+    setProfile(record || {});
+    setIsStudent(!identity.alumni);
+    setOneTimeVerified(Boolean(record?.one_step_verified));
+    setVerified(Boolean(record?.two_step_verified && record?.one_step_verified));
+    setLoggedin(true);
+  };
+
   useEffect(() => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/getUsersData")
-      .then((res) => {
-        setAllUsers(res.data);
-      })
-      .catch((err) => {});
+    let active = true;
+    localStorage.removeItem("token");
+    axios.get(process.env.REACT_APP_API_URL + "/auth/session")
+      .then(({data}) => { if (active) installSession(data); })
+      .catch(err => { if (active && err.response?.status !== 401) setLoginError("Could not restore your session."); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
 
-  // Google authentication for IITI students
   useEffect(() => {
-    /* global google */
+    if (!loggedin || (!isStudent && !verified)) return;
+    axios.get(process.env.REACT_APP_API_URL + "/getUsersData")
+      .then(({data}) => setAllUsers(Array.isArray(data) ? data : []));
+  }, [loggedin,isStudent,verified]);
 
-    if (window.google) {
-      google.accounts.id.initialize({
-        client_id: process.env.REACT_APP_CLIENT_ID,
-        callback: handleCallbackResponse,
-        // hosted_domain: "iiti.ac.in",
-      });
-
-      google.accounts.id.renderButton(document.getElementById("google-login"), {
-        theme: "dark",
-        size: "large",
-        width: "large",
-      });
-    }
-  });
-
-  // Callback Function after logging in
-  async function handleCallbackResponse(response) {
-    // Getting all the data from Google for the user who signs in
-    var userObject = jwt_decode(response.credential);
-
-    window.localStorage.setItem("token", response.credential);
-
-    const email = userObject.email;
-
-    /*
-     * NEW:
-     * Get alumni data from backend instead of importing JSON.
-     *
-     * Backend should return:
-     * [
-     *   "abc@gmail.com",
-     *   "xyz@gmail.com",
-     *   ...
-     * ]
-     */
-    let alumniData = [];
-
+  async function handleCallbackResponse({credential}) {
     try {
-      const alumniRes = await axios.get(
-        process.env.REACT_APP_API_URL + "/getAlumniData",
-      );
-
-      alumniData = alumniRes.data;
-    } catch (err) {
-      console.error("Failed to fetch alumni data:", err);
-
-      // Stop login if alumni data could not be fetched.
-      return;
-    }
-
-    await axios
-      .post(process.env.REACT_APP_API_URL + "/checkAuth", {
-        email: userObject.email,
-      })
-      .then((res) => {
-        // If the user already exists in the auth model
-        if (res.data.message === "true") {
-          // If the user is an alumni
-          if (alumniData.includes(userObject.email)) {
-            axios
-              .post(process.env.REACT_APP_API_URL + "/findAUser", {
-                email: userObject.email,
-              })
-              .then((res) => {
-                // If the user had made his profile
-                if (res.data.message === "User Found") {
-                  // If the user is not one time verified
-                  if (res.data.User2[0].one_step_verified === true) {
-                    setOneTimeVerified(true);
-                  } else {
-                    navigate(`/otpVerificationnew/${userObject.jti}`);
-                  }
-
-                  // If the user is two step verified
-                  if (res.data.User2[0].two_step_verified === true) {
-                    setVerified(true);
-
-                    setProfile(res.data.User2[0]);
-
-                    navigate(
-                      `/profile/${res.data.User2[0].roll_no}/${res.data.User2[0].name}`,
-                    );
-
-                    setLoggedin(true);
-                  } else {
-                    if (res.data.User2[0].one_step_verified === true) {
-                      setOneTimeVerified(true);
-
-                      navigate(`/emailverification/${userObject.jti}`);
-                    } else {
-                      navigate(`/otpVerificationnew/${userObject.jti}`);
-                    }
-
-                    // If the user is not verified
-                  }
-
-                  // If the user has not made the profile but already exists in the auth
-                  // then navigate the user to the fill page
-                } else {
-                  navigate(`/fill/${userObject.jti}`);
-                }
-              });
-          }
-
-          // If the user is a student
-          else {
-            setIsStudent(true);
-            setLoggedin(true);
-            navigate("/goldcard");
-          }
-        }
-
-        // If signed in for the first time
-        else {
-          axios
-            .post(process.env.REACT_APP_API_URL + "/auth", {
-              email: userObject.email,
-              name: userObject.name,
-            })
-            .then((res) => {
-              // If alumni
-              if (alumniData.includes(userObject.email)) {
-                navigate(`/fill/${userObject.jti}`);
-              }
-
-              // If student
-              else {
-                setIsStudent(true);
-                setLoggedin(true);
-                navigate("/goldcard");
-              }
-            })
-            .catch((err) => {});
-        }
-      })
-      .catch((err) => {});
+      setLoginError("");
+      await axios.post(process.env.REACT_APP_API_URL + "/auth/login", {credential});
+      const {data} = await axios.get(process.env.REACT_APP_API_URL + "/auth/session");
+      installSession(data);
+      const p = data.profile;
+      const id = data.user.jti;
+      if (!data.user.alumni) navigate("/goldcard");
+      else if (!p) navigate("/fill/" + id);
+      else if (!p.one_step_verified) navigate("/otpVerificationnew/" + id);
+      else if (!p.two_step_verified) navigate("/emailverification/" + id);
+      else navigate("/profile/" + p.roll_no + "/" + encodeURIComponent(p.name));
+    } catch (err) { setLoginError(err.response?.data?.message || "Sign-in failed. Please try again."); }
   }
-
-  // On reloading check if credentials exist in localstorage.
-  // If it does exist, check if student then set loggedin true.
-  // If an alumni, check if two time verified set logged in and verified true.
   useEffect(() => {
-    const checkExistingUser = async () => {
-      const token = window.localStorage.getItem("token");
-
-      if (token !== null) {
-        const auth = jwt_decode(token);
-
-        /*
-         * NEW:
-         * Fetch alumni data from backend instead of JSON.
-         */
-        let alumniData = [];
-
-        try {
-          const alumniRes = await axios.get(
-            process.env.REACT_APP_API_URL + "/getAlumniData",
-          );
-
-          alumniData = alumniRes.data;
-        } catch (err) {
-          console.error("Failed to fetch alumni data:", err);
-
-          setLoading(false);
-          return;
-        }
-
-        if (alumniData.includes(auth.email)) {
-          axios
-            .post(process.env.REACT_APP_API_URL + "/findAUser", {
-              email: auth.email,
-            })
-            .then((res) => {
-              // If the user had made his profile
-              if (res.data.message === "User Found") {
-                // If the user is two step verified
-                if (res.data.User2[0].two_step_verified === true) {
-                  setVerified(true);
-                  setProfile(res.data.User2[0]);
-                  setLoggedin(true);
-                  setLoading(false);
-                }
-              }
-            })
-            .catch((err) => {
-              setLoading(false);
-            });
-        } else {
-          setLoggedin(true);
-          setIsStudent(true);
-          setLoading(false);
-        }
-      } else {
-        setLoading(false);
-      }
+    const button = document.getElementById("google-login");
+    if (!button) return;
+    const renderButton = () => {
+      if (!window.google?.accounts || !button.isConnected || button.firstChild) return;
+      window.google.accounts.id.initialize({client_id: process.env.REACT_APP_CLIENT_ID, callback: handleCallbackResponse});
+      window.google.accounts.id.renderButton(button, {theme:"outline",size:"large",shape:"pill"});
     };
-
-    checkExistingUser();
-  }, []);
-
+    renderButton();
+    const script = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+    script?.addEventListener("load", renderButton);
+    return () => script?.removeEventListener("load", renderButton);
+  });
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedThemeMode = localStorage.getItem("themeMode");
 
     return storedThemeMode === "dark";
   });
+
+  const publicPaths = new Set([
+    "/",
+    "/login",
+    "/logout",
+    "/about",
+    "/footer",
+    "/team",
+    "/issue",
+    "/error",
+    "/privacy-policy",
+    "/terms",
+  ]);
+  const isPublic = publicPaths.has(pathname);
+  const isOnboarding =
+    pathname.startsWith("/fill/") ||
+    pathname.startsWith("/otpVerificationnew/") ||
+    pathname.startsWith("/emailverification/");
+  const isStudentOnly =
+    pathname === "/goldcard" ||
+    pathname === "/Newp2" ||
+    pathname.startsWith("/profile/nongrad/");
+  const isAlumniOnly =
+    pathname === "/polls" ||
+    pathname.startsWith("/polls/results/") ||
+    pathname === "/memory" ||
+    pathname === "/verifyMemories" ||
+    pathname.startsWith("/edit/") ||
+    pathname === "/blackcard" ||
+    pathname === "/Newp1" ||
+    (pathname.startsWith("/profile/") && !pathname.startsWith("/profile/nongrad/"));
+
+  let redirect;
+  let guardNotice = "";
+  if (!loading) {
+    if (!loggedin) {
+      if (!isPublic) {
+        redirect = "/login";
+        guardNotice = "You are not authorized. Please sign in first.";
+      }
+    } else if (user.alumni && !verified) {
+      const step = !profile._id
+        ? "fill"
+        : !oneTimeVerified
+          ? "otpVerificationnew"
+          : "emailverification";
+      const target = "/" + step + "/" + user.jti;
+      const allowedMidSignup = new Set([
+        "/",
+        "/logout",
+        "/about",
+        "/privacy-policy",
+        "/terms",
+        "/team",
+        "/footer",
+      ]);
+      const canLeaveSignup = step === "otpVerificationnew"
+        ? pathname === "/logout"
+        : allowedMidSignup.has(pathname);
+      if (pathname !== target && !canLeaveSignup) {
+        redirect = target;
+        if (pathname !== "/login" && pathname !== "/") {
+          guardNotice = "Complete verification before accessing portal pages.";
+        }
+      }
+    } else if (!user.alumni) {
+      const nongradEmail = pathname.startsWith("/profile/nongrad/")
+        ? decodeURIComponent(pathname.split("/")[4] || "")
+        : null;
+      if (
+        isOnboarding ||
+        isAlumniOnly ||
+        (nongradEmail !== null && nongradEmail !== user.email)
+      ) {
+        redirect = "/goldcard";
+        guardNotice = "You are not authorized to access this page.";
+      }
+    } else {
+      const homeProfile =
+        "/profile/" + profile.roll_no + "/" + encodeURIComponent(profile.name || "");
+      const targetRoll =
+        pathname.startsWith("/profile/") || pathname.startsWith("/edit/")
+          ? decodeURIComponent(pathname.split("/")[2] || "")
+          : null;
+      if (
+        isOnboarding ||
+        isStudentOnly ||
+        (targetRoll !== null && targetRoll !== profile.roll_no)
+      ) {
+        redirect = homeProfile;
+        guardNotice = "You are not authorized to access this page.";
+      }
+    }
+  }
+
+  if (guardNotice) pendingNoticeRef.current = guardNotice;
+
+  useEffect(() => {
+    if (!loading && !redirect && pendingNoticeRef.current) {
+      toast.error(pendingNoticeRef.current, { id: "auth-guard" });
+      pendingNoticeRef.current = "";
+    }
+  }, [loading, redirect, pathname]);
+
+  if (loading) return <div role="status">Loading yearbook…</div>;
+  if (redirect) return <Navigate replace to={redirect} />;
+  const hideChromeOnOnboarding =
+    /^\/fill\/.+$/.test(pathname) ||
+    /^\/otpVerificationnew\/.+$/.test(pathname) ||
+    /^\/Fill_Details3\/.+$/.test(pathname) ||
+    /^\/emailverification\/.+$/.test(pathname) ||
+    /^\/otpVerification\/.+$/.test(pathname);
+  const isHomepageRoute = ["/", "/login", "/footer", "/logout"].includes(pathname);
 
   return (
     <LoginContext.Provider
@@ -325,27 +289,32 @@ const App = ({ location }) => {
     >
       <div
         id="root2"
-        className={`App overflow-x-hidden bg-cover ${
-          isDarkMode ? "bg-bg-dark text-white" : "bg-bg-white text-black"
+        className={`App flex flex-col min-h-screen overflow-x-clip ${
+          isHomepageRoute
+            ? isDarkMode
+              ? "bg-cover bg-bg-dark text-white"
+              : "bg-cover bg-bg-white text-black"
+            : "bg-pagebg text-white"
         }`}
       >
-        {!/^\/fill\/.+$/.test(window.location.pathname) &&
-          !/^\/otpVerificationnew\/.+$/.test(window.location.pathname) &&
-          !/^\/Fill_Details3\/.+$/.test(window.location.pathname) &&
-          !/^\/emailverificaton\/.+$/.test(window.location.pathname) &&
-          !/^\/otpVerification\/.+$/.test(window.location.pathname) &&
-          window.location.pathname !== "*" && <Navbar />}
+        {loginError && <p role="alert">{loginError}</p>}
+        {!hideChromeOnOnboarding && pathname !== "*" && <Navbar />}
 
+        <div className="flex-1 flex flex-col">
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
             <Toaster />
-            <Sonner />
+            <Sonner position="top-right" richColors />
 
             <Routes>
               {/* Homepage */}
               <Route exact path="/" element={<Homepage2 />} />
 
               <Route exact path="/about" element={<About />} />
+
+              <Route exact path="/privacy-policy" element={<PrivacyPolicy />} />
+
+              <Route exact path="/terms" element={<TermsOfService />} />
 
               <Route
                 exact
@@ -516,8 +485,13 @@ const App = ({ location }) => {
             </Routes>
           </TooltipProvider>
         </QueryClientProvider>
+        </div>
 
-        {/* {!loading && <Footer />} */}
+        {!loading &&
+          !isHomepageRoute &&
+          !hideChromeOnOnboarding &&
+          pathname !== "/nav" &&
+          pathname !== "/map" && <Footer />}
       </div>
     </LoginContext.Provider>
   );

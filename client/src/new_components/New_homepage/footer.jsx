@@ -5,7 +5,7 @@ import "./homepage.module.css";
 import { Link } from "react-router-dom";
 import { LoginContext } from "../../helpers/Context";
 
-const Footer = () => {
+const Footer = ({ topColor }) => {
   const {loggedin,setLoggedin} = useContext(LoginContext);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const storedThemeMode = localStorage.getItem("themeMode");
@@ -13,10 +13,10 @@ const Footer = () => {
   });
   const WaveTop = () => {
     return (
-      <div className="w-full overflow-hidden">
+      <div className="w-full overflow-hidden bg-transparent">
         <svg
-          className="w-full h-24"
-          viewBox="0 0 1440 100"
+          className="w-full h-24 block"
+          viewBox="0 -2 1440 102"
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
         >
@@ -25,13 +25,36 @@ const Footer = () => {
               <stop offset="0%" stopColor="#EEEEEE" />
               <stop offset="100%" stopColor="#76ABAE" />
             </linearGradient>
+            <linearGradient id="waveStrokeSubtle" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#EEEEEE" stopOpacity="0.16" />
+              <stop offset="50%" stopColor="#76ABAE" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#EEEEEE" stopOpacity="0.14" />
+            </linearGradient>
           </defs>
+          {topColor && (
+            <path
+              d="M0,0 
+                 C240,95 480,95 720,45 
+                 C960,-5 1200,-5 1440,45 
+                 L1440,-2 L0,-2 Z"
+              fill={topColor}
+            />
+          )}
           <path
             d="M0,0 
                C240,95 480,95 720,45 
                C960,-5 1200,-5 1440,45 
-               L1440,0 L0,0 Z"
-            fill={loggedin?"#000000":"url(#greenOverlay)"}
+               L1440,100 L0,100 Z"
+            fill="#000000"
+          />
+          <path
+            d="M0,0 
+               C240,95 480,95 720,45 
+               C960,-5 1200,-5 1440,45"
+            fill="none"
+            stroke="url(#waveStrokeSubtle)"
+            strokeWidth="1.5"
+            vectorEffect="non-scaling-stroke"
           />
         </svg>
       </div>
@@ -39,34 +62,45 @@ const Footer = () => {
   };
   
   return (
-      <footer className=" text-xl bg-gradient-to-br from-[#000000] to-[#000000] text-white relative">
+      <footer className="text-xl bg-transparent text-white relative">
       <WaveTop />
 
-      <div className="w-full  px-4 pb-12">
+      <div className="w-full bg-[#000000] px-6 sm:px-10 lg:px-16 pt-10 sm:pt-12 pb-16">
         {/* Main Footer Content */}
-        <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="max-w-screen-2xl mx-auto">
+        <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-14">
           {/* Institute Section */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="flex items-center space-x-3">
               <BookOpen className="w-8 h-8 text-yellow-400" />
-              <h3 className="text-2xl font-bold">Yearbook 2026</h3>
+              <h3 className="text-2xl font-bold">Yearbook 2027</h3>
             </div>
-            <p className="text-gray-300">
+            <p className="text-gray-300 leading-relaxed text-lg">
               Preserving memories and celebrating achievements of the graduating class of IIT Indore.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-yellow-400">Quick Links</h4>
-            <ul className="flex flex-col items-start">
+            <h4 className="text-lg font-semibold mb-5 text-yellow-400">Quick Links</h4>
+            <ul className="flex flex-col items-start space-y-3 text-base sm:text-lg">
               <li>
-                <a href="https://alumni.iiti.ac.in/" className="text-gray-300 hover:text-white transition-colors">
+                <a
+                  href="https://alumni.iiti.ac.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   Alumni Portal
                 </a>
               </li>
               <li>
-                <a href="https://alumnicell.iiti.ac.in/" className="text-gray-300 hover:text-white transition-colors">
+                <a
+                  href="https://alumnicell.iiti.ac.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-white transition-colors"
+                >
                   Alumni Cell Portal
                 </a>
               </li>
@@ -80,28 +114,27 @@ const Footer = () => {
                 Developers
                 </a>
               </li>
-              
             </ul>
           </div>
 
           {/* Contact Information */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-yellow-400">Contact Us</h4>
-            <ul className="flex flex-col items-start">
-              <li className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-300">
+            <h4 className="text-lg font-semibold mb-5 text-yellow-400">Contact Us</h4>
+            <ul className="flex flex-col items-start space-y-3.5 text-base sm:text-lg">
+              <li className="flex items-start space-x-3">
+                <MapPin className="w-5 h-5 text-gray-400 mt-1 shrink-0" />
+                <span className="text-gray-300 leading-relaxed">
                   IIT Indore, Khandwa Road, Simrol, Indore 453552
                 </span>
               </li>
               <li className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-gray-400" />
+                <Mail className="w-5 h-5 text-gray-400 shrink-0" />
                 <a href="mailto:alumnicell@iiti.ac.in" className="text-gray-300 hover:text-white transition-colors">
                   alumnicell@iiti.ac.in
                 </a>
               </li>
               <li className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-gray-400" />
+                <Phone className="w-5 h-5 text-gray-400 shrink-0" />
                 <a href="tel:+917312438700" className="text-gray-300 hover:text-white transition-colors">
                   +91 8391973739 
                 </a>
@@ -111,8 +144,8 @@ const Footer = () => {
 
           {/* Social Media */}
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-yellow-400">Connect With Us</h4>
-            <div className="flex space-x-4">
+            <h4 className="text-lg font-semibold mb-5 text-yellow-400">Connect With Us</h4>
+            <div className="flex space-x-4 pt-1">
               <a
                 href="https://www.linkedin.com/company/alumni-cell-iit-indore/"
                 className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-blue-600 transition-colors"
@@ -136,7 +169,7 @@ const Footer = () => {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-700 my-8"></div>
+        <div className="border-t border-gray-700 my-10"></div>
 
         {/* Bottom Section */}
         <div className="text-center space-y-4">
@@ -146,6 +179,7 @@ const Footer = () => {
           <p className="text-sm text-gray-500">
             "Every end is just a new beginning. The memories we've made here will forever be our guiding light."
           </p>
+        </div>
         </div>
       </div>
     </footer>

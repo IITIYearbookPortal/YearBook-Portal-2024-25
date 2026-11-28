@@ -11,8 +11,8 @@ The repository contains a React client and an Express/MongoDB server. The fronte
 
 ## Features
 
-- Google Identity based login on the frontend.
-- Alumni recognition using the local alumni email list in `client/src/new_components/Navbar/akumniData.json`.
+- Google Identity Services sign-in with server verification and revocable portal sessions.
+- Server-side alumni recognition using the MongoDB roster.
 - Profile creation for graduating students with academic details, contact details, personal email, profile image, about text, and yearbook questions.
 - Profile image upload through the backend using Multer memory storage and Cloudinary.
 - Profile editing with optional profile image replacement.
@@ -24,13 +24,13 @@ The repository contains a React client and an Express/MongoDB server. The fronte
 - Separate current-student and graduating-student comment storage.
 - Poll creation, voting, deletion, and result viewing.
 - Poll grouping by academic program.
-- Admin-only poll controls driven by frontend environment configuration.
+- Server-authorized poll creation and deletion.
 - Previous yearbook senior list and senior detail pages.
 - Interactive campus memory map.
 - Memory creation with up to three uploaded images.
 - Memory approval/rejection flow for tagged seniors before memories become public.
 - Printable memory summary for related memories.
-- AdminBro-based backend admin panel for selected MongoDB resources.
+- AdminJS-based backend admin panel for selected MongoDB resources.
 - Basic origin checks and CORS configuration on the backend.
 - Custom UI components for buttons, inputs, textareas, tooltips, toast notifications, and memory-map views.
 
@@ -41,14 +41,14 @@ The repository contains a React client and an Express/MongoDB server. The fronte
 | Frontend | React 18, Create React App, React Router, React Context |
 | Backend | Node.js, Express.js |
 | Database | MongoDB, Mongoose |
-| Authentication | Google Identity Services on the client, JWT-decoded Google credential stored in `localStorage`, email verification token for personal email verification |
+| Authentication | Google Identity Services on the client, server-verified identity, a MongoDB-backed session in an HTTP-only cookie and single-use verification codes |
 | State Management | React `useState`, `useEffect`, Context API, TanStack React Query provider |
 | Styling | Tailwind CSS, CSS modules, plain CSS, Sass, Bootstrap, Chakra UI, MUI icons, Radix UI primitives, Lucide icons |
 | File Storage | Cloudinary, Multer memory storage |
 | Email | Nodemailer with Gmail transport |
-| Admin | AdminBro with Mongoose adapter and basic auth |
+| Admin | AdminJS with Mongoose adapter and basic auth |
 | Build Tools | Create React App, PostCSS, Tailwind CSS, Nodemon |
-| Deployment | `buildspec.yaml` is present for a server copy step; client production builds are generated with `react-scripts build` |
+| Deployment | `buildspec.yaml` is present for a server copy step; client production builds are generated with `rsbuild build` |
 | Other Libraries | Axios, React Toastify, Sonner, Firebase Analytics, Chart.js, react-beautiful-dnd, dnd-kit, react-international-phone |
 
 ## Project Structure
@@ -124,7 +124,6 @@ Create environment files in `client/.env` and `server/.env`. Do not commit real 
 | `REACT_APP_MESSAGING_SENDER_ID` | Firebase config | Firebase messaging sender ID. |
 | `REACT_APP_APP_ID` | Firebase config | Firebase app ID. |
 | `REACT_APP_MEASUREMENT_ID` | Firebase config | Firebase analytics measurement ID. |
-| `REACT_APP_ADMIN_USERS` | Poll page | Comma-separated email list allowed to create/delete polls in the frontend UI. |
 | `REACT_APP_ADMIN_EMAIL` | `client/.env` | Present in the environment file, but not referenced in the current source code. |
 | `REACT_APP_CLOUDINARY_LINK` | `client/.env` | Present in the environment file, but not referenced in the current source code. |
 
@@ -135,16 +134,18 @@ Create environment files in `client/.env` and `server/.env`. Do not commit real 
 | `PORT` | `server.js`, `app.js` | Backend port. Defaults to `5000` in `server.js`. |
 | `MONGODB_LINK` | `server.js` | MongoDB connection URI. |
 | `CLIENT_LINK` | `server.js`, user controller | Allowed client origin and redirect target after email verification. |
-| `ALLOWED_ORIGIN` | `server.js` | Origin checked by the custom request-origin middleware. |
-| `SERVER_LINK` | user controller | Server URL used to generate personal email verification links. |
-| `GMAIL_USER` | user controller | Gmail account used by Nodemailer. |
-| `GMAIL_PASS` | user controller | Gmail password or app password used by Nodemailer. |
-| `SECRET` | user model, user controller | JWT secret for personal email verification tokens. |
+| `SERVER_LINK` | user controller | Public API URL for secure cookie settings and the admin origin check. |
+| `GOOGLE_CLIENT_ID` | Google sign-in | Must match the OAuth client ID configured in the browser. |
+| `MSG91_WIDGET_ID`, `MSG91_WIDGET_TOKEN`, `MSG91_AUTH_KEY` | Alumni SMS via Widget | Configure an SMS widget with a four-digit OTP and CAPTCHA. The browser uses the widget ID and widget token. Keep the account Authkey on the server for token verification. The widget can use MSG91's default SMS template. |
+| `MSG91_AUTH_KEY`, `MSG91_TEMPLATE_ID` | Alumni SMS via SendOTP | Used when the widget is unconfigured. Requires an approved template and sender. |
+| `OTP_SECRET` | OTP storage | Random secret of at least 32 bytes, shared across API replicas. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Email OTP | Authenticated SMTP relay. Port 587 uses STARTTLS and port 465 uses TLS. |
+| `POLL_ADMIN_EMAILS` | Poll administration | Comma-separated account emails. |
 | `CLOUDINARY_NAME` | Cloudinary config | Cloudinary cloud name. |
 | `CLOUDINARY_API_KEY` | Cloudinary config | Cloudinary API key. |
 | `CLOUDINARY_API_SECRET` | Cloudinary config | Cloudinary API secret. |
-| `ADMIN_USERNAME` | `server.js` | AdminBro basic-auth username. Referenced in code. |
-| `ADMIN_PASSWORD` | `server.js` | AdminBro basic-auth password. Referenced in code. |
+| `ADMIN_USERNAME` | `server.js` | AdminJS basic-auth username. Referenced in code. |
+| `ADMIN_PASSWORD` | `server.js` | AdminJS basic-auth password. Referenced in code. |
 | `OTP_AUTH_KEY` | `server/.env` | Present in the environment file, but not referenced in the current source code. |
 | `OTP_NUMBER` | `server/.env` | Present in the environment file, but not referenced in the current source code. |
 | `JWT_SECRET` | `server/.env` | Present in the environment file, but not referenced in the current source code. |
@@ -206,11 +207,11 @@ Most client state is local component state. Shared login and profile state is st
 
 ### Authentication Flow
 
-The frontend initializes Google Identity Services using `REACT_APP_CLIENT_ID`. After a Google sign-in, the Google credential is decoded with `jwt-decode` and stored in `localStorage` as `token`.
+The browser exchanges a Google credential at `POST /auth/login` and restores the signed-in user through `GET /auth/session`. The server verifies the credential, checks the alumni roster or the institute's Google hosted domain, and binds the Google subject to the existing account. Third-party email identities outside Google-managed domains require a reviewed subject binding.
 
-The client checks `/checkAuth` to see whether the email already exists in the backend `Auth` collection. If the email is in the alumni email list, the app looks for a full profile in the `Users` collection. Alumni without profiles are sent to the fill-details flow. Current students are allowed into student-facing areas such as user search, comments, and polls.
+Alumni save their profile details, confirm their phone through MSG91, then confirm a personal email code sent by the configured SMTP relay. The portal renders its own verification form and checks the verified phone number on the server. The widget manages its phone-code challenges. The portal throttles code delivery for SMTP and direct SendOTP. A refresh resumes the outstanding step. Firebase is used only for existing analytics. Existing verified profiles retain their records and links. Sign in again after upgrading from the old browser token.
 
-The backend also supports personal email verification through signed JWT links generated with `SECRET`. In the current fill-details flow, profile creation marks both verification flags as true, while older OTP/email verification routes still exist in the code.
+Signup checks the enrollment number against the signed-in institute account. Keep roster files private. Administrators can import a private JSON array of email strings or records with `email` and `roll_no` using `node server/importAlumni.js <private-roster.json>`. Store enrollment numbers as strings to preserve leading zeroes. For accounts without a numeric institute email suffix, enter the confirmed enrollment number in the roster record. The import updates supplied entries and preserves the rest of the roster.
 
 ### Data Flow
 
@@ -248,7 +249,7 @@ The frontend uses Axios for most endpoints and `fetch` for memory verification. 
 | `client/src/new_components/PollPage/PollResultsPage.js` | Poll voting and chart/result view. |
 | `client/src/components/memory-map/MemoryMapPage.jsx` | Interactive campus memory map and print summary flow. |
 | `client/src/pages/VerifyMemories.jsx` | Pending memory approval/rejection page. |
-| `server/server.js` | Main Express application, middleware stack, MongoDB connection, AdminBro setup, and route registration. |
+| `server/server.js` | Main Express application, middleware stack, MongoDB connection, AdminJS setup, and route registration. |
 | `server/controllers/userDataController.js` | Profile creation, profile update, user search, email verification, and user lookup logic. |
 | `server/controllers/commentsController.js` | Comment creation, moderation, retrieval, editing, and ordering logic. |
 | `server/controllers/memoriesController.js` | Memory creation, public memory retrieval, and pending memory approval/rejection. |
@@ -263,9 +264,9 @@ The React app calls the backend at `REACT_APP_API_URL`.
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
 | `GET` | `/` | Basic server health/message response. |
-| `GET` | `/auth` | Returns auth users. |
-| `POST` | `/auth` | Creates a basic auth record after first Google sign-in. |
-| `POST` | `/checkAuth` | Checks whether an email exists in the auth collection. |
+| `POST` | `/auth/login` | Exchanges a verified Google credential for a portal session. |
+| `GET` | `/auth/session` | Returns the signed-in identity and onboarding status. |
+| `POST` | `/auth/logout` | Revokes the session and clears its cookie. |
 | `POST` | `/userData` | Creates a full graduating student profile with profile image upload. |
 | `GET` | `/userData` | Returns public profile summary data. |
 | `GET` | `/getUsersData` | Returns public profile summary data. |
@@ -275,11 +276,8 @@ The React app calls the backend at `REACT_APP_API_URL`.
 | `POST` | `/profile` | Returns profile data by email. |
 | `POST` | `/wordEntered` | Searches users by name prefix. |
 | `POST` | `/searchword` | Looks up a user by email. |
-| `GET` | `/verify/:id` | Verifies personal email from an emailed token and redirects to the client. |
-| `POST` | `/verify` | Marks first verification step true and sends personal email verification. |
-| `POST` | `/resendMail` | Resends personal email verification mail. |
-| `POST` | `/userDataNew` | Updates personal email/contact fields and verification flags. |
-| `POST` | `/userDataemail` | Updates personal email field. |
+| `POST` | `/otp/verify` | Verifies a signup code against the active session and destination. |
+| `POST` | `/otp/send` | Sends a signup or profile-edit verification code. |
 | `POST` | `/comments` | Creates a new comment for a profile. |
 | `POST` | `/getComments` | Gets comments written by a user. |
 | `PUT` | `/setApprovedComments` | Approves a received comment. |
@@ -334,11 +332,13 @@ The backend uses Mongoose models.
 
 ## Authentication
 
-The client relies on Google Identity Services for initial login. The Google credential is decoded in the browser and saved to `localStorage`; this token is used by the frontend to decide user state and is sent as a bearer token in a few memory-related requests.
+Portal sessions expire after 12 hours. The browser sends a credentialed cookie to the API. Configure `CLIENT_LINK` to the exact client origin and `SERVER_LINK` to the public API URL. Use HTTPS in production and host both services on the same site where possible so browser third-party cookie policies permit session restoration. The client supplies an origin-checked custom header on writes.
 
-On the backend, most routes do not currently enforce bearer-token authentication middleware. Access control is mainly handled in the React UI and by lookup logic in controllers. AdminBro is protected separately with HTTP basic auth using `ADMIN_USERNAME` and `ADMIN_PASSWORD`.
+A profile edit requires a fresh email code at Save. The destination is the OTP-verified personal mailbox, or the Google sign-in mailbox for accounts whose legacy verification flags predate email OTP. The API consumes the code before it processes an upload. Ordinary sessions and student sign-ins do not send messages.
 
-The backend also includes a personal email verification flow. It signs a verification token with `SECRET`, sends a link through Nodemailer, and marks `two_step_verified` true when the link is opened.
+The admin panel at `/admin` uses separate server-side Basic Auth credentials. Configure both `ADMIN_USERNAME` and `ADMIN_PASSWORD` to enable it. Poll administrators are configured separately through `POLL_ADMIN_EMAILS`.
+
+Before enabling a full unique roll-number index, reconcile duplicate legacy records without changing their document IDs. New enrollments have a partial unique index. Test changes with a separate MongoDB database and sandbox delivery credentials.
 
 ## Available Scripts
 
@@ -346,11 +346,10 @@ The backend also includes a personal email verification flow. It signs a verific
 
 | Script | Command | Description |
 | --- | --- | --- |
-| `npm start` | `react-scripts start` | Starts the React development server. |
-| `npm run dev` | `react-scripts start` | Alias for the React development server. |
-| `npm run build` | `react-scripts build` | Builds the production frontend. |
-| `npm test` | `react-scripts test` | Runs Create React App tests. |
-| `npm run eject` | `react-scripts eject` | Ejects Create React App configuration. |
+| `npm start` | `rsbuild dev` | Starts the React development server. |
+| `npm run dev` | `rsbuild dev` | Alias for the React development server. |
+| `npm run build` | `rsbuild build` | Builds the production frontend. |
+| `npm test` | `node --test` | Runs client tests when present. |
 
 ### Server
 
@@ -358,7 +357,7 @@ The backend also includes a personal email verification flow. It signs a verific
 | --- | --- | --- |
 | `npm run dev` | `nodemon server.js` | Starts the Express server with reloads. |
 | `npm start` | `node server.js` | Starts the Express server. |
-| `npm test` | `echo "Error: no test specified" && exit 1` | Placeholder test script. |
+| `npm test` | `node --test` | Runs the isolated authentication regression suite. |
 
 The root `package.json` does not define runnable scripts.
 

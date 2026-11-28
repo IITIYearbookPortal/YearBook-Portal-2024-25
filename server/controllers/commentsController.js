@@ -7,21 +7,22 @@ const auth = require("../models/authModel");
 
 //Adding the comment
 const comments = asyncHandler(async (req, res) => {
-  const comment_sender_email_id = req.body.comment_sender_email;
+  const comment_sender_email_id = req.user.email;
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
-  const status = req.body.status;
-  const isStudent = req.body.isStudent;
+  const status = "new";
+  const isStudent = !req.user.alumni;
 
-  if(comment === ""){
-    return res.status(406).send({ statusmessage: "Comment cannot be empty" });
+  if (typeof comment !== "string" || !comment.trim() || comment.length > 300) {
+    return res.status(400).send({ statusmessage: "Enter a comment of up to 300 characters" });
   }
   //finding id of receiver
   const receiver = await Users.findOne({
     roll_no: comment_reciever_roll_no,
   });
 
-  comment_reciever_id = receiver._id.toString();
+  if (!receiver) return res.sendStatus(404);
+  const comment_reciever_id = receiver._id.toString();
 
   var sender;
 
@@ -73,15 +74,13 @@ const comments = asyncHandler(async (req, res) => {
     );
 
     return res.send({ message: "Comment added" });
-  } catch (err) {}
+  } catch (err) { throw err; }
 });
 
 const getComments = asyncHandler(async (req, res) => {
   let comment_receiver_roll_no = req.body.comment_reciever_roll_no;
 
-  const usersId = await Users.findOne({
-    roll_no: comment_receiver_roll_no,
-  });
+  const usersId = req.profile;
   const comment_reciever_id = usersId._id.toString();
   // const users = await Comments.aggregate([{
   //   comment_sender: {
@@ -152,9 +151,7 @@ const setApprovedComments = asyncHandler(async (req, res) => {
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
   const _id = req.body._id;
-  const usersId = await Users.findOne({
-    roll_no: comment_reciever_roll_no,
-  });
+  const usersId = req.profile;
 
   const user = await Comments.find({
     comment_reciever_id: usersId._id,
@@ -200,9 +197,7 @@ const setRejectedComments = asyncHandler(async (req, res) => {
   const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
   const comment = req.body.comment;
   const _id = req.body._id;
-  const usersId = await Users.findOne({
-    roll_no: comment_reciever_roll_no,
-  });
+  const usersId = req.profile;
 
   const user = await Comments.find({
     comment_reciever_id: usersId._id,
@@ -247,20 +242,18 @@ const setRejectedComments = asyncHandler(async (req, res) => {
 const getRecieversComments = asyncHandler(async (req, res) => {
   try {
     const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
-    const usersId = await Users.findOne({
-      roll_no: comment_reciever_roll_no,
-    });
+    const usersId = req.profile;
     const comment_reciever_id = usersId._id.toString();
     const users = await Comments.findOne({
       comment_reciever_id: comment_reciever_id,
     })
       .populate({
         path: "comment_sender.id",
-        model: "Users",
+        model: "Users", select: "name roll_no profile_img email department academic_program",
       })
       .populate({
         path: "comment_sender_student.id",
-        model: "Auth",
+        model: "Auth", select: "name email",
       })
       .exec();
     if (!users) {
@@ -337,13 +330,14 @@ const getRecieversComments = asyncHandler(async (req, res) => {
 const getRecieverComments2 = asyncHandler(async (req, res) => {
   try {
     const comment_reciever_roll_no = req.body.comment_reciever_roll_number;
-    const isStudent = req.body.isStudent;
+    const isStudent = !req.user.alumni;
 
 
 
     const usersId = await Users.findOne({
       roll_no: comment_reciever_roll_no,
     });
+    let comment_reciever_id;
     if (usersId && usersId._id) {
       comment_reciever_id = usersId._id.toString();
     } else {
@@ -357,11 +351,11 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
     })
       .populate({
         path: "comment_sender.id",
-        model: "Users",
+        model: "Users", select: "name roll_no profile_img email department academic_program",
       })
       .populate({
         path: "comment_sender_student.id",
-        model: "Auth",
+        model: "Auth", select: "name email",
       })
       .exec();
 
@@ -391,9 +385,9 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
       id: comment.id,
       comment: comment.comment,
       name: comment.id ? comment.id.name : "N/A",
-      roll_no: comment.id ? comment.roll_no : "N/A",
-      profImage: comment.id ? comment.profile_img.url : "N/A",
-      email_id: comment.id ? comment.email_id : "N/A",
+      roll_no: comment.id ? comment.id.roll_no : "N/A",
+      profImage: comment.id ? comment.id.profile_img?.url : "N/A",
+      email_id: comment.id ? comment.id.email : "N/A",
       order: comment.order,
       // academic_program: comment.id ? comment.id.academic_program : 'N/A',
       // Add more fields as needed
@@ -411,9 +405,7 @@ const getRecieverComments2 = asyncHandler(async (req, res) => {
 const updateCommentOrder = asyncHandler(async (req, res) => {
   try {
     const comment_reciever_roll_no = req.body.comment_reciever_roll_no;
-    const usersId = await Users.findOne({
-      roll_no: comment_reciever_roll_no,
-    });
+    const usersId = req.profile;
 
     const comment_reciever_id = usersId._id;
 
@@ -484,13 +476,13 @@ const updateCommentOrder = asyncHandler(async (req, res) => {
 });
 
 const removeCommentFromMyComments = asyncHandler(async (req, res) => {
-  const email = req.body.email;
+  const email = req.user.email;
   const comment = req.body.comment;
 
   const users = await Comments.find({
     comment_sender: {
       $elemMatch: {
-        email_id: email,
+        id: String(req.actorId),
         comment: comment,
       },
     },
@@ -499,7 +491,7 @@ const removeCommentFromMyComments = asyncHandler(async (req, res) => {
   await Promise.all(
     users.map(async (user) => {
       const commentIndex = user.comment_sender.findIndex(
-        (sender) => sender.email_id === email && sender.comment === comment
+        (sender) => String(sender.id) === String(req.actorId) && sender.comment === comment
       );
       if (commentIndex !== -1) {
         user.comment_sender.pull(user.comment_sender[commentIndex]);
@@ -518,9 +510,7 @@ const removeCommentFromApprovedComments = asyncHandler(async (req, res) => {
 
   let change = 0;
 
-  const usersId = await Users.findOne({
-    roll_no: comment_reciever_roll_no,
-  });
+  const usersId = req.profile;
 
   const comment_reciever_id = usersId._id;
 
@@ -572,7 +562,7 @@ const removeCommentFromApprovedComments = asyncHandler(async (req, res) => {
   }
     if (change > 0) {
     console.log(true);
-    res.send({ message: "comment added in new section", worked: true, user });
+    return res.send({ message: "comment added in new section", worked: true, user });
   }
   console.log(false);
   res.send({ message: "comment added in new section", worked: false, user });
@@ -580,9 +570,9 @@ const removeCommentFromApprovedComments = asyncHandler(async (req, res) => {
 
 const editComment = asyncHandler(async (req, res) => {
   try {
-    const { comment, comment_id_edit, comment_reciever_id_edit, isStudent } = req.body;
+    const { comment, comment_id_edit, comment_reciever_id_edit } = req.body;
 
-    if (!comment?.trim()) {
+    if (typeof comment !== "string" || !comment.trim() || comment.length > 300) {
       return res.status(400).json({ message: "Comment cannot be empty" });
     }
 
@@ -597,12 +587,12 @@ const editComment = asyncHandler(async (req, res) => {
 
     let updateResult;
 
-    if (isStudent === true || isStudent === "true") {
+    if (!req.user.alumni) {
       // Current student
       updateResult = await Comments.updateOne(
         {
           comment_reciever_id: receiver._id,
-          "comment_sender_student._id": comment_id_edit,
+          comment_sender_student: {$elemMatch:{_id:comment_id_edit,id:String(req.actorId)}},
         },
         {
           $set: {
@@ -616,7 +606,7 @@ const editComment = asyncHandler(async (req, res) => {
       updateResult = await Comments.updateOne(
         {
           comment_reciever_id: receiver._id,
-          "comment_sender._id": comment_id_edit,
+          comment_sender: {$elemMatch:{_id:comment_id_edit,id:String(req.actorId)}},
         },
         {
           $set: {
@@ -644,7 +634,7 @@ const editComment = asyncHandler(async (req, res) => {
 
 const getEditCommentsInfo = asyncHandler(async (req, res) => {
   try {
-    const { comment_reciever_id_edit, comment_id_edit, isStudent } = req.body;
+    const { comment_reciever_id_edit, comment_id_edit } = req.body;
 
     if (!comment_reciever_id_edit || !comment_id_edit) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -659,12 +649,12 @@ const getEditCommentsInfo = asyncHandler(async (req, res) => {
     let commentData = null;
     let commentArrayField = null;
 
-    if (isStudent === true || isStudent === "true") {
+    if (!req.user.alumni) {
       // Current student → look in comment_sender_student
       commentData = await Comments.findOne(
         {
           comment_reciever_id: receiver._id,
-          "comment_sender_student._id": comment_id_edit,
+          comment_sender_student: {$elemMatch:{_id:comment_id_edit,id:String(req.actorId)}},
         },
         { "comment_sender_student.$": 1 }
       ).populate({
@@ -679,7 +669,7 @@ const getEditCommentsInfo = asyncHandler(async (req, res) => {
       commentData = await Comments.findOne(
         {
           comment_reciever_id: receiver._id,
-          "comment_sender._id": comment_id_edit,
+          comment_sender: {$elemMatch:{_id:comment_id_edit,id:String(req.actorId)}},
         },
         { "comment_sender.$": 1 }
       ).populate({
@@ -723,7 +713,7 @@ const getEditCommentsInfo = asyncHandler(async (req, res) => {
 });
 
 const ungradmycomment = asyncHandler(async (req, res) => {
-  const comment_reciever_email = req.body.comment_reciever_email;
+  const comment_reciever_email = req.user.email;
 
   const usersEmail = await auth.findOne({
     email: comment_reciever_email,
